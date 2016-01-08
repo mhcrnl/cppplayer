@@ -14,8 +14,14 @@ void Song::Play(path song) {
 
 	std::cout << "Playing " << song.c_str() << std::endl;
 	music.play();
-	while(!isStop() && !isNext() && music.getStatus() == sfe::mp3::Playing)
-		sf::sleep(sf::seconds(0.5f));
+	while(!isStop() && !isNext() && music.getStatus() == sfe::mp3::Playing) {
+		if(isPause())	{
+			music.pause();
+			while(isPause())	sf::sleep(sf::seconds(0.4f));
+			music.play();
+		}
+		sf::sleep(sf::seconds(0.4f));
+	}
 }
 
 void Song::setStop() {
@@ -26,10 +32,18 @@ void Song::setNext() {
 	next = next?0:1;
 }
 
+void Song::setPause() {
+	pause = pause?0:1;
+}
+
 bool Song::isStop() const {
 	return stop;
 }
 
 bool Song::isNext() const {
 	return next;
+}
+
+bool Song::isPause() const {
+	return pause;
 }

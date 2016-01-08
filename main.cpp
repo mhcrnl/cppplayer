@@ -4,9 +4,7 @@
 #include <thread>
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
-#include <unistd.h>
-#include <termios.h>
-#include <cstring>
+
 
 #include "song.h"
 #include "utils.h"
@@ -56,6 +54,8 @@ int main(int argc, char* argv[])
 			break;
 		} else if(c == 'n' || c == 'N') {
 			song->setNext();
+		} else if(c == 'p' || c == 'P') {
+			song->setPause();
 		}
 	}
 	mplayer.join();
