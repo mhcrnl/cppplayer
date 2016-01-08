@@ -1,9 +1,10 @@
 #include <iostream>
 
 #include "song.h"
+#include "utils.h"
 
 void Song::Play(path song) {
-	if(song.extension() != path(".mp3")) {
+	if(!isSupported(song)) {
 		std::cerr << "Incorrect format " << song.extension().c_str() << std::endl;
 		return;
 	}
