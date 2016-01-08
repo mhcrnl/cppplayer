@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <thread>
+#include <condition_variable>
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
 
@@ -16,7 +17,7 @@ void getSongList(path p, vector<path>& songList) {
 	for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
 		auto pathSong = entry.path();
 		if(is_directory(pathSong))	getSongList(pathSong, songList);
-		if(isSupported(pathSong))	songList.emplace_back(pathSong);
+		if(isSupported(pathSong))	songList.push_back(pathSong);
 	}
 }
 
@@ -32,8 +33,11 @@ void PlayList(Song* song, const vector<path>& songList) {
 
 int main(int argc, char* argv[])
 {
+	bool daemon = false;
 	vector<path> songList;
 	if(argc>1) {
+		//FIXME
+		if(argc>2) {daemonize(); daemon=true;}
 		path p(argv[1]);
 		if(is_directory(p))
 			getSongList(p, songList);
@@ -47,15 +51,23 @@ int main(int argc, char* argv[])
 
 	Song* song = new Song;
 	thread mplayer(PlayList, song, songList);
-	while(1) {
+	if(!daemon)
+	while(!song->isStop()) {
 		char c = getch();
 		if(c == 'q' || c == 'Q') {
+			cv.notify_one();
 			song->setStop();
-			break;
 		} else if(c == 'n' || c == 'N') {
+			cv.notify_one();
 			song->setNext();
 		} else if(c == 'p' || c == 'P') {
-			song->setPause();
+			if(song->isPause()) {
+				song->setPause();
+				cv.notify_one();
+			} else {
+				cv.notify_one();
+				song->setPause();
+			}
 		}
 	}
 	mplayer.join();
