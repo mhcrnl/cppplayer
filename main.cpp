@@ -17,6 +17,7 @@
 using namespace boost::filesystem;
 using namespace std;
 
+
 void getSongList(path p, vector<path>& songList) {
 	for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
 		auto pathSong = entry.path();
@@ -27,20 +28,32 @@ void getSongList(path p, vector<path>& songList) {
 
 void PlayList(Song* song, const vector<path>& songList) {
 	for(auto& s : songList) {
-		if(song->isStop())
-			return;
-		if(song->isNext())
-			song->setNext();
+		if(song->isStop())	return;
+		if(song->isNext())	song->setNext();
 		song->Play(s);
+	}
+}
+
+void chooseAction(char c, Song* song) {
+	if(c == 'q' || c == 'Q') {
+		song->setStop();
+		cv.notify_one();
+	} else if(c == 'n' || c == 'N') {
+		song->setNext();
+		cv.notify_one();
+	} else if(c == 'p' || c == 'P') {
+		song->setPause();
+		cv.notify_one();
 	}
 }
 
 int main(int argc, char* argv[])
 {
+	const char* fpipe = "/tmp/player++";
 	bool daemon = false;
 	vector<path> songList;
 	if(argc>1) {
-		//FIXME
+		//CRAP
 		if(argc>2 && *argv[2] == 'd') {
 			daemon=true;
 			daemonize(); 
@@ -48,10 +61,10 @@ int main(int argc, char* argv[])
 		path p(argv[1]);
 		if(is_directory(p)) {
 			if(daemon)
-				mkfifo("/tmp/player++", 0666);
+				mkfifo(fpipe, 0666);
 			getSongList(p, songList);
 		} else {
-			int fd = open("/tmp/player++", O_WRONLY);
+			int fd = open(fpipe, O_WRONLY);
 			write(fd, argv[1], 1);
 			close(fd);
 			return 0;
@@ -69,36 +82,19 @@ int main(int argc, char* argv[])
 	if(!daemon) {
 		while(!song->isStop()) {
 			char c = getch();
-			if(c == 'q' || c == 'Q') {
-				song->setStop();
-				cv.notify_one();
-			} else if(c == 'n' || c == 'N') {
-				song->setNext();
-				cv.notify_one();
-			} else if(c == 'p' || c == 'P') {
-				song->setPause();
-				cv.notify_one();
-			}
+			chooseAction(c, song);
 		}
 	} else {
+		song->setPause();
 		while(!song->isStop()) {
-			int fd = open("/tmp/player++", O_RDONLY);
+			int fd = open(fpipe, O_RDONLY);
 			char c = 0;
 			read(fd, &c, 1);
 			close(fd);
-			if(c == 'q' || c == 'Q') {
-				song->setStop();
-				cv.notify_one();
-			} else if(c == 'n' || c == 'N') {
-				song->setNext();
-				cv.notify_one();
-			} else if(c == 'p' || c == 'P') {
-				song->setPause();
-				cv.notify_one();
-			}
+			chooseAction(c, song);
 		}
 	}
-	unlink("/tmp/player++");
+	unlink(fpipe);
 
 	mplayer.join();
 	delete song;

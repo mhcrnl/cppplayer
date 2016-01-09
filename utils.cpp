@@ -13,7 +13,7 @@ using namespace std;
 
 
 bool isSupported(path p) {
-	const array<path, 1> formats = {path(".mp3")};
+	const array<path, 4> formats = {path(".mp3"), path(".flac"), path(".ogg"), path(".wav")};
 	for(auto& v : formats)
 		if(p.extension() == v)
 			return true;
@@ -41,9 +41,6 @@ char getch() {
                 perror ("tcsetattr ~ICANON");
         return (buf);
 }
-
-
-
 
 
 void daemonize() {
