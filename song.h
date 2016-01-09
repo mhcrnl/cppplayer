@@ -21,7 +21,7 @@ class Song {
 		bool isPause() const;
 		bool isPlay()	const;
 	private:
-		void is_too_late_and_i_can_think_in_a_good_name_for_this_function();
+		void checkPlay();
 		bool stop;
 		bool next;
 		bool pause;

@@ -6,7 +6,7 @@
 condition_variable cv;
 mutex cv_m;
 
-void Song::is_too_late_and_i_can_think_in_a_good_name_for_this_function() {
+void Song::checkPlay() {
 	while(isPause() || mp3music.getStatus() == sfe::mp3::Playing)
 		sf::sleep(sf::seconds(0.4f));
 	setPlay();
@@ -19,14 +19,13 @@ void Song::Play(path song) {
 
 	std::cout << "Playing: " << song.stem().c_str() << std::endl;
 	mp3music.play();
-	//
-	// && mp3music.getStatus() == sfe::mp3::Playing
-	thread t(&Song::is_too_late_and_i_can_think_in_a_good_name_for_this_function, this);
+
+	thread t(&Song::checkPlay, this);
 
 	unique_lock<std::mutex> lk(cv_m);
 	setPlay();
 	while(isPlay()) {
-		cv.wait(lk, [this]{return isPause()||isStop()||isNext();});
+		cv.wait(lk, [this]{return !isPlay()||isPause()||isStop()||isNext();});
 		if(isStop() || isNext()) {
 			mp3music.stop();
 		} else if(isPause()){
