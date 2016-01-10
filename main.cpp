@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <vector>
 #include <thread>
-#include <condition_variable>
 #include <cstdio>
 #include <fcntl.h>
 #include <boost/filesystem.hpp>
@@ -66,8 +65,7 @@ int main(int argc, char* argv[])
 		}
 		path p(argv[1]);
 		if(is_directory(p)) {
-			if(daemon)
-				mkfifo(fpipe, 0666);
+			if(daemon) mkfifo(fpipe, 0666);
 			getSongList(p, songList);
 		} else {
 			int fd = open(fpipe, O_WRONLY);
@@ -80,8 +78,7 @@ int main(int argc, char* argv[])
 	}
 
 	random_device rd;
-    std::mt19937 g(rd());
-	shuffle(songList.begin(), songList.end(), g);
+	shuffle(songList.begin(), songList.end(), mt19937(rd()));
 
 	Song* song = new Song;
 	thread mplayer(PlayList, song, songList);
@@ -100,7 +97,8 @@ int main(int argc, char* argv[])
 			chooseAction(c, song);
 		}
 	}
-	unlink(fpipe);
+
+	if(daemon) unlink(fpipe);
 
 	mplayer.join();
 	delete song;
