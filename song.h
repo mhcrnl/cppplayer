@@ -12,9 +12,9 @@ class Song {
 	public:
 		Song() : stop(0), next(0), pause(0), play(0){};
 		void Play(path song);
-		void setStop();
-		void setNext();
-		void setPause();
+		void setStop(bool);
+		void setNext(bool);
+		void setPause(bool);
 		bool isStop() const;
 		bool isNext() const;
 		bool isPause() const;

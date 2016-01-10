@@ -12,7 +12,7 @@ mutex song_mutex;
 void Song::checkPlay() {
 	while(isPause() || mp3music.getStatus() == sfe::mp3::Playing || music.getStatus() == sf::Music::Playing)
 		sf::sleep(sf::seconds(0.4f));
-	setNext();
+	setNext(1);
 	cv.notify_one();
 }
 
@@ -44,20 +44,20 @@ void Song::Play(path song) {
 	else	Reproduce(song, music);
 }
 
-void Song::setStop() {
+void Song::setStop(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
-	stop = stop?0:1;
+	stop = b;
 }
 
-void Song::setNext() {
+void Song::setNext(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
-	next = next?0:1;
+	next = b;
 
 }
 
-void Song::setPause() {
+void Song::setPause(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
-	pause = pause?0:1;
+	pause = b;
 }
 
 bool Song::isStop() const {

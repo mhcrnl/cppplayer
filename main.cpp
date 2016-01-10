@@ -28,7 +28,7 @@ void getSongList(path p, vector<path>& songList) {
 void PlayList(Song* song, const vector<path>& songList) {
 	for(auto& s : songList) {
 		if(song->isStop())	return;
-		if(song->isNext())	song->setNext();
+		if(song->isNext())	song->setNext(0);
 		song->Play(s);
 	}
 }
@@ -37,17 +37,18 @@ void chooseAction(char c, Song* song) {
 	switch(c) {
 		case 'q':
 		case 'Q': 
-			song->setStop(); 
+			song->setStop(1); 
 			cv.notify_one();
 			break;
 		case 'n':
 		case 'N': 
-			song->setNext(); 
+			song->setNext(1); 
 			cv.notify_one();
 			break;
 		case 'p':
 		case 'P': 
-			song->setPause(); 
+			if(song->isPause()) song->setPause(0); 
+			else song->setPause(1);
 			cv.notify_one();
 	}
 }
@@ -88,7 +89,7 @@ int main(int argc, char* argv[])
 			chooseAction(c, song);
 		}
 	} else {
-		song->setPause();
+		song->setPause(1);
 		while(!song->isStop()) {
 			int fd = open(fpipe, O_RDONLY);
 			char c = 0;
