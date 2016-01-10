@@ -1,10 +1,13 @@
 #include <iostream>
 #include <thread>
+#include <mutex>
 #include "song.h"
 #include "utils.h"
 
 condition_variable cv;
 mutex cv_m;
+mutex song_mutex;
+
 
 void Song::checkPlay() {
 	while(isPause() || mp3music.getStatus() == sfe::mp3::Playing || music.getStatus() == sf::Music::Playing)
@@ -67,33 +70,42 @@ void Song::Play(path song) {
 }
 
 void Song::setStop() {
+	lock_guard<mutex> song_guard(song_mutex);
 	stop = stop?0:1;
 }
 
 void Song::setNext() {
+	lock_guard<mutex> song_guard(song_mutex);
 	next = next?0:1;
+
 }
 
 void Song::setPause() {
+	lock_guard<mutex> song_guard(song_mutex);
 	pause = pause?0:1;
 }
 
 void Song::setPlay() {
+	lock_guard<mutex> song_guard(song_mutex);
 	play = play?0:1;
 }
 
 bool Song::isStop() const {
+	lock_guard<mutex> song_guard(song_mutex);
 	return stop;
 }
 
 bool Song::isNext() const {
+	lock_guard<mutex> song_guard(song_mutex);
 	return next;
 }
 
 bool Song::isPause() const {
+	lock_guard<mutex> song_guard(song_mutex);
 	return pause;
 }
 
 bool Song::isPlay() const {
+	lock_guard<mutex> song_guard(song_mutex);
 	return play;
 }
