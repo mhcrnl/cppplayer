@@ -16,31 +16,8 @@ void Song::checkPlay() {
 	cv.notify_one();
 }
 
-void Song::PlayMP3(path song) {
-	if(!mp3music.openFromFile(song.c_str()))
-		return;
-
-	std::cout << "Playing: " << song/*.stem()*/.c_str() << std::endl;
-	mp3music.play();
-
-	thread t(&Song::checkPlay, this);
-
-	unique_lock<std::mutex> lk(cv_m);
-	setPlay();
-	while(isPlay()) {
-		cv.wait(lk, [this]{return !isPlay()||isPause()||isStop()||isNext();});
-		if(isStop() || isNext()) {
-			mp3music.stop();
-		} else if(isPause()){
-			mp3music.pause();
-			cv.wait(lk, [this]{return !isPause();});
-			mp3music.play();
-		}
-	}
-	t.join();
-}
-
-void Song::PlaySFML(path song) {
+template <typename T>
+void Song::Reproduce(path song, T& music) {
 	if(!music.openFromFile(song.c_str()))
 		return;
 
@@ -65,8 +42,8 @@ void Song::PlaySFML(path song) {
 }
 
 void Song::Play(path song) {
-	if(song.extension() == path(".mp3")) PlayMP3(song);
-	else	PlaySFML(song);
+	if(song.extension() == path(".mp3")) Reproduce(song, mp3music);
+	else	Reproduce(song, music);
 }
 
 void Song::setStop() {

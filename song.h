@@ -22,8 +22,8 @@ class Song {
 		bool isPlay()	const;
 	private:
 		void checkPlay();
-		void PlayMP3(path song);
-		void PlaySFML(path song);
+		template <typename T>
+		void Reproduce(path song, T& music);
 		bool stop;
 		bool next;
 		bool pause;
