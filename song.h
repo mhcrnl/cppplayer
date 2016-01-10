@@ -15,11 +15,9 @@ class Song {
 		void setStop();
 		void setNext();
 		void setPause();
-		void setPlay();
 		bool isStop() const;
 		bool isNext() const;
 		bool isPause() const;
-		bool isPlay()	const;
 	private:
 		void checkPlay();
 		template <typename T>

@@ -12,7 +12,7 @@ mutex song_mutex;
 void Song::checkPlay() {
 	while(isPause() || mp3music.getStatus() == sfe::mp3::Playing || music.getStatus() == sf::Music::Playing)
 		sf::sleep(sf::seconds(0.4f));
-	setPlay();
+	setNext();
 	cv.notify_one();
 }
 
@@ -27,17 +27,15 @@ void Song::Reproduce(path song, T& music) {
 	thread t(&Song::checkPlay, this);
 
 	unique_lock<std::mutex> lk(cv_m);
-	setPlay();
-	while(isPlay()) {
-		cv.wait(lk, [this]{return !isPlay()||isPause()||isStop()||isNext();});
-		if(isStop() || isNext()) {
-			music.stop();
-		} else if(isPause()){
+	while(!isNext()&&!isStop()) {
+		cv.wait(lk, [this]{return isPause()||isStop()||isNext();});
+		if(isPause()) {
 			music.pause();
 			cv.wait(lk, [this]{return !isPause();});
 			music.play();
 		}
 	}
+	music.stop();
 	t.join();
 }
 
@@ -62,11 +60,6 @@ void Song::setPause() {
 	pause = pause?0:1;
 }
 
-void Song::setPlay() {
-	lock_guard<mutex> song_guard(song_mutex);
-	play = play?0:1;
-}
-
 bool Song::isStop() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return stop;
@@ -80,9 +73,4 @@ bool Song::isNext() const {
 bool Song::isPause() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return pause;
-}
-
-bool Song::isPlay() const {
-	lock_guard<mutex> song_guard(song_mutex);
-	return play;
 }
