@@ -20,7 +20,7 @@ using namespace std;
 
 void getSongList(path p, vector<path>& songList) {
 	for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
-		auto pathSong = entry.path();
+		const auto pathSong = entry.path();
 		if(is_directory(pathSong))	getSongList(pathSong, songList);
 		if(isSupported(pathSong))	songList.push_back(pathSong);
 	}
@@ -35,15 +35,21 @@ void PlayList(Song* song, const vector<path>& songList) {
 }
 
 void chooseAction(char c, Song* song) {
-	if(c == 'q' || c == 'Q') {
-		song->setStop();
-		cv.notify_one();
-	} else if(c == 'n' || c == 'N') {
-		song->setNext();
-		cv.notify_one();
-	} else if(c == 'p' || c == 'P') {
-		song->setPause();
-		cv.notify_one();
+	switch(c) {
+		case 'q':
+		case 'Q': 
+			song->setStop(); 
+			cv.notify_one();
+			break;
+		case 'n':
+		case 'N': 
+			song->setNext(); 
+			cv.notify_one();
+			break;
+		case 'p':
+		case 'P': 
+			song->setPause(); 
+			cv.notify_one();
 	}
 }
 
