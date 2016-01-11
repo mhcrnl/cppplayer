@@ -33,6 +33,6 @@ Por ejemplo
 
 > player++ q          #cerrara el programa 
 
-> player++ <          #saltar a la canción anterior
+> player++ "<"          #saltar a la canción anterior
 
 
