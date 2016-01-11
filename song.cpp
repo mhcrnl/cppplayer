@@ -1,20 +1,13 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <chrono>
 #include "song.h"
 #include "utils.h"
 
 condition_variable cv;
 mutex cv_m;
 mutex song_mutex;
-
-
-void Song::checkPlay() {
-	while(isPause() || mp3music.getStatus() == sfe::mp3::Playing || music.getStatus() == sf::Music::Playing)
-		sf::sleep(sf::seconds(0.4f));
-	setNext(1);
-	cv.notify_one();
-}
 
 template <typename T>
 void Song::Reproduce(path song, T& music) {
@@ -24,11 +17,9 @@ void Song::Reproduce(path song, T& music) {
 	std::cout << "Playing: " << song/*.stem()*/.c_str() << std::endl;
 	music.play();
 
-	thread t(&Song::checkPlay, this);
-
 	unique_lock<std::mutex> lk(cv_m);
-	while(!isNext()&&!isStop()) {
-		cv.wait(lk, [this]{return isPause()||isStop()||isNext();});
+	while( !isNext() && !isStop() && music.getStatus() == sf::Music::Playing) {
+		cv.wait_for(lk, chrono::milliseconds(400) ,[this]{return isPause()||isStop()||isNext();});
 		if(isPause()) {
 			music.pause();
 			cv.wait(lk, [this]{return !isPause();});
@@ -36,7 +27,6 @@ void Song::Reproduce(path song, T& music) {
 		}
 	}
 	music.stop();
-	t.join();
 }
 
 void Song::Play(path song) {
