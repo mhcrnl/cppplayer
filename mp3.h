@@ -12,6 +12,7 @@ public :
     mp3();
     ~mp3();
 
+    sf::Time getDuration();
     bool openFromFile(const std::string& filename);
 
 protected :

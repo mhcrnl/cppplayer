@@ -26,6 +26,11 @@ mp3::~mp3()
     mpg123_exit();
 }
 
+sf::Time mp3::getDuration() {
+    //TODO;
+    return sf::Time(sf::seconds(0.5f));
+}
+
 bool mp3::openFromFile(const std::string& filename)
 {
     stop();

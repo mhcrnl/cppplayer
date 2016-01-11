@@ -19,7 +19,10 @@ void Song::Reproduce(path song, T& music) {
 
 	unique_lock<std::mutex> lk(cv_m);
 	while( !isNext() && !isStop() && music.getStatus() == sf::Music::Playing) {
-		cv.wait_for(lk, chrono::milliseconds(400) ,[this]{return isPause()||isStop()||isNext();});
+		
+		auto duration = music.getDuration().asMilliseconds();
+		cv.wait_for(lk, chrono::milliseconds(duration) ,[this]{return isPause()||isStop()||isNext();});
+
 		if(isPause()) {
 			music.pause();
 			cv.wait(lk, [this]{return !isPause();});
