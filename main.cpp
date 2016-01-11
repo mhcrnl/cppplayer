@@ -37,6 +37,10 @@ void chooseAction(char c, Song* song) {
 	switch(c) {
 		case 'q':
 		case 'Q': 
+			if(song->isPause()) {
+				song->setPause(false);
+				cv.notify_one();
+			}
 			song->setStop(1); 
 			cv.notify_one();
 			break;
