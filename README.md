@@ -17,7 +17,7 @@ Este último no es necesario pero es útil si se va a compilar múltiples veces.
 
 Para ejecutarlo en modo cliente se le tiene que pasar un argumento el cual 
 debe ser el directorio donde se encuentren las canciones. 
-Presionando la *q/Q* se sale del programa, presionando *p/P* se pause, y *n/N* se salta a la siguiente cancion
+Presionando la *q/Q* se sale del programa, presionando *p/P* se pause, *<* para saltar a la canción anterior y *n/N* se salta a la siguiente cancion
 Por ejemplo
 > player++ ~/Music
 
@@ -33,5 +33,6 @@ Por ejemplo
 
 > player++ q          #cerrara el programa 
 
+> player++ <          #saltar a la canción anterior
 
 
