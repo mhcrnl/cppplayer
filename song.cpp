@@ -17,10 +17,15 @@ void Song::Reproduce(path song, T& music) {
 	std::cout << "Playing: " << song/*.stem()*/.c_str() << std::endl;
 	music.play();
 
+	auto offset = 0;
 	unique_lock<std::mutex> lk(cv_m);
 	while( !isNext() && !isStop() && music.getStatus() == sf::Music::Playing) {
-		
-		auto duration = music.getDuration().asMilliseconds();
+
+		if(song.extension() != path(".mp3")) offset = music.getPlayingOffset().asMilliseconds();
+		auto duration = music.getDuration().asMilliseconds() - offset;
+
+		std::cout << "Sleeping " << duration/1000 << " seconds" << endl;
+
 		cv.wait_for(lk, chrono::milliseconds(duration) ,[this]{return isPause()||isStop()||isNext();});
 
 		if(isPause()) {
