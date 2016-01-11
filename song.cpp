@@ -19,14 +19,27 @@ void Song::Reproduce(path song, T& music) {
 
 	auto offset = 0;
 	unique_lock<std::mutex> lk(cv_m);
-	while( !isNext() && !isStop() && music.getStatus() == sf::Music::Playing) {
 
+	//loop until we have to change the song
+	//Note: we supose that sf::Music::Playing == sf::mp3::Playing
+	while( !isPrevious() && !isNext() && !isStop() && music.getStatus() == sf::Music::Playing) {
+
+		//Calculate how many milliseconds we have to sleep for finish the song
 		offset = music.getPlayingOffset().asMilliseconds();
 		auto duration = music.getDuration().asMilliseconds() - offset;
 
-		std::cout << "Sleeping " << duration/1000 << " seconds" << endl;
+		if(duration < 0) {
+			cerr << "What?! The total duration is " << music.getDuration().asMilliseconds() 
+				 << "and the offset is " << offset << endl;
 
-		cv.wait_for(lk, chrono::milliseconds(duration) ,[this]{return isPause()||isStop()||isNext();});
+			duration = 1;
+		}
+
+		std::cout << "Sleeping " << duration << " milliseconds" << endl;
+
+		//Wait until we have something to do or until the song finish
+		cv.wait_for(lk, chrono::milliseconds(duration) , 
+				[this]{return isPrevious()||isPause()||isStop()||isNext();});
 
 		if(isPause()) {
 			music.pause();
@@ -50,7 +63,11 @@ void Song::setStop(bool b) {
 void Song::setNext(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
 	next = b;
+}
 
+void Song::setPrevious(bool b) {
+	lock_guard<mutex> song_guard(song_mutex);
+	previous = b;
 }
 
 void Song::setPause(bool b) {
@@ -66,6 +83,11 @@ bool Song::isStop() const {
 bool Song::isNext() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return next;
+}
+
+bool Song::isPrevious() const{
+	lock_guard<mutex> song_guard(song_mutex);
+	return previous;
 }
 
 bool Song::isPause() const {

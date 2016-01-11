@@ -26,10 +26,16 @@ void getSongList(path p, vector<path>& songList) {
 }
 
 void PlayList(Song* song, const vector<path>& songList) {
-	for(auto& s : songList) {
+	for(auto s = songList.begin(); s != songList.end(); ++s) {
 		if(song->isStop())	return;
 		if(song->isNext())	song->setNext(0);
-		song->Play(s);
+		
+		song->Play(*s);
+		
+		if(song->isPrevious()) {
+			song->setPrevious(0);
+			s-=2;		
+		}
 	}
 }
 
@@ -53,6 +59,10 @@ void chooseAction(char c, Song* song) {
 		case 'P': 
 			if(song->isPause()) song->setPause(0); 
 			else song->setPause(1);
+			cv.notify_one();
+			break;
+		case '<':
+			song->setPrevious(1);
 			cv.notify_one();
 	}
 }
