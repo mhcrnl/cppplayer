@@ -27,8 +27,11 @@ mp3::~mp3()
 }
 
 sf::Time mp3::getDuration() {
-    //TODO;
-    return sf::Time(sf::seconds(0.5f));
+    long rate;
+    int channels, encoding;
+    mpg123_getformat(myHandle, &rate, &channels, &encoding);
+    long duration = 1000*mpg123_length(myHandle)/rate; 
+    return sf::Time(sf::milliseconds(duration));
 }
 
 bool mp3::openFromFile(const std::string& filename)

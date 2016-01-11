@@ -21,7 +21,7 @@ void Song::Reproduce(path song, T& music) {
 	unique_lock<std::mutex> lk(cv_m);
 	while( !isNext() && !isStop() && music.getStatus() == sf::Music::Playing) {
 
-		if(song.extension() != path(".mp3")) offset = music.getPlayingOffset().asMilliseconds();
+		offset = music.getPlayingOffset().asMilliseconds();
 		auto duration = music.getDuration().asMilliseconds() - offset;
 
 		std::cout << "Sleeping " << duration/1000 << " seconds" << endl;
