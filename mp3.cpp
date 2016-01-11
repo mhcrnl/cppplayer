@@ -26,12 +26,8 @@ mp3::~mp3()
     mpg123_exit();
 }
 
-sf::Time mp3::getDuration() {
-    long rate;
-    int channels, encoding;
-    mpg123_getformat(myHandle, &rate, &channels, &encoding);
-    long duration = 1000*mpg123_length(myHandle)/rate; 
-    return sf::Time(sf::milliseconds(duration));
+sf::Time mp3::getDuration() const{
+    return myDuration;
 }
 
 bool mp3::openFromFile(const std::string& filename)
@@ -52,7 +48,6 @@ bool mp3::openFromFile(const std::string& filename)
         return false;
     }
 
-
     mpg123_param(myHandle, MPG123_RESYNC_LIMIT, -1, 0); 
 
 
@@ -62,13 +57,6 @@ bool mp3::openFromFile(const std::string& filename)
         return false;
     }
 
-    long rate = 0;
-    int  channels = 0, encoding = 0;
-    if (mpg123_getformat(myHandle, &rate, &channels, &encoding) != MPG123_OK)
-    {
-        std::cerr << "Failed to get format information for 464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << filename << "464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << std::endl;
-        return false;
-    }
 
     myBufferSize = mpg123_outblock(myHandle);
     myBuffer = new unsigned char[myBufferSize];
@@ -77,6 +65,25 @@ bool mp3::openFromFile(const std::string& filename)
         std::cerr << "Failed to reserve memory for decoding one frame for 464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << filename << "464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << std::endl;
         return false;
     }
+
+    /*
+    //This should improve myDuration calculation, but generates frankenstein streams
+    //Warning: Real sample count 9505152 differs from given gapless sample count -1152. Frankenstein stream
+    
+    if(mpg123_scan(myHandle) != MPG123_OK) {
+        std::cerr << "Failed when scanning: " << mpg123_plain_strerror(err) << std::endl;
+        return false;
+    }*/
+
+    long rate = 0;
+    int  channels = 0, encoding = 0;
+    if (mpg123_getformat(myHandle, &rate, &channels, &encoding) != MPG123_OK)
+    {
+        std::cerr << "Failed to get format information for 464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << filename << "464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << std::endl;
+        return false;
+    }
+
+    myDuration = sf::Time(sf::milliseconds(1 + 1000*mpg123_length(myHandle)/rate)); 
 
     initialize(channels, rate);
 

@@ -12,7 +12,7 @@ public :
     mp3();
     ~mp3();
 
-    sf::Time getDuration();
+    sf::Time getDuration() const;
     bool openFromFile(const std::string& filename);
 
 protected :
@@ -20,6 +20,7 @@ protected :
     void onSeek(sf::Time timeOffset);
 
 private :
+	sf::Time 			myDuration;
     mpg123_handle*      myHandle;
     size_t              myBufferSize;
     unsigned char*      myBuffer;
