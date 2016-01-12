@@ -17,8 +17,9 @@ void Song::Reproduce(path song, T& music) {
 	std::cout << "Playing: " << song/*.stem()*/.c_str() << std::endl;
 	music.play();
 
-	auto offset = 0;
+	auto offset = 0, duration = music.getDuration().asMilliseconds();
 	unique_lock<std::mutex> lk(cv_m);
+
 
 	//loop until we have to change the song
 	//Note: we supose that sf::Music::Playing == sf::mp3::Playing
@@ -26,20 +27,19 @@ void Song::Reproduce(path song, T& music) {
 
 		//Calculate how many milliseconds we have to sleep for finish the song
 		offset = music.getPlayingOffset().asMilliseconds();
-		auto duration = music.getDuration().asMilliseconds() - offset;
+		auto sleep_time = duration - offset;
 
-		if(duration < 0) {
-			cerr << "What?! The total duration is " << music.getDuration().asMilliseconds() 
-				 << "and the offset is " << offset << endl;
+		if(sleep_time < 0) {
+			cerr << "What?! The total duration is " << duration 
+				 << " and the offset is " << offset << endl;
 
-			duration = 1;
+			sleep_time = offset - sleep_time;
 		}
 
-		std::cout << "Sleeping " << duration << " milliseconds" << endl;
+		std::cout << "Sleeping " << sleep_time << " milliseconds" << endl;
 
 		//Wait until we have something to do or until the song finish
-		cv.wait_for(lk, chrono::milliseconds(duration) , 
-				[this]{return isPrevious()||isPause()||isStop()||isNext();});
+		cv.wait_for(lk, chrono::milliseconds(sleep_time), [this]{return isSomething();});
 
 		if(isPause()) {
 			music.pause();
@@ -75,6 +75,11 @@ void Song::setPause(bool b) {
 	pause = b;
 }
 
+void Song::setStatus(bool b) {
+	lock_guard<mutex> song_guard(song_mutex);
+	status = b;
+}
+
 bool Song::isStop() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return stop;
@@ -93,4 +98,13 @@ bool Song::isPrevious() const{
 bool Song::isPause() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return pause;
+}
+
+bool Song::isStatus() const {
+	lock_guard<mutex> song_guard(song_mutex);
+	return status;
+}
+
+inline bool Song::isSomething() const {
+	return isStop()||isNext()||isPrevious()||isPause()||isStatus();
 }

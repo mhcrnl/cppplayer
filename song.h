@@ -10,18 +10,20 @@ extern mutex cv_m;
 
 class Song {
 	public:
-		Song() : stop(0), next(0), pause(0),  previous(0), play(0){};
+		Song() : stop(0), next(0), pause(0),  previous(0), play(0), status(0){};
 		void Play(path song);
 		void setStop(bool);
 		void setNext(bool);
 		void setPrevious(bool);
 		void setPause(bool);
+		void setStatus(bool);
 		bool isStop() const;
 		bool isNext() const;
 		bool isPrevious() const;
 		bool isPause() const;
+		bool isStatus() const;
 	private:
-		void checkPlay();
+		inline bool isSomething() const;
 		template <typename T>
 		void Reproduce(path song, T& music);
 		bool stop;
@@ -29,6 +31,7 @@ class Song {
 		bool pause;
 		bool previous;
 		bool play;
+		bool status;
 		sf::Music music;
 		sfe::mp3 mp3music;
 };
