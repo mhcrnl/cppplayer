@@ -17,7 +17,7 @@ Este último no es necesario pero es útil si se va a compilar múltiples veces.
 
 Para ejecutarlo en modo cliente se le tiene que pasar un argumento el cual 
 debe ser el directorio donde se encuentren las canciones. 
-Presionando la *q/Q* se sale del programa, presionando *p/P* se pause, *<* para saltar a la canción anterior y *n/N* se salta a la siguiente cancion
+Presionando la *q* se sale del programa, presionando *p* se pause, *b* para saltar a la canción anterior y *n* se salta a la siguiente cancion
 Por ejemplo
 > player++ ~/Music
 
@@ -33,6 +33,7 @@ Por ejemplo
 
 > player++ q          #cerrara el programa 
 
-> player++ "<"          #saltar a la canción anterior
+> player++ b          #saltar a la canción anterior
 
+La configuración de las teclas y carpetas esta en el archivo **config.h**
 
