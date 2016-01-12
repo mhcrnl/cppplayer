@@ -33,7 +33,7 @@ void Song::Reproduce(path song, T& music) {
 			cerr << "What?! The total duration is " << duration 
 				 << " and the offset is " << offset << endl;
 
-			sleep_time = offset - sleep_time;
+			sleep_time = offset - duration;
 		}
 
 		std::cout << "Sleeping " << sleep_time << " milliseconds" << endl;
