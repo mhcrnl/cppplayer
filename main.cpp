@@ -12,6 +12,7 @@
 
 #include "song.h"
 #include "utils.h"
+#include "config.h"
 
 using namespace boost::filesystem;
 using namespace std;
@@ -41,8 +42,7 @@ void PlayList(Song* song, const vector<path>& songList) {
 
 void chooseAction(char c, Song* song) {
 	switch(c) {
-		case 'q':
-		case 'Q': 
+		case Key::Quit:
 			if(song->isPause()) {
 				song->setPause(false);
 				cv.notify_one();
@@ -50,19 +50,21 @@ void chooseAction(char c, Song* song) {
 			song->setStop(1); 
 			cv.notify_one();
 			break;
-		case 'n':
-		case 'N': 
+		case Key::Next: 
 			song->setNext(1); 
 			cv.notify_one();
 			break;
-		case 'p':
-		case 'P': 
+		case Key::Pause:
 			if(song->isPause()) song->setPause(0); 
 			else song->setPause(1);
 			cv.notify_one();
 			break;
-		case '<':
+		case Key::Previous:
 			song->setPrevious(1);
+			cv.notify_one();
+			break;
+		case Key::Status:
+			song->setStatus(1);
 			cv.notify_one();
 	}
 }
@@ -80,7 +82,6 @@ int main(int argc, char* argv[])
 		}
 		path p(argv[1]);
 		if(is_directory(p)) {
-			if(daemon) mkfifo(fpipe, 0666);
 			getSongList(p, songList);
 		} else {
 			int fd = open(fpipe, O_WRONLY);
@@ -89,7 +90,7 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 	} else {
-		getSongList(".", songList);
+		getSongList(dir, songList);
 	}
 
 	random_device rd;
@@ -103,6 +104,7 @@ int main(int argc, char* argv[])
 			chooseAction(c, song);
 		}
 	} else {
+		mkfifo(fpipe, 0666);
 		song->setPause(1);
 		while(!song->isStop()) {
 			int fd = open(fpipe, O_RDONLY);
@@ -111,9 +113,8 @@ int main(int argc, char* argv[])
 			close(fd);
 			chooseAction(c, song);
 		}
+		unlink(fpipe);
 	}
-
-	if(daemon) unlink(fpipe);
 
 	mplayer.join();
 	delete song;
