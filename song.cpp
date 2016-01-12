@@ -15,25 +15,32 @@ void Song::Reproduce(path song, T& music) {
 		return;
 
 	std::cout << "Playing: " << song/*.stem()*/.c_str() << std::endl;
-	music.play();
-
+	
 	auto offset = 0, duration = music.getDuration().asMilliseconds();
-	unique_lock<std::mutex> lk(cv_m);
+	auto sleep_time = duration;
 
+	music.play();
+	unique_lock<std::mutex> lk(cv_m);
 
 	//loop until we have to change the song
 	//Note: we supose that sf::Music::Playing == sf::mp3::Playing
 	while( !isPrevious() && !isNext() && !isStop() && music.getStatus() == sf::Music::Playing) {
 
+
+		auto prev_sleep = sleep_time;
 		//Calculate how many milliseconds we have to sleep for finish the song
 		offset = music.getPlayingOffset().asMilliseconds();
-		auto sleep_time = duration - offset;
+		sleep_time = duration - offset;
+
+		//Workaround
+		if(sleep_time > prev_sleep) {
+			break;
+		}
+
 
 		if(sleep_time < 0) {
-			cerr << "What?! The total duration is " << duration 
-				 << " and the offset is " << offset << endl;
-
-			sleep_time = offset - duration;
+			//It should never happen
+			throw logic_error("Playing offset is greater than total length");
 		}
 
 		std::cout << "Sleeping " << sleep_time << " milliseconds" << endl;
