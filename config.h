@@ -4,6 +4,7 @@ enum Key {
 	Pause 		= 'p',	//Pause music
 	Previous	= 'b',	//Jump previous song
 	Status		= 's',
+	Filter		= 'f',	//Filter songs
 };
 
 //Default directory where search

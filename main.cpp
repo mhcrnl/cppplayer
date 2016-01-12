@@ -69,6 +69,14 @@ void chooseAction(char c, Song* song) {
 	}
 }
 
+char getChar(const char* fpipe) {
+	int fd = open(fpipe, O_RDONLY);
+	char c = 0;
+	read(fd, &c, 1);
+	close(fd);
+	return c;
+}
+
 int main(int argc, char* argv[])
 {
 	const char* fpipe = "/tmp/player++";
@@ -107,10 +115,7 @@ int main(int argc, char* argv[])
 		mkfifo(fpipe, 0666);
 		song->setPause(1);
 		while(!song->isStop()) {
-			int fd = open(fpipe, O_RDONLY);
-			char c = 0;
-			read(fd, &c, 1);
-			close(fd);
+			char c = getChar(fpipe);
 			chooseAction(c, song);
 		}
 		unlink(fpipe);

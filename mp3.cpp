@@ -50,30 +50,18 @@ bool mp3::openFromFile(const std::string& filename)
 
     mpg123_param(myHandle, MPG123_RESYNC_LIMIT, -1, 0); 
 
-
     if (mpg123_open(myHandle, filename.c_str()) != MPG123_OK)
     {
         std::cerr << mpg123_strerror(myHandle) << std::endl;
         return false;
     }
 
-
-    myBufferSize = mpg123_outblock(myHandle);
-    myBuffer = new unsigned char[myBufferSize];
-    if (!myBuffer)
-    {
-        std::cerr << "Failed to reserve memory for decoding one frame for 464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << filename << "464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << std::endl;
-        return false;
-    }
-
-    /*
-    //This should improve myDuration calculation, but generates frankenstein streams
+    //This should improve myDuration calculation, but generates frankenstein streams¿?
     //Warning: Real sample count 9505152 differs from given gapless sample count -1152. Frankenstein stream
-    
     if(mpg123_scan(myHandle) != MPG123_OK) {
         std::cerr << "Failed when scanning: " << mpg123_plain_strerror(err) << std::endl;
         return false;
-    }*/
+    }
 
     long rate = 0;
     int  channels = 0, encoding = 0;
@@ -84,6 +72,15 @@ bool mp3::openFromFile(const std::string& filename)
     }
 
     myDuration = sf::Time(sf::milliseconds(1 + 1000*mpg123_length(myHandle)/rate)); 
+
+
+    myBufferSize = mpg123_outblock(myHandle);
+    myBuffer = new unsigned char[myBufferSize];
+    if (!myBuffer)
+    {
+        std::cerr << "Failed to reserve memory for decoding one frame for 464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << filename << "464480e9ee6eb73bc2b768d7e3d7865aa432fc34quot;" << std::endl;
+        return false;
+    }
 
     initialize(channels, rate);
 
