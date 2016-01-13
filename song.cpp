@@ -16,27 +16,19 @@ void Song::Reproduce(path song, T& music) {
 
 	std::cout << "Playing: " << song/*.stem()*/.c_str() << std::endl;
 	
-	auto offset = 0, duration = music.getDuration().asMilliseconds();
-	auto sleep_time = duration;
+	auto duration = music.getDuration().asMilliseconds();
 
 	music.play();
 	unique_lock<std::mutex> lk(cv_m);
 
-	//loop until we have to change the song
-	//Note: we supose that sf::Music::Playing == sf::mp3::Playing
-	while( !isPrevious() && !isNext() && !isStop() && music.getStatus() == sf::Music::Playing) {
+	bool loop = true; 
+	//loop only if the command is Pause
+	while(loop) {
+		loop = false;
 
-
-		auto prev_sleep = sleep_time;
 		//Calculate how many milliseconds we have to sleep for finish the song
-		offset = music.getPlayingOffset().asMilliseconds();
-		sleep_time = duration - offset;
-
-		//Workaround
-		if(sleep_time > prev_sleep) {
-			break;
-		}
-
+		auto offset = music.getPlayingOffset().asMilliseconds();
+		auto sleep_time = duration - offset;
 
 		if(sleep_time < 0) {
 			//It should never happen
@@ -52,6 +44,7 @@ void Song::Reproduce(path song, T& music) {
 			music.pause();
 			cv.wait(lk, [this]{return !isPause();});
 			music.play();
+			loop = true;
 		}
 	}
 	music.stop();
