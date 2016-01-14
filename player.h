@@ -17,8 +17,8 @@ struct Key {
 
 struct Options {
 	//Name of the pipe file
-	std::string fpipe;
-	path dir;
+	std::string fpipe = "/tmp/player++";
+	path dir = ".";
 	Key k;
 };
 
