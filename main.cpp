@@ -9,5 +9,4 @@ int main(int argc, char* argv[]) {
 
 	Player p;
 	p.Initialize(argc, argv);
-	p.Run();
 }

@@ -4,10 +4,14 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <unistd.h>
+#include <cstdio>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 
 #include "utils.h"
 #include "config.h"
-#include "ui.h"
 #include "player.h"
 
 using namespace std;
@@ -75,6 +79,7 @@ void Player::Initialize(int argc, char* argv[]) {
 	}
 
 	list.Randomize();
+	Run();
 }
 
 void Player::LoadConfig() 
@@ -101,22 +106,30 @@ try {
 	throw e;	
 }
 
+char Player::GetPipeChar() {
+	int fd = open(opt.fpipe.c_str(), O_RDONLY);
+	char c = 0;
+	read(fd, &c, 1);
+	close(fd);
+	return c;
+}
+
 void Player::Run() {
 	thread mplayer(&Player::PlayList, this);
 
 	if(!daemon) {
-		UIConsole ui;
 		while(!song.isStop()) {
-			char c = ui.GetChar();
+			char c = getch();
 			chooseAction(c);
 		}
 	} else {
-		UICommand ui;
+		mkfifo(opt.fpipe.c_str(), 0666);
 		song.setPause(1);
 		while(!song.isStop()) {
-			char c = ui.GetChar();
+			char c = GetPipeChar();
 			chooseAction(c);
 		}
+		unlink(opt.fpipe.c_str());
 	}
 
 	mplayer.join();

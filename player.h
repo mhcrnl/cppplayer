@@ -31,6 +31,7 @@ class Player {
 		void Run();
 		void chooseAction(char c);
 	private:
+		char GetPipeChar();
 		bool daemon;
 		List list;
 		Song song;
