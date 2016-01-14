@@ -1,11 +1,17 @@
-enum Key { 
-	Quit 		= 'q',	//Exit program
-	Next 		= 'n',	//Jump to next song
-	Pause 		= 'p',	//Pause music
-	Previous	= 'b',	//Jump previous song
-	Status		= 's',
-	Filter		= 'f',	//Filter songs
-};
+#include <fstream>
+#include <string>
+#include <boost/program_options.hpp>
 
-//Default directory where search
-const char* dir = "."; 
+
+namespace po = boost::program_options;
+
+
+class Config {
+	public:
+		Config(std::string);
+		~Config();
+		void Read(po::options_description& desc,
+                  po::variables_map& vm);
+	private:
+		std::ifstream file;
+};
