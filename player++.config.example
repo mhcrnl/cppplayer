@@ -1,0 +1,9 @@
+pipe_name       =   /tmp/player++
+music_folder    =   /home/david/Music
+
+[Keys]
+quit        =   q
+next        =   n
+previous    =   b
+pause       =   p
+status      =   s
