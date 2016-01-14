@@ -2,9 +2,9 @@
 
 Reproductor de música sencillo pensado para uso personal.
 
-El programa usa las librerías mpg123, sfml, y boost-filesystem. En un debian 8 se pueden instalar con el siguiente comando: 
+El programa usa las librerías mpg123, sfml, y boost-filesystem, libtag, boost-program-options . En un debian 8 se pueden instalar con el siguiente comando: 
 
-**# apt-get install libmpg123-dev libsfml-dev libboost-filesystem-dev**  
+**# apt-get install libmpg123-dev libsfml-dev libboost-filesystem-dev libtag1-dev libboost-program-options-dev**  
 **# apt-get ccache**
 
 Este último no es necesario pero es útil si se va a compilar múltiples veces.
@@ -35,5 +35,4 @@ Por ejemplo
 
 > player++ b          #saltar a la canción anterior
 
-La configuración de las teclas y carpetas esta en el archivo **config.h**
-
+La configuración esta en ~/.config/player++, si el archivo no se encuentra se usan los parametros por defecto
