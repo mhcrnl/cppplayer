@@ -51,8 +51,11 @@ void Player::chooseAction(char c) {
 }
 
 void Player::Initialize(int argc, char* argv[]) {
-	LoadConfig();
-
+	try {
+		LoadConfig();
+	} catch(...) {
+		cout << "Using default config" << endl;
+	}
 	if(argc>1) {
 		//CRAP
 		if(argc>2 && *argv[2] == 'd') {
@@ -74,23 +77,28 @@ void Player::Initialize(int argc, char* argv[]) {
 	list.Randomize();
 }
 
-void Player::LoadConfig() {
+void Player::LoadConfig() 
+try {
 	string home = getenv("HOME");
-	if(!home.empty()) {
-		Config conf(home+"/.config/player++");
+	if(home.empty()) 
+		throw runtime_error("HOME env variable not found");
 
-		po::options_description desc("Options");
-	  	desc.add_options()
-	    	("pipe_name", po::value<string>(&opt.fpipe))
-	    	("music_folder", po::value<path>(&opt.dir))
-	    	("Keys.quit", po::value<char>(&opt.k.Quit))
-	    	("Keys.next", po::value<char>(&opt.k.Next))
-	    	("Keys.previous", po::value<char>(&opt.k.Previous))
-	    	("Keys.pause", po::value<char>(&opt.k.Pause))
-	    	("Keys.status", po::value<char>(&opt.k.Status));
-	 	po::variables_map vm;
-	  	conf.Read(desc, vm);
-  	}
+	Config conf(home+"/.config/player++");
+
+	po::options_description desc("Options");
+	desc.add_options()
+	    ("pipe_name", po::value<string>(&opt.fpipe))
+	    ("music_folder", po::value<path>(&opt.dir))
+	    ("Keys.quit", po::value<char>(&opt.k.Quit))
+	    ("Keys.next", po::value<char>(&opt.k.Next))
+		("Keys.previous", po::value<char>(&opt.k.Previous))
+		("Keys.pause", po::value<char>(&opt.k.Pause))
+		("Keys.status", po::value<char>(&opt.k.Status));
+	po::variables_map vm;
+	conf.Read(desc, vm);
+} catch(exception& e) {
+	cout << e.what() << endl;
+	throw e;	
 }
 
 void Player::Run() {

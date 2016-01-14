@@ -6,6 +6,8 @@ namespace po = boost::program_options;
 
 Config::Config(string f) {
     file.open(f);
+    if(!file.is_open())
+      throw runtime_error("File "+f+" could not be open");
 }
 
 Config::~Config() {
