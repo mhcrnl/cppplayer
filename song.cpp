@@ -2,6 +2,10 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
+#include <taglib/taglib.h>
+#include <taglib/tag.h>
+#include <taglib/fileref.h>
+
 #include "song.h"
 #include "utils.h"
 
@@ -10,11 +14,14 @@ mutex cv_m;
 mutex song_mutex;
 
 template <typename T>
-void Song::Reproduce(path song, T& music) {
+void Song::Reproduce(T& music) {
 	if(!music.openFromFile(song.c_str()))
 		return;
+	
+	TagLib::FileRef f(song.c_str());
 
-	std::cout << "Playing: " << song/*.stem()*/.c_str() << std::endl;
+	cout << "Playing: " << f.tag()->title() << endl;
+	cout << "Artist: " << f.tag()->artist() << endl << endl;
 	
 	auto duration = music.getDuration().asMilliseconds();
 
@@ -35,7 +42,7 @@ void Song::Reproduce(path song, T& music) {
 			throw logic_error("Playing offset is greater than total length");
 		}
 
-		std::cout << "Sleeping " << sleep_time << " milliseconds" << endl;
+		//std::cout << "Sleeping " << sleep_time << " milliseconds" << endl;
 
 		//Wait until we have something to do or until the song finish
 		cv.wait_for(lk, chrono::milliseconds(sleep_time), [this]{return isSomething();});
@@ -50,9 +57,10 @@ void Song::Reproduce(path song, T& music) {
 	music.stop();
 }
 
-void Song::Play(path song) {
-	if(song.extension() == path(".mp3")) Reproduce(song, mp3music);
-	else	Reproduce(song, music);
+void Song::Play(path s) {
+	song = s;
+	if(song.extension() == path(".mp3")) Reproduce(mp3music);
+	else	Reproduce(music);
 }
 
 void Song::setStop(bool b) {

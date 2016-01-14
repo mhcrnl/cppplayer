@@ -25,13 +25,14 @@ class Song {
 	private:
 		inline bool isSomething() const;
 		template <typename T>
-		void Reproduce(path song, T& music);
+		void Reproduce(T& music);
 		bool stop;
 		bool next;
 		bool pause;
 		bool previous;
 		bool play;
 		bool status;
+		path song;
 		sf::Music music;
 		sfe::mp3 mp3music;
 };
