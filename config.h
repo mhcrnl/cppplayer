@@ -2,16 +2,13 @@
 #include <string>
 #include <boost/program_options.hpp>
 
-
-namespace po = boost::program_options;
-
+using namespace boost::program_options;
 
 class Config {
 	public:
-		Config(std::string);
+		void Load(std::string);
 		~Config();
-		void Read(po::options_description& desc,
-                  po::variables_map& vm);
+		void Read(options_description& desc);
 	private:
 		std::ifstream file;
 };

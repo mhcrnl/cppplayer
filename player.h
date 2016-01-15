@@ -6,13 +6,18 @@
 
 using namespace boost::filesystem;
 
-
 struct Key {
-	char Quit = 'q';
-	char Next = 'n';
-	char Previous = 'b';
-	char Pause = 'p';
-	char Status = 's';
+	char quit 		= 'q';
+	char next 		= 'n';
+	char previous 	= 'b';
+	char pause 		= 'p';
+	char status 	= 's';
+	char filter		= 'f';
+	struct {
+		char artist = 'a';
+		char album 	= 'b';
+		char genre	= 'g';
+	}Filter;
 };
 
 struct Options {
@@ -28,7 +33,7 @@ class Player {
 		void PlayList();
 		void Initialize(int argc, char* argv[]);
 		void LoadConfig();
-		void Run();
+		void Run(int argc, char* argv[]);
 		void chooseAction(char c);
 	private:
 		char GetPipeChar();

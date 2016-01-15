@@ -31,24 +31,24 @@ void Player::PlayList() {
 }
 
 void Player::chooseAction(char c) {
-	if(c == opt.k.Quit) {
+	if(c == opt.k.quit) {
 		if(song.isPause()) {
 			song.setPause(false);
 			cv.notify_one();
 		}
 		song.setStop(1); 
 		cv.notify_one();
-	} else if(c == opt.k.Next) {
+	} else if(c == opt.k.next) {
 		song.setNext(1); 
 		cv.notify_one();
-	} else if(c == opt.k.Pause) {
+	} else if(c == opt.k.pause) {
 		if(song.isPause()) song.setPause(0); 
 		else song.setPause(1);
 		cv.notify_one();
-	} else if(c == opt.k.Previous) {
+	} else if(c == opt.k.previous) {
 		song.setPrevious(1);
 		cv.notify_one();
-	} else if(c == opt.k.Quit) {
+	} else if(c == opt.k.quit) {
 		song.setStatus(1);
 		cv.notify_one();
 	}
@@ -64,6 +64,7 @@ void Player::Initialize(int argc, char* argv[]) {
 		//CRAP
 		if(argc>2 && *argv[2] == 'd') {
 			daemon=true;
+			daemonize();
 		}
 		path p(argv[1]);
 		if(is_directory(p)) {
@@ -72,14 +73,13 @@ void Player::Initialize(int argc, char* argv[]) {
 			int fd = open(opt.fpipe.c_str(), O_WRONLY);
 			write(fd, argv[1], 1);
 			close(fd);
-			return;
+			exit(0);
 		}
 	} else {
 		list.LoadFrom(opt.dir);
 	}
 
 	list.Randomize();
-	Run();
 }
 
 void Player::LoadConfig() 
@@ -88,19 +88,22 @@ try {
 	if(home.empty()) 
 		throw runtime_error("HOME env variable not found");
 
-	Config conf(home+"/.config/player++");
+	Config conf;
+	conf.Load(home+"/.config/player++");
 
-	po::options_description desc("Options");
+	options_description desc("Options");
 	desc.add_options()
-	    ("pipe_name", po::value<string>(&opt.fpipe))
-	    ("music_folder", po::value<path>(&opt.dir))
-	    ("Keys.quit", po::value<char>(&opt.k.Quit))
-	    ("Keys.next", po::value<char>(&opt.k.Next))
-		("Keys.previous", po::value<char>(&opt.k.Previous))
-		("Keys.pause", po::value<char>(&opt.k.Pause))
-		("Keys.status", po::value<char>(&opt.k.Status));
-	po::variables_map vm;
-	conf.Read(desc, vm);
+	    ("pipe_name", value<string>(&opt.fpipe))
+	    ("music_folder", value<path>(&opt.dir))
+	    ("Keys.quit", value<char>(&opt.k.quit))
+	    ("Keys.next", value<char>(&opt.k.next))
+		("Keys.previous", value<char>(&opt.k.previous))
+		("Keys.pause", value<char>(&opt.k.pause))
+		("Keys.status", value<char>(&opt.k.status))
+		("Keys.filter", value<char>(&opt.k.filter))
+		("Keys.Filter.artist", value<char>(&opt.k.Filter.artist))
+		;
+	conf.Read(desc);
 } catch(exception& e) {
 	cout << e.what() << endl;
 	throw e;	
@@ -114,7 +117,8 @@ char Player::GetPipeChar() {
 	return c;
 }
 
-void Player::Run() {
+void Player::Run(int argc, char* argv[]) {
+	Initialize(argc, argv);
 	thread mplayer(&Player::PlayList, this);
 
 	if(!daemon) {
