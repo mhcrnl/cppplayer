@@ -6,7 +6,7 @@
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
 
-#include "song.h"
+#include "music.h"
 #include "utils.h"
 
 condition_variable cv;

@@ -25,7 +25,7 @@ class Song {
 	private:
 		inline bool isSomething() const;
 		template <typename T>
-		void Reproduce(T& music);
+		void Reproduce(T&);
 		bool stop;
 		bool next;
 		bool pause;
