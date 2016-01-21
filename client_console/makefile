@@ -1,15 +1,14 @@
 CXX=ccache g++
 CXXFLAGS=-std=c++11 -Wall -Wextra -pedantic 
 
-LIBS=-pthread -lsfml-system -lsfml-audio -lmpg123 -lboost_system -lboost_filesystem -lboost_program_options -ltag
+LIBS=-lboost_system -lboost_filesystem -lboost_program_options
 
-DEPS = mp3.h song.h utils.h list.h player.h config.h
-OBJ = main.o mp3.o song.o utils.o list.o player.o config.o
+DEPS = ../daemon/config.h
+OBJ = main.o ../daemon/config.o
 
 %.o: %.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
-release: clean
 release: CXXFLAGS += -O2 -msse -msse2 -mmmx -flto
 release: LIBS += -flto
 release: player++ 

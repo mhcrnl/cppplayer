@@ -5,8 +5,8 @@ using namespace std;
 
 void Config::Load(string f) {
   file.open(f);
-    /*if(!file.is_open())
-      throw runtime_error("File "+f+" could not be open");*/
+    if(!file.is_open())
+      throw runtime_error("File "+f+" could not be open");
 }
 
 Config::~Config() {
@@ -24,8 +24,8 @@ void Config::Read(options_description& desc)
 Options Config::GetConfig() {
 	Options opt;
 	string home = getenv("HOME");
-/*	if(home.empty()) 
-		throw runtime_error("HOME env variable not found");*/
+	if(home.empty()) 
+		throw runtime_error("HOME env variable not found");
 
 	Load(home+"/.config/player++");
 

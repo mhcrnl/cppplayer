@@ -11,6 +11,8 @@ enum class Action : char {
 	NEXT,
 	PREVIOUS,
 	PAUSE,
+	RESTART,
+	GET_ARTIST,
 };
 
 struct Options {

@@ -2,9 +2,6 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
-#include <taglib/taglib.h>
-#include <taglib/tag.h>
-#include <taglib/fileref.h>
 
 #include "music.h"
 #include "utils.h"
@@ -14,14 +11,13 @@ mutex cv_m;
 mutex song_mutex;
 
 template <typename T>
-void Song::Reproduce(T& music) {
+void Music::Reproduce(T& music) {
 	if(!music.openFromFile(song.c_str()))
 		return;
 	
-	TagLib::FileRef f(song.c_str());
+	
 
-	cout << "Playing: " << f.tag()->title() << endl;
-	cout << "Artist: " << f.tag()->artist() << endl << endl;
+	//cout << "Playing: " << f.tag()->title() << endl;
 	
 	auto duration = music.getDuration().asMilliseconds();
 
@@ -57,62 +53,72 @@ void Song::Reproduce(T& music) {
 	music.stop();
 }
 
-void Song::Play(path s) {
+void Music::Play(path s) {
 	song = s;
 	if(song.extension() == path(".mp3")) Reproduce(mp3music);
 	else	Reproduce(music);
 }
 
-void Song::setStop(bool b) {
+void Music::setStop(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
 	stop = b;
 }
 
-void Song::setNext(bool b) {
+void Music::setNext(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
 	next = b;
 }
 
-void Song::setPrevious(bool b) {
+void Music::setPrevious(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
 	previous = b;
 }
 
-void Song::setPause(bool b) {
+void Music::setPause(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
 	pause = b;
 }
 
-void Song::setStatus(bool b) {
+void Music::setStatus(bool b) {
 	lock_guard<mutex> song_guard(song_mutex);
 	status = b;
 }
 
-bool Song::isStop() const {
+bool Music::isStop() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return stop;
 }
 
-bool Song::isNext() const {
+bool Music::isNext() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return next;
 }
 
-bool Song::isPrevious() const{
+bool Music::isPrevious() const{
 	lock_guard<mutex> song_guard(song_mutex);
 	return previous;
 }
 
-bool Song::isPause() const {
+bool Music::isPause() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return pause;
 }
 
-bool Song::isStatus() const {
+bool Music::isStatus() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return status;
 }
 
-inline bool Song::isSomething() const {
+void Music::restart() {
+	if(song.extension() == path(".mp3")) mp3music.setPlayingOffset(sf::seconds(0));
+	else music.setPlayingOffset(sf::seconds(0));
+}
+
+TagLib::String Music::getArtist() {
+	TagLib::FileRef f(song.c_str());
+	return f.tag()->artist().toCString();
+}
+
+inline bool Music::isSomething() const {
 	return isStop()||isNext()||isPrevious()||isPause()||isStatus();
 }

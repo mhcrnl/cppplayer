@@ -17,38 +17,40 @@
 
 using namespace std;
 
-void PlayList(Song* song, List* list) {
-	auto songList = list->Get();
-	for(auto s = songList.begin(); s != songList.end(); ++s) {
-		if(song->isStop())	return;
-		if(song->isNext())	song->setNext(0);
-		song->Play(*s);
+void PlayList(Music* music, List* list) {
+	auto musicList = list->Get();
+	for(auto s = musicList.begin(); s != musicList.end(); ++s) {
+		if(music->isStop())	return;
+		if(music->isNext())	music->setNext(0);
+		music->Play(*s);
 		
-		if(song->isPrevious()) {
-			song->setPrevious(0);
+		if(music->isPrevious()) {
+			music->setPrevious(0);
 			s-=2;		
 		}
 	}
 }
 
-void chooseAction(Song& song, Action c) {
+void chooseAction(Music& music, Action c) {
 	if(c == Action::QUIT) {
-		if(song.isPause()) {
-			song.setPause(false);
+		if(music.isPause()) {
+			music.setPause(false);
 			cv.notify_one();
 		}
-		song.setStop(1); 
+		music.setStop(1); 
 		cv.notify_one();
 	} else if(c == Action::NEXT) {
-		song.setNext(1); 
+		music.setNext(1); 
 		cv.notify_one();
 	} else if(c == Action::PAUSE) {
-		if(song.isPause()) song.setPause(0); 
-		else song.setPause(1);
+		if(music.isPause()) music.setPause(0); 
+		else music.setPause(1);
 		cv.notify_one();
 	} else if(c == Action::PREVIOUS) {
-		song.setPrevious(1);
+		music.setPrevious(1);
 		cv.notify_one();
+	} else if(c == Action::RESTART) {
+		music.restart();
 	}
 }
 
@@ -62,11 +64,17 @@ Action GetPipeChar(Options opt) {
 
 
 int main(int argc, char* argv[]) {
-	daemonize();
 
 	Config conf;
-	auto opt = conf.GetConfig();
+	Options opt;
+	try {
+		opt = conf.GetConfig();
+	} catch(...) {
+		cout << "Using default values" << endl;
+	}
 
+	daemonize();
+	
 	List* list = new List;
 
 	if(argc>1) {
@@ -80,19 +88,19 @@ int main(int argc, char* argv[]) {
 
 	list->Randomize();
 
-	Song* song = new Song;
+	Music* music = new Music;
 
-	thread mplayer(PlayList, song, list);
+	thread mplayer(PlayList, music, list);
 
 	mkfifo(opt.fpipe.c_str(), 0666);
-	song->setPause(1);
-	while(!song->isStop()) {
+	music->setPause(1);
+	while(!music->isStop()) {
 		Action c = GetPipeChar(opt);
-		chooseAction(*song, c);
+		chooseAction(*music, c);
 	}
 	unlink(opt.fpipe.c_str());
 	
 	mplayer.join();
 	delete list;
-	delete song;
+	delete music;
 }
