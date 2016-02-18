@@ -1,2 +1,3 @@
-pipe_name       =   /tmp/player++
+#daemon_pipe    =   /tmp/dplayer++
+#client_pipe 	= 	/tmp/cplayer++
 music_folder    =   /home/david/Music
