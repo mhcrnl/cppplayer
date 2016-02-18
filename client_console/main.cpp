@@ -1,5 +1,7 @@
 #include <fcntl.h>
 #include <iostream>
+#include <fstream>
+#include <string>
 
 #include "../daemon/config.h"
 
@@ -10,28 +12,42 @@ int main(int argc, char* argv[]) {
 		return -1;
 
 	Config conf;
+	string s;
 	auto opt = conf.GetConfig();
-	int fd = open(opt.fpipe.c_str(), O_WRONLY);
-	Action action = static_cast<Action>(-1);
+
+	ofstream file;
+	file.rdbuf()->pubsetbuf(0, 0); //no buffering please
+	file.open(opt.daemonpipe);
+	
+	fstream daemon(opt.clientpipe);
+
+	if(!daemon.is_open() || !file.is_open())
+		return 1;
+
 	switch(*argv[1]) {
 		case 'p': 
-			action = Action::PAUSE;
+			file.put(static_cast<char>(Action::PAUSE));
 			break;
 		case 'q':
-			action = Action::QUIT;
+			file.put(static_cast<char>(Action::QUIT));
 			break;
 		case 'b':
-			action = Action::PREVIOUS;
+			file.put(static_cast<char>(Action::PREVIOUS));
 			break;
 		case 'n':
-			action = Action::NEXT;
+			file.put(static_cast<char>(Action::NEXT));
 			break;
 		case 'r':
-			action = Action::RESTART;
+			file.put(static_cast<char>(Action::RESTART));
+			break;
+		case 'g':
+			file.put(static_cast<char>(Action::GET_ARTIST));
+			getline(daemon, s);
+			cout << s << endl;
 			break;
 		default:
 			cout << "Uknown action" << endl;
 	}
-	write(fd, &action, 1);
-	close(fd);
+	daemon.close();
+	file.close();
 }
