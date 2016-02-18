@@ -49,7 +49,9 @@ bool mp3::openFromFile(const std::string& filename)
     }
 
     mpg123_param(myHandle, MPG123_RESYNC_LIMIT, -1, 0); 
+    #ifndef DEBUG
     mpg123_param(myHandle, MPG123_ADD_FLAGS, 32 , 0); 
+    #endif
 
     if (mpg123_open(myHandle, filename.c_str()) != MPG123_OK)
     {

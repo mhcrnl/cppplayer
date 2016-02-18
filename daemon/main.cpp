@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <fstream>
 
 
 #include "utils.h"
@@ -31,7 +32,7 @@ void PlayList(Music* music, List* list) {
 	}
 }
 
-void chooseAction(Music& music, Action c) {
+void chooseAction(Music& music, Action c, Options& opt) {
 	if(c == Action::QUIT) {
 		if(music.isPause()) {
 			music.setPause(false);
@@ -50,18 +51,13 @@ void chooseAction(Music& music, Action c) {
 		music.setPrevious(1);
 		cv.notify_one();
 	} else if(c == Action::RESTART) {
-		music.restart();
+		music.setRestart(1);
+	} else if(c == Action::GET_ARTIST) {
+		fstream file(opt.clientpipe);
+		file << music.getArtist() << endl;
+		file.close();
 	}
 }
-
-Action GetPipeChar(Options opt) {
-	int fd = open(opt.fpipe.c_str(), O_RDONLY);
-	Action c;
-	read(fd, &c, 1);
-	close(fd);
-	return c;
-}
-
 
 int main(int argc, char* argv[]) {
 
@@ -73,7 +69,9 @@ int main(int argc, char* argv[]) {
 		cout << "Using default values" << endl;
 	}
 
+	#ifndef DEBUG
 	daemonize();
+	#endif
 	
 	List* list = new List;
 
@@ -92,13 +90,21 @@ int main(int argc, char* argv[]) {
 
 	thread mplayer(PlayList, music, list);
 
-	mkfifo(opt.fpipe.c_str(), 0666);
+	unlink(opt.daemonpipe.c_str()); //Delete pipes, if exist (the program exit abnormaly)
+	unlink(opt.clientpipe.c_str());
+
+	mkfifo(opt.daemonpipe.c_str(), 0666);
+	mkfifo(opt.clientpipe.c_str(), 0666);
 	music->setPause(1);
 	while(!music->isStop()) {
-		Action c = GetPipeChar(opt);
-		chooseAction(*music, c);
+		ifstream file(opt.daemonpipe);
+		Action c = static_cast<Action>(file.get());
+		chooseAction(*music, c, opt);
+		file.close();
 	}
-	unlink(opt.fpipe.c_str());
+
+	unlink(opt.daemonpipe.c_str());
+	unlink(opt.clientpipe.c_str());
 	
 	mplayer.join();
 	delete list;

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <thread>
-#include <mutex>
 #include <chrono>
 
 #include "music.h"
@@ -12,12 +11,13 @@ mutex song_mutex;
 
 template <typename T>
 void Music::Reproduce(T& music) {
-	if(!music.openFromFile(song.c_str()))
+	if(!music.openFromFile(song))
 		return;
 	
 	
-
-	//cout << "Playing: " << f.tag()->title() << endl;
+	#ifdef DEBUG
+	cout << "Playing: " << song << endl;
+	#endif
 	
 	auto duration = music.getDuration().asMilliseconds();
 
@@ -38,7 +38,9 @@ void Music::Reproduce(T& music) {
 			throw logic_error("Playing offset is greater than total length");
 		}
 
-		//std::cout << "Sleeping " << sleep_time << " milliseconds" << endl;
+		#ifdef DEBUG
+		cout << "Sleeping " << sleep_time << " milliseconds" << endl;
+		#endif
 
 		//Wait until we have something to do or until the song finish
 		cv.wait_for(lk, chrono::milliseconds(sleep_time), [this]{return isSomething();});
@@ -48,14 +50,19 @@ void Music::Reproduce(T& music) {
 			cv.wait(lk, [this]{return !isPause();});
 			music.play();
 			loop = true;
+		} else if(isRestart()) {
+			music.setPlayingOffset(sf::seconds(0));
+			setRestart(0);
 		}
 	}
 	music.stop();
 }
 
-void Music::Play(path s) {
-	song = s;
-	if(song.extension() == path(".mp3")) Reproduce(mp3music);
+void Music::Play(const path s) {
+	song_mutex.lock();
+	song = s.c_str();
+	song_mutex.unlock();
+	if(s.extension() == path(".mp3")) Reproduce(mp3music);
 	else	Reproduce(music);
 }
 
@@ -84,6 +91,11 @@ void Music::setStatus(bool b) {
 	status = b;
 }
 
+void Music::setRestart(bool b) {
+	lock_guard<mutex> song_guard(song_mutex);
+	restart = b;
+}
+
 bool Music::isStop() const {
 	lock_guard<mutex> song_guard(song_mutex);
 	return stop;
@@ -109,16 +121,23 @@ bool Music::isStatus() const {
 	return status;
 }
 
-void Music::restart() {
-	if(song.extension() == path(".mp3")) mp3music.setPlayingOffset(sf::seconds(0));
-	else music.setPlayingOffset(sf::seconds(0));
+bool Music::isRestart() const {
+	lock_guard<mutex> song_guard(song_mutex);
+	return restart;
 }
 
 TagLib::String Music::getArtist() {
-	TagLib::FileRef f(song.c_str());
-	return f.tag()->artist().toCString();
+	lock_guard<mutex> song_guard(song_mutex);
+	TagLib::FileRef f(song); //data race to fix
+	auto artist = f.tag()->artist();
+	if(artist == TagLib::String::null)
+		return TagLib::String("Unknown");
+	else
+		return f.tag()->artist();
 }
 
+
+
 inline bool Music::isSomething() const {
-	return isStop()||isNext()||isPrevious()||isPause()||isStatus();
+	return isStop()||isNext()||isPrevious()||isPause()||isStatus()||isRestart();
 }
