@@ -13,6 +13,7 @@ enum class Action : char {
 	PAUSE,
 	RESTART,
 	GET_ARTIST,
+	GET_TITLE,
 };
 
 struct Options {

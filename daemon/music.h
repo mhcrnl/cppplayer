@@ -30,6 +30,7 @@ class Music {
 		bool isStatus() const;
 		bool isRestart() const;
 		TagLib::String getArtist();
+		TagLib::String getTitle();
 	private:
 		inline bool isSomething() const;
 		template <typename T>

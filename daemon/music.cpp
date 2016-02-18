@@ -133,9 +133,18 @@ TagLib::String Music::getArtist() {
 	if(artist == TagLib::String::null)
 		return TagLib::String("Unknown");
 	else
-		return f.tag()->artist();
+		return artist;
 }
 
+TagLib::String Music::getTitle() {
+	lock_guard<mutex> song_guard(song_mutex);
+	TagLib::FileRef f(song); //data race to fix
+	auto title = f.tag()->title();
+	if(title == TagLib::String::null)
+		return TagLib::String("Unknown");
+	else
+		return title;
+}
 
 
 inline bool Music::isSomething() const {

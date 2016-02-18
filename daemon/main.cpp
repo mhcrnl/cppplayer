@@ -57,6 +57,10 @@ void chooseAction(Music& music, Action c, Options& opt) {
 		fstream file(opt.clientpipe);
 		file << music.getArtist() << endl;
 		file.close();
+	} else if(c == Action::GET_TITLE) {
+		fstream file(opt.clientpipe);
+		file << music.getTitle() << endl;
+		file.close();
 	}
 }
 

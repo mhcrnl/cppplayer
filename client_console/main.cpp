@@ -41,9 +41,19 @@ int main(int argc, char* argv[]) {
 			file.put(static_cast<char>(Action::RESTART));
 			break;
 		case 'g':
-			file.put(static_cast<char>(Action::GET_ARTIST));
-			getline(daemon, s);
-			cout << s << endl;
+			//I hate this
+			switch(*(argv[1]+1)) {
+				case 'a':
+					file.put(static_cast<char>(Action::GET_ARTIST));
+					getline(daemon, s);
+					cout << s << endl;
+					break;
+				case 't':
+					file.put(static_cast<char>(Action::GET_TITLE));
+					getline(daemon, s);
+					cout << s << endl;
+					break;
+			}
 			break;
 		default:
 			cout << "Uknown action" << endl;
