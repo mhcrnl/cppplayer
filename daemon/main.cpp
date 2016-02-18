@@ -52,6 +52,7 @@ void chooseAction(Music& music, Action c, Options& opt) {
 		cv.notify_one();
 	} else if(c == Action::RESTART) {
 		music.setRestart(1);
+		cv.notify_one();
 	} else if(c == Action::GET_ARTIST) {
 		fstream file(opt.clientpipe);
 		file << music.getArtist() << endl;
