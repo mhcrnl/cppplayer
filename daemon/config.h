@@ -17,7 +17,8 @@ enum class Action : char {
 
 struct Options {
 	//Name of the pipe file
-	std::string fpipe = "/tmp/player++";
+	std::string daemonpipe = "/tmp/dplayer++";
+	std::string clientpipe = "/tmp/cplayer++";
 	path dir = ".";
 };
 

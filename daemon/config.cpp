@@ -31,7 +31,8 @@ Options Config::GetConfig() {
 
 	options_description desc("Options");
 	desc.add_options()
-	    ("pipe_name", value<string>(&opt.fpipe))
+	    ("daemon_pipe", value<string>(&opt.daemonpipe))
+	    ("client_pipe", value<string>(&opt.clientpipe))
 	    ("music_folder", value<path>(&opt.dir))
 		;
 	Read(desc);
