@@ -5,7 +5,7 @@ Reproductor de música sencillo pensado para uso personal.
 El programa usa las librerías mpg123, sfml, TagLib boost-program-options y boost-filesystem. En un debian 8 se pueden instalar con el siguiente comando: 
 
 **# apt-get install libmpg123-dev libsfml-dev libboost-filesystem-dev libboost-program-options-dev libtag1-dev**  
-**# apt-get ccache**
+**# apt-get install ccache**
 
 Este último no es necesario pero es útil si se va a compilar múltiples veces.
 
