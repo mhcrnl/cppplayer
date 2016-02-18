@@ -9,7 +9,8 @@ OBJ = main.o ../daemon/config.o
 %.o: %.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
-release: CXXFLAGS += -O2 -msse -msse2 -mmmx -flto
+release: clean
+release: CXXFLAGS += -O3 -flto
 release: LIBS += -flto
 release: player++ 
 

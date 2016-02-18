@@ -9,12 +9,13 @@ OBJ = main.o mp3.o music.o utils.o list.o config.o
 %.o: %.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
-release: CXXFLAGS += -O2 -msse -msse2 -mmmx -flto
+release: clean
+release: CXXFLAGS += -O3 -flto
 release: LIBS += -flto
 release: player++ 
 
 debug: clean
-debug: CXXFLAGS += -ggdb -Og -fsanitize=thread
+debug: CXXFLAGS += -ggdb -Og -fsanitize=thread -DDEBUG
 debug: LIBS += -fsanitize=thread
 debug: player++
 
