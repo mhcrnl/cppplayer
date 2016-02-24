@@ -34,6 +34,7 @@ Options Config::GetConfig() {
 	    ("daemon_pipe", value<string>(&opt.daemonpipe))
 	    ("client_pipe", value<string>(&opt.clientpipe))
 	    ("music_folder", value<path>(&opt.dir))
+	    ("auto_start", value<bool>(&opt.autostart))
 		;
 	Read(desc);
 	return opt;

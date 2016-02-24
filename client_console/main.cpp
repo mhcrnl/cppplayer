@@ -53,6 +53,11 @@ int main(int argc, char* argv[]) {
 					getline(daemon, s);
 					cout << s << endl;
 					break;
+				case 'f': 
+					file.put(static_cast<char>(Action::GET_FILE));
+					getline(daemon, s);
+					cout << s << endl;
+					break;
 			}
 			break;
 		default:

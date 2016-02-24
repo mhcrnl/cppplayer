@@ -128,7 +128,7 @@ bool Music::isRestart() const {
 
 TagLib::String Music::getArtist() {
 	lock_guard<mutex> song_guard(song_mutex);
-	TagLib::FileRef f(song); //data race to fix
+	TagLib::FileRef f(song);
 	auto artist = f.tag()->artist();
 	if(artist == TagLib::String::null)
 		return TagLib::String("Unknown");
@@ -138,12 +138,16 @@ TagLib::String Music::getArtist() {
 
 TagLib::String Music::getTitle() {
 	lock_guard<mutex> song_guard(song_mutex);
-	TagLib::FileRef f(song); //data race to fix
+	TagLib::FileRef f(song);
 	auto title = f.tag()->title();
 	if(title == TagLib::String::null)
 		return TagLib::String("Unknown");
 	else
 		return title;
+}
+
+const char* Music::getFile() const {
+	return song;
 }
 
 

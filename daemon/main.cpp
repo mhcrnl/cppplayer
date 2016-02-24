@@ -18,6 +18,8 @@
 
 using namespace std;
 
+//TODO cachear lista de canciones, usar data de modificacion y recachear cuando esta varie
+
 void PlayList(Music* music, List* list) {
 	auto musicList = list->Get();
 	for(auto s = musicList.begin(); s != musicList.end(); ++s) {
@@ -61,6 +63,10 @@ void chooseAction(Music& music, Action c, Options& opt) {
 		fstream file(opt.clientpipe);
 		file << music.getTitle() << endl;
 		file.close();
+	} else if(c == Action::GET_FILE) {
+		fstream file(opt.clientpipe);
+		file << music.getFile() << endl;
+		file.close();
 	}
 }
 
@@ -100,7 +106,10 @@ int main(int argc, char* argv[]) {
 
 	mkfifo(opt.daemonpipe.c_str(), 0666);
 	mkfifo(opt.clientpipe.c_str(), 0666);
-	music->setPause(1);
+
+	if(!opt.autostart)
+		music->setPause(1);
+	
 	while(!music->isStop()) {
 		ifstream file(opt.daemonpipe);
 		Action c = static_cast<Action>(file.get());
