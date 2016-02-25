@@ -18,8 +18,6 @@
 
 using namespace std;
 
-//TODO cachear lista de canciones, usar data de modificacion y recachear cuando esta varie
-
 void PlayList(Music* music, List* list) {
 	auto musicList = list->Get();
 	for(auto s = musicList.begin(); s != musicList.end(); ++s) {
@@ -86,14 +84,21 @@ int main(int argc, char* argv[]) {
 	
 	List* list = new List;
 
-	if(argc>1) {
-		path p(argv[1]);
-		if(is_directory(p)) {
-			list->LoadFrom(p);
+	if(!list->LoadCache(opt.cachefile)) {
+		#ifdef DEBUG
+		cout << "No cache found" << endl;
+		#endif
+		if(argc>1) {
+			path p(argv[1]);
+			if(is_directory(p)) {
+				list->LoadFrom(p);
+			}
+		} else {
+			list->LoadFrom(opt.dir);
 		}
-	} else {
-		list->LoadFrom(opt.dir);
+		list->SaveCache(opt.cachefile);
 	}
+
 
 	list->Randomize();
 

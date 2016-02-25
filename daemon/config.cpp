@@ -35,6 +35,7 @@ Options Config::GetConfig() {
 	    ("client_pipe", value<string>(&opt.clientpipe))
 	    ("music_folder", value<path>(&opt.dir))
 	    ("auto_start", value<bool>(&opt.autostart))
+	    ("cache_file", value<string>(&opt.cachefile))
 		;
 	Read(desc);
 	return opt;

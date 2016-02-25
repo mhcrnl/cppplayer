@@ -18,5 +18,5 @@ En el archivo **player++.config.example** hay una configuración de ejemplo. Par
 En la carpeta "client_console" en el archivo main.cpp se pueden ver los comandos usables
 
 ### Siguientes cosas a hacer
-+ Cache para no tener que recorrer todo el directorio en busca de música (aunque en mi PC recorre las 3 mil canciones en 1 segundo o 2)
++ Mejorar el sistema de cache
 + Filtrar por artista

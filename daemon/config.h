@@ -21,6 +21,7 @@ struct Options {
 	//Name of the pipe file
 	std::string daemonpipe = "/tmp/dplayer++";
 	std::string clientpipe = "/tmp/cplayer++";
+	std::string cachefile  = "/tmp/player++.cache";
 	path dir = ".";
 	bool autostart = false;
 };
