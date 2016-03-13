@@ -84,18 +84,18 @@ int main(int argc, char* argv[]) {
 	
 	List* list = new List;
 
-	if(!list->LoadCache(opt.cachefile)) {
-		#ifdef DEBUG
-		cout << "No cache found" << endl;
-		#endif
-		if(argc>1) {
-			path p(argv[1]);
-			if(is_directory(p)) {
-				list->LoadFrom(p);
-			}
-		} else {
-			list->LoadFrom(opt.dir);
+	
+	#ifdef DEBUG
+	cout << "No cache found" << endl;
+	#endif
+	
+	if(argc>1) {
+		path p(argv[1]);
+		if(is_directory(p)) {
+			list->LoadFrom(p);
 		}
+	} else if(!list->LoadCache(opt.cachefile)) {
+		list->LoadFrom(opt.dir);
 		list->SaveCache(opt.cachefile);
 	}
 
