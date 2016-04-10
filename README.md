@@ -20,3 +20,6 @@ En la carpeta "client_console" en el archivo main.cpp se pueden ver los comandos
 ### Siguientes cosas a hacer
 + Mejorar el sistema de cache
 + Filtrar por artista
++ Mejorar el sistema de randomización
++ Crear lista de favoritos
++ Guardar una estructura de todas las canciones para agilizar las busquedas
