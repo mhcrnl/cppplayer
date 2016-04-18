@@ -1,4 +1,4 @@
-CXX=ccache g++
+CXX=g++
 CXXFLAGS=-std=c++11 -Wall -Wextra -pedantic 
 
 LIBS=-pthread -lsfml-system -lsfml-audio -lmpg123 -lboost_system -lboost_filesystem -lboost_program_options -ltag
