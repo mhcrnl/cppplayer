@@ -3,8 +3,8 @@ CXXFLAGS=-std=c++11 -Wall -Wextra -pedantic
 
 LIBS=-pthread -lsfml-system -lsfml-audio -lmpg123 -lboost_system -lboost_filesystem -lboost_program_options -ltag
 
-DEPS = manager.h config.h
-OBJ = main.o manager.o config.o
+DEPS = manager.h config.h music.h
+OBJ = main.o manager.o config.o music.o
 
 %.o: %.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
