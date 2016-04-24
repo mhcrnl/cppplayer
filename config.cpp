@@ -1,12 +1,11 @@
-#pragma once
-
 #include "config.h"
 #include <fstream>
+#include <iostream>
 
 void Config::Load() {
 	std::string home = getenv("HOME");
 	if(home.empty()) {
-		throw runtime_error("HOME env variable not found, exiting");
+		throw std::runtime_error("HOME env variable not found, exiting");
 	}
 
 	std::ifstream file(home+"/.config/player++");
@@ -20,10 +19,10 @@ void Config::Load() {
     file.close();
 }
 
-std::string GetDaemonPipe() const {
+std::string Config::GetDaemonPipe() const {
   return opt.daemonpipe;
 }
 
-std::string GetClientPipe() const {
+std::string Config::GetClientPipe() const {
   return opt.clientpipe;
 }

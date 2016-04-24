@@ -1,5 +1,11 @@
 #include <string>
 
+#include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
+
+using namespace boost::program_options;
+using namespace boost::filesystem;
+
 class Config {
 public:
 	void Load();

@@ -1,5 +1,7 @@
 #include "manager.h"
 
+#include <sys/stat.h>
+
 Manager::Manager() {
 	//Delete pipes, if exist (the program exit abnormaly)
 	unlink(conf.GetDaemonPipe().c_str()); 
