@@ -1,7 +1,6 @@
 #pragma once
 
 #include "config.h"
-#include <string>
 #include <fstream>
 
 void Config::Load() {
@@ -19,4 +18,12 @@ void Config::Load() {
     //Load config file
 
     file.close();
+}
+
+std::string GetDaemonPipe() const {
+  return opt.daemonpipe;
+}
+
+std::string GetClientPipe() const {
+  return opt.clientpipe;
 }
