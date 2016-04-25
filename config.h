@@ -13,9 +13,15 @@ public:
 	std::string GetClientPipe() const;
 private:
 	struct Options {
+		//Pipe used by the daemon to write to client
 		std::string daemonpipe = "/tmp/dplayer++";
+
+		//Pipe used by the client to write to daemon
 		std::string clientpipe = "/tmp/cplayer++";
+
 		path dir = ".";
+
+		//If true, change automatically Status::Stoped to Status::Playing
 		bool autostart = false;
 	}opt;
 };
