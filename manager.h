@@ -1,6 +1,9 @@
 #pragma once
 
 #include "config.h"
+#include "music.h"
+#include "commands.h"
+
 
 //The main work is done in this class
 //It process the commands from the client
@@ -14,7 +17,9 @@ public:
 	//Start the main loop
 	void StartServer();
 private:
-	//Music music;
+	Command ReadCommand();
+	//void 
+	Music music;
 	//MusicList list;
 	//Database db;
 	Config conf;
