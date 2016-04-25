@@ -27,6 +27,6 @@ std::string Config::GetClientPipe() const {
   return opt.clientpipe;
 }
 
-void Config::GetAutostart() const {
-  return autostart;
+bool Config::GetAutostart() const {
+  return opt.autostart;
 }
