@@ -11,6 +11,7 @@ public:
 	void Load();
 	std::string GetDaemonPipe() const;
 	std::string GetClientPipe() const;
+	bool GetAutostart() const;
 private:
 	struct Options {
 		//Pipe used by the daemon to write to client

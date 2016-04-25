@@ -11,7 +11,7 @@ class Music {
 public:
 	Music();
 	Status GetStatus() const;
-
+	void SetStatus(Status s);
 private:
 	Status status;	
 };

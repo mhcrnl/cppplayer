@@ -18,6 +18,7 @@ public:
 	void StartServer();
 private:
 	Command ReadCommand();
+	void ExecuteCommand(Command c);
 	//void 
 	Music music;
 	//MusicList list;

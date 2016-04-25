@@ -26,3 +26,7 @@ std::string Config::GetDaemonPipe() const {
 std::string Config::GetClientPipe() const {
   return opt.clientpipe;
 }
+
+void Config::GetAutostart() const {
+  return autostart;
+}

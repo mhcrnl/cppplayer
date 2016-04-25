@@ -20,8 +20,13 @@ Manager::~Manager() {
 }
 
 void Manager::StartServer() {
+
+	if(conf.GetAutostart()) {
+		music.SetStatus(Status::Playing);
+	}
+
 	while(music.GetStatus() != Status::Exit) {
-		auto command = ReadCommand();
+		ExecuteCommand(ReadCommand());
 	}
 }
 
@@ -37,4 +42,12 @@ Command Manager::ReadCommand() {
 	auto tmp = static_cast<Command>(f.get());
 	f.close();
 	return tmp;
+}
+
+void Manager::ExecuteCommand(Command c) {
+	switch (c) {
+		case Command::QUIT:
+			music.SetStatus(Status::Exit);
+			break;
+	}
 }
