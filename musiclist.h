@@ -10,6 +10,7 @@ public:
 	//Search music recursively in the "dir" path and add it to the db
 	void LoadDir(path dir);
 
+	const std::vector<path>& GetSongList() const;
 private:
 	bool IsSupported(path p);
 

@@ -13,6 +13,10 @@ void MusicList::LoadDir(path dir) {
 	}
 }
 
+const std::vector<path>& MusicList::GetSongList() const {
+	return song_list;
+}
+
 //Private functions
 
 bool MusicList::IsSupported(path p) {
