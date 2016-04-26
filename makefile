@@ -3,8 +3,8 @@ CXXFLAGS=-std=c++11 -Wall -Wextra -pedantic
 
 LIBS=-pthread -lsfml-system -lsfml-audio -lmpg123 -lboost_system -lboost_filesystem -lboost_program_options -ltag
 
-DEPS = manager.h config.h music.h
-OBJ = main.o manager.o config.o music.o
+DEPS = manager.h config.h music.h musiclist.h
+OBJ = main.o manager.o config.o music.o musiclist.o
 
 %.o: %.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
@@ -15,8 +15,8 @@ release: LIBS += -flto
 release: player++ 
 
 debug: clean
-debug: CXXFLAGS += -ggdb -Og -fsanitize=thread -DDEBUG
-debug: LIBS += -fsanitize=thread
+debug: CXXFLAGS += -ggdb -Og -DDEBUG #-fsanitize=thread -DDEBUG
+#debug: LIBS += -fsanitize=thread
 debug: player++
 
 player++:	$(OBJ)

@@ -19,9 +19,7 @@ public:
 private:
 	Command ReadCommand();
 	void ExecuteCommand(Command c);
-	//void 
 	Music music;
-	//MusicList list;
 	//Database db;
 	Config conf;
 };

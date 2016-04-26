@@ -1,4 +1,5 @@
 #include "manager.h"
+#include "musiclist.h"
 
 #include <sys/stat.h>
 #include <fstream>
@@ -20,6 +21,7 @@ Manager::~Manager() {
 }
 
 void Manager::StartServer() {
+	music.GetList().LoadDir(conf.GetDir());
 
 	if(conf.GetAutostart()) {
 		music.SetStatus(Status::Playing);

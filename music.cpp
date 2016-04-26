@@ -1,6 +1,6 @@
 #include "music.h"
 
-Music::Music() : status(Status::Stoped) {
+Music::Music() : status(Status::Stoped){
 
 }
 
@@ -10,4 +10,8 @@ Status Music::GetStatus() const {
 
 void Music::SetStatus(Status s) {
 	status = s;
+}
+
+MusicList& Music::GetList() {
+	return list;
 }
