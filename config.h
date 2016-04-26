@@ -11,6 +11,7 @@ public:
 	void Load();
 	std::string GetDaemonPipe() const;
 	std::string GetClientPipe() const;
+	path GetDir() const;
 	bool GetAutostart() const;
 private:
 	struct Options {

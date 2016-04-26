@@ -27,6 +27,10 @@ std::string Config::GetClientPipe() const {
   return opt.clientpipe;
 }
 
+path Config::GetDir() const {
+  return opt.dir;
+}
+
 bool Config::GetAutostart() const {
   return opt.autostart;
 }
