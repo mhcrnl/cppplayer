@@ -8,6 +8,10 @@
 
 std::condition_variable cv;
 std::mutex cv_m;
+std::mutex song_mutex;
+
+
+//Public functions
 
 Music::Music() : status(Status::Stoped){
 
@@ -16,13 +20,13 @@ Music::Music() : status(Status::Stoped){
 void Music::PlayList() {
 	auto musicList = list.GetSongList();
 	for(auto s = musicList.begin(); s != musicList.end(); ++s) {
-		if(status == Status::Exit)	return;
+		if(GetStatus() == Status::Exit)	return;
 		//if(isNext())	setNext(0);
 		Play(*s);
 		
-		if(status == Status::Backing) {
+		if(GetStatus() == Status::Backing) {
 			s-=2;		
-			status = Status::Playing;
+			SetStatus(Status::Playing);
 		}
 	}
 }
@@ -33,16 +37,22 @@ void Music::Play(path s) {
 }
 
 Status Music::GetStatus() const {
+	std::lock_guard<std::mutex> song_guard(song_mutex);
 	return status;
 }
 
 void Music::SetStatus(Status s) {
+	std::lock_guard<std::mutex> song_guard(song_mutex);
 	status = s;
+	cv.notify_one();
 }
 
 MusicList& Music::GetList() {
 	return list;
 }
+
+
+//Private functions
 
 template <typename T>
 void Music::Reproduce(T& music, std::string song) {
@@ -78,14 +88,14 @@ void Music::Reproduce(T& music, std::string song) {
 		#endif
 
 		//Wait until we have something to do or until the song finish
-		cv.wait_for(lk, std::chrono::milliseconds(sleep_time), [this]{return status==Status::Playing;});
+		cv.wait_for(lk, std::chrono::milliseconds(sleep_time), [this]{return GetStatus() != Status::Playing;});
 
-		if(status == Status::Paused) {
+		if(GetStatus() == Status::Paused) {
 			music.pause();
-			cv.wait(lk, [this]{return status != Status::Paused;});
+			cv.wait(lk, [this]{return GetStatus() != Status::Paused;});
 			music.play();
 			loop = true;
-		} else if(status == Status::Restart) {
+		} else if(GetStatus() == Status::Restart) {
 			music.setPlayingOffset(sf::seconds(0));
 			status = Status::Playing;
 		}

@@ -3,6 +3,7 @@
 
 #include <sys/stat.h>
 #include <fstream>
+#include <thread>
 
 //Public functions
 
@@ -22,7 +23,7 @@ Manager::~Manager() {
 
 void Manager::StartServer() {
 	music.GetList().LoadDir(conf.GetDir());
-	music.PlayList();
+	std::thread mplayer( [this] { music.PlayList(); } );
 
 	if(conf.GetAutostart()) {
 		music.SetStatus(Status::Playing);
@@ -31,6 +32,7 @@ void Manager::StartServer() {
 	while(music.GetStatus() != Status::Exit) {
 		ExecuteCommand(ReadCommand());
 	}
+	mplayer.join();
 }
 
 
