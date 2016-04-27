@@ -22,6 +22,7 @@ Manager::~Manager() {
 
 void Manager::StartServer() {
 	music.GetList().LoadDir(conf.GetDir());
+	music.PlayList();
 
 	if(conf.GetAutostart()) {
 		music.SetStatus(Status::Playing);

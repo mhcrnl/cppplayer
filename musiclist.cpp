@@ -2,11 +2,16 @@
 
 #include <array>
 #include <boost/range/iterator_range.hpp>
+#include <iostream>
 
 //Public functions
 
-void MusicList::LoadDir(path dir) {
-	for(auto& entry : boost::make_iterator_range(directory_iterator(dir), {})) {
+void MusicList::LoadDir(path p) {
+	if(!is_directory(p)) {
+		throw std::runtime_error("Error con el directorio");
+	}
+
+	for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
 		const auto pathSong = entry.path();
 		if(is_directory(pathSong))	LoadDir(pathSong);
 		if(IsSupported(pathSong))	song_list.emplace_back(pathSong);
