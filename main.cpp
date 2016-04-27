@@ -32,9 +32,9 @@ void daemonize() {
 
     /* Change the current working directory.  This prevents the current
        directory from being locked; hence not being able to remove it. */
-    if ((chdir("/")) < 0) {
+    /*if ((chdir("/")) < 0) {
         exit(EXIT_FAILURE);
-    }
+    }*/
 
     /* Redirect standard files to /dev/null */
     FILE* f = freopen( "/dev/null", "r", stdin);
