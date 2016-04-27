@@ -2,7 +2,6 @@
 
 class Database {
 public:
-	Database();
 	~Database();
 	bool Connect(const char*);
 	bool Exec(char*);
@@ -17,5 +16,5 @@ private:
 
 	sqlite3* db;
 
-	bool isConnected;
+	bool isConnected {false};
 };

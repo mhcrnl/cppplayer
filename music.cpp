@@ -13,18 +13,16 @@ std::mutex song_mutex;
 
 //Public functions
 
-Music::Music() : status(Status::Stoped){
-
-}
-
 void Music::PlayList() {
 	auto musicList = list.GetSongList();
 	for(auto s = musicList.begin(); s != musicList.end(); ++s) {
-		if(GetStatus() == Status::Exit)	return;
-		//if(isNext())	setNext(0);
+		auto state = GetStatus();
+		if(state == Status::Exit)	return;
+		if(state == Status::Forwarding)	SetStatus(Status::Playing);
+
 		Play(*s);
 		
-		if(GetStatus() == Status::Backing) {
+		if(state == Status::Backing) {
 			s-=2;		
 			SetStatus(Status::Playing);
 		}
@@ -56,8 +54,10 @@ MusicList& Music::GetList() {
 
 template <typename T>
 void Music::Reproduce(T& music, std::string song) {
-	if(!music.openFromFile(song))
+	if(!music.openFromFile(song)) {
+		std::cerr << "Can not open file " << song << std::endl;
 		return;
+	}
 	
 	
 	#ifdef DEBUG

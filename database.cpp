@@ -5,9 +5,6 @@
 //	https://www.sqlite.org/cintro.html
 //	https://www.sqlite.org/c3ref/intro.html
 
-Database::Database() : isConnected(false) {
-}
-
 Database::~Database() {
 	if (isConnected) {
 		sqlite3_close(db);

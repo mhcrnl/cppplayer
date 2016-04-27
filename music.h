@@ -23,8 +23,6 @@ enum class Status {
 
 class Music {
 public:
-	Music();
-
 	void PlayList();
 
 	//Depending on the extension it will use
@@ -37,11 +35,11 @@ public:
 	MusicList& GetList();
 private:
 	//Recieves sfe::mp3 or sf::Music and the path of the song
-	//and controls the detached SFML thread
+	//and controls the detached SFML thread used to reproduce this song
 	template <typename T>
 	void Reproduce(T&, std::string song);
 
-	Status status;	
+	Status status {Status::Stoped};	
 	MusicList list;
 
 	sf::Music music;
