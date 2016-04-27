@@ -1,19 +1,19 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include <mutex>
-#include <condition_variable>
 
 #include "music.h"
 
-std::condition_variable cv;
-std::mutex cv_m;
 std::mutex song_mutex;
-
 
 //Public functions
 
 void Music::PlayList() {
+	//Wait here until state is not Stoped
+	std::mutex cv_m;
+	std::unique_lock<std::mutex> lk{cv_m};
+	cv.wait(lk, [this]{return GetStatus() != Status::Stoped;});
+
 	auto musicList = list.GetSongList();
 	for(auto s = musicList.begin(); s != musicList.end(); ++s) {
 		auto state = GetStatus();
@@ -67,7 +67,9 @@ void Music::Reproduce(T& music, std::string song) {
 	auto duration = music.getDuration().asMilliseconds();
 
 	music.play();
-	std::unique_lock<std::mutex> lk(cv_m);
+
+	std::mutex cv_m;
+	std::unique_lock<std::mutex> lk{cv_m};
 
 	bool loop = true; 
 	//loop only if the command is Pause

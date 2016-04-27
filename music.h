@@ -6,6 +6,8 @@
 #include <boost/filesystem.hpp>
 #include <SFML/Audio.hpp>
 #include <string>
+#include <mutex>
+#include <condition_variable>
 
 using namespace boost::filesystem;
 
@@ -44,4 +46,7 @@ private:
 
 	sf::Music music;
 	sfe::mp3 mp3music;
+
+	std::condition_variable cv;
+
 };

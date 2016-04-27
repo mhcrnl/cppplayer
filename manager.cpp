@@ -54,5 +54,8 @@ void Manager::ExecuteCommand(Command c) {
 		case Command::QUIT:
 			music.SetStatus(Status::Exit);
 			break;
+		case Command::PLAY:
+			music.SetStatus(Status::Playing);
+			break;
 	}
 }

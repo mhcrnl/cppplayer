@@ -2,4 +2,5 @@
 
 enum class Command : char {
 	QUIT,
+	PLAY,
 };
