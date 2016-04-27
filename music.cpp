@@ -52,6 +52,9 @@ MusicList& Music::GetList() {
 
 //Private functions
 
+
+//TODO: SFML is not appropiate for a music player
+//in a future we should use another library like ffmpeg or OpenAL
 template <typename T>
 void Music::Reproduce(T& music, std::string song) {
 	if(!music.openFromFile(song)) {
