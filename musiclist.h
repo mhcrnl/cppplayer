@@ -5,10 +5,16 @@
 
 using namespace boost::filesystem;
 
+enum class Order {
+	RANDOM,
+};
+
 class MusicList {
 public:
 	//Search music recursively in the "dir" path and add it to the db
 	void LoadDir(path dir);
+
+	void Sort(Order s);
 
 	const std::vector<path>& GetSongList() const;
 private:
