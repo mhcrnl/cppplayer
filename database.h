@@ -11,11 +11,11 @@ private:
 	struct Query{
 		//Struct containing vars involved in sql queries
 		//TODO: Binding params
-		sqlite3_stmt *stmt;
-		char *sql;
+		sqlite3_stmt* stmt;
+		char* sql;
 	}query;
 
-	sqlite3 *db;
+	sqlite3* db;
 
 	bool isConnected;
 };

@@ -5,8 +5,7 @@
 //	https://www.sqlite.org/cintro.html
 //	https://www.sqlite.org/c3ref/intro.html
 
-Database::Database() {
-	isConnected = false;
+Database::Database() : isConnected(false) {
 }
 
 Database::~Database() {
@@ -15,12 +14,11 @@ Database::~Database() {
 	}
 }
 
-bool Database::Connect(const char *path){
+bool Database::Connect(const char* path){
 	//Connects to the database,
 	//Returns true if the connection was successful, and false if not
 
-	int rc;
-	rc = sqlite3_open(path, &db);
+	int rc = sqlite3_open(path, &db);
 
 	if (rc) {
 		isConnected = false;
