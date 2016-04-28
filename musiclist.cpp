@@ -19,7 +19,7 @@ void MusicList::LoadDir(path p) {
 		#ifdef DEBUG
 		std::cerr << "Adding " << pathSong << std::endl;
 		#endif
-		if(IsSupported(pathSong))	song_list.emplace_back(new Song(pathSong));
+		if(IsSupported(pathSong))	song_list.emplace_back(Song(pathSong));
 	}
 }
 
@@ -32,7 +32,7 @@ void MusicList::Sort(Order s) {
 	}
 }
 
-const std::vector<Song*>& MusicList::GetSongList() const {
+const std::vector<Song>& MusicList::GetSongList() const {
 	return song_list;
 }
 

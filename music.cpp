@@ -20,7 +20,7 @@ void Music::PlayList() {
 		if(state == Status::Exit)	return;
 		if(state == Status::Forwarding)	SetStatus(Status::Playing);
 
-		Play(**s);
+		Play(*s);
 		
 		if(state == Status::Backing) {
 			s-=2;		

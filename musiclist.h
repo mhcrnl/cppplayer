@@ -19,10 +19,10 @@ public:
 
 	void Sort(Order s);
 
-	const std::vector<Song*>& GetSongList() const;
+	const std::vector<Song>& GetSongList() const;
 private:
 	bool IsSupported(path p);
 
 	//List of songs paths
-	std::vector<Song*> song_list;
+	std::vector<Song> song_list;
 };
