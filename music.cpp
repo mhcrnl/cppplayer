@@ -14,7 +14,7 @@ void Music::PlayList() {
 	std::unique_lock<std::mutex> lk{cv_m};
 	cv.wait(lk, [this]{return GetStatus() != Status::Stoped;});
 
-	auto musicList = list.GetSongList();
+	auto& musicList = list.GetSongList();
 	for(auto s = musicList.begin(); s != musicList.end(); ++s) {
 		auto state = GetStatus();
 		if(state == Status::Exit)	return;
