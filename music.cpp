@@ -20,7 +20,7 @@ void Music::PlayList() {
 		if(state == Status::Exit)	return;
 		if(state == Status::Forwarding)	SetStatus(Status::Playing);
 
-		Play(*s);
+		Play(**s);
 		
 		if(state == Status::Backing) {
 			s-=2;		
@@ -29,9 +29,9 @@ void Music::PlayList() {
 	}
 }
 
-void Music::Play(path s) {
-	if(s.extension() == path(".mp3")) Reproduce(mp3music, s.c_str());
-	else	Reproduce(music, s.c_str());
+void Music::Play(Song s) {
+	if(s.GetExtension() == ".mp3") Reproduce(mp3music, s.GetFile().c_str());
+	else	Reproduce(music, s.GetFile().c_str());
 }
 
 Status Music::GetStatus() const {
@@ -56,7 +56,7 @@ MusicList& Music::GetList() {
 //TODO: SFML is not appropiate for a music player
 //in a future we should use another library like ffmpeg or OpenAL
 template <typename T>
-void Music::Reproduce(T& music, std::string song) {
+void Music::Reproduce(T& music, const char* song) {
 	if(!music.openFromFile(song)) {
 		std::cerr << "Can not open file " << song << std::endl;
 		return;

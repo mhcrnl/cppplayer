@@ -15,7 +15,11 @@ void MusicList::LoadDir(path p) {
 	for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
 		const auto pathSong = entry.path();
 		if(is_directory(pathSong))	LoadDir(pathSong);
-		if(IsSupported(pathSong))	song_list.emplace_back(pathSong);
+		
+		#ifdef DEBUG
+		std::cerr << "Adding " << pathSong << std::endl;
+		#endif
+		if(IsSupported(pathSong))	song_list.emplace_back(new Song(pathSong));
 	}
 }
 
@@ -28,7 +32,7 @@ void MusicList::Sort(Order s) {
 	}
 }
 
-const std::vector<path>& MusicList::GetSongList() const {
+const std::vector<Song*>& MusicList::GetSongList() const {
 	return song_list;
 }
 

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "song.h"
+
+
 #include <boost/filesystem.hpp>
 #include <vector>
 
@@ -16,10 +19,10 @@ public:
 
 	void Sort(Order s);
 
-	const std::vector<path>& GetSongList() const;
+	const std::vector<Song*>& GetSongList() const;
 private:
 	bool IsSupported(path p);
 
 	//List of songs paths
-	std::vector<path> song_list;
+	std::vector<Song*> song_list;
 };
