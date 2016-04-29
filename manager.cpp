@@ -60,6 +60,9 @@ void Manager::ExecuteCommand(Command c) {
 		case Command::PAUSE:
 			music.SetStatus(Status::Paused);
 			break;
+		case Command::STOP:
+			music.SetStatus(Status::Stoped);
+			break;
 		case Command::NEXT:
 			music.SetStatus(Status::Forwarding);
 			break;

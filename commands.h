@@ -6,4 +6,5 @@ enum class Command : char {
 	SORT_RANDOM,
 	NEXT,
 	PAUSE,
+	STOP,
 };

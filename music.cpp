@@ -9,22 +9,24 @@ std::mutex song_mutex;
 //Public functions
 
 void Music::PlayList() {
-	//Wait here until state is not Stoped
-	std::mutex cv_m;
-	std::unique_lock<std::mutex> lk{cv_m};
-	cv.wait(lk, [this]{return GetStatus() != Status::Stoped;});
+	while(GetStatus() != Status::Exit) {
+		//Wait here until state is not Stoped
+		std::mutex cv_m;
+		std::unique_lock<std::mutex> lk{cv_m};
+		cv.wait(lk, [this]{return GetStatus() != Status::Stoped;});
 
-	auto& musicList = list.GetSongList();
-	for(auto s = musicList.begin(); s != musicList.end(); ++s) {
-		auto state = GetStatus();
-		if(state == Status::Exit)	return;
-		if(state == Status::Forwarding)	SetStatus(Status::Playing);
+		auto& musicList = list.GetSongList();
+		for(auto s = musicList.begin(); s != musicList.end(); ++s) {
+			auto state = GetStatus();
+			if(state == Status::Exit || state == Status::Stoped)		break;
+			if(state == Status::Forwarding)	SetStatus(Status::Playing);
 
-		Play(*s);
-		
-		if(state == Status::Backing) {
-			s-=2;		
-			SetStatus(Status::Playing);
+			Play(*s);
+			
+			if(state == Status::Backing) {
+				s-=2;		
+				SetStatus(Status::Playing);
+			}
 		}
 	}
 }
