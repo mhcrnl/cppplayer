@@ -5,6 +5,7 @@ enum class Command : char {
 	PLAY,
 	SORT_RANDOM,
 	NEXT,
+	BACK,
 	PAUSE,
 	STOP,
 };
