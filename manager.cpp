@@ -58,7 +58,7 @@ void Manager::ExecuteCommand(Command c) {
 			music.SetStatus(Status::Playing);
 			break;
 		case Command::PAUSE:
-			if(music.GetStatus() == Status::Paused)
+			if(music.GetStatus() != Status::Playing)
 				music.SetStatus(Status::Playing);
 			else
 				music.SetStatus(Status::Paused);
