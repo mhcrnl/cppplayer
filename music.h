@@ -29,13 +29,14 @@ public:
 	void PlayList();
 
 	//Depending on the extension it will use
-	//sfe::mp3 or sd::Music
-	void Play(Song s);
+	//sfe::mp3 or sf::Music
+	void Play();
 
 	Status GetStatus() const;
 	void SetStatus(Status s);
 
 	MusicList& GetList();
+	Song GetCurrent();
 private:
 	//Recieves sfe::mp3 or sf::Music and the path of the song
 	//and controls the detached SFML thread used to reproduce this song
@@ -44,6 +45,7 @@ private:
 
 	Status status {Status::Stoped};	
 	MusicList list;
+	Song song;
 
 	sf::Music music;
 	sfe::mp3 mp3music;

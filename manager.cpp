@@ -75,5 +75,16 @@ void Manager::ExecuteCommand(Command c) {
 		case Command::SORT_RANDOM:
 			music.GetList().Sort(Order::RANDOM);
 			break;
+		case Command::GET_ARTIST:
+			{
+				std::fstream file(conf.GetClientPipe());
+				file << music.GetCurrent().GetArtist() << std::endl;
+				file.close();
+			}
+			break;
+		case Command::GET_TITLE:
+			break;
+		case Command::GET_FILE:
+			break;
 	}
 }

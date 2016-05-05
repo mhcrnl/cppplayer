@@ -9,6 +9,7 @@ using namespace boost::filesystem;
 class Song {
 public:
 	Song(path p);
+	Song() =default;
 	std::string GetTitle();
 	std::string GetArtist();
 	std::string GetFile();

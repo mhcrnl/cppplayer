@@ -3,9 +3,12 @@
 enum class Command : char {
 	QUIT,
 	PLAY,
-	SORT_RANDOM,
 	NEXT,
 	BACK,
 	PAUSE,
 	STOP,
+	SORT_RANDOM,
+	GET_ARTIST,
+	GET_TITLE,
+	GET_FILE,
 };

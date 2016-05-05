@@ -21,7 +21,8 @@ void Music::PlayList() {
 			if(state == Status::Exit || state == Status::Stoped)		break;
 			if(state == Status::Forwarding)	SetStatus(Status::Playing);
 
-			Play(*s);
+			song = *s;
+			Play();
 			
 			if(GetStatus() == Status::Backing) {
 				s-=2;		
@@ -31,9 +32,9 @@ void Music::PlayList() {
 	}
 }
 
-void Music::Play(Song s) {
-	if(s.GetExtension() == ".mp3") Reproduce(mp3music, s.GetFile().c_str());
-	else	Reproduce(music, s.GetFile().c_str());
+void Music::Play() {
+	if(song.GetExtension() == ".mp3") Reproduce(mp3music, song.GetFile().c_str());
+	else	Reproduce(music, song.GetFile().c_str());
 }
 
 Status Music::GetStatus() const {
@@ -51,6 +52,10 @@ MusicList& Music::GetList() {
 	return list;
 }
 
+Song Music::GetCurrent() {
+	std::lock_guard<std::mutex> song_guard(song_mutex);
+	return song;
+}
 
 //Private functions
 
