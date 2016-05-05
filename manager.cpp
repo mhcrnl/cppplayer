@@ -69,6 +69,9 @@ void Manager::ExecuteCommand(Command c) {
 		case Command::NEXT:
 			music.SetStatus(Status::Forwarding);
 			break;
+		case Command::BACK:
+			music.SetStatus(Status::Backing);
+			break;
 		case Command::SORT_RANDOM:
 			music.GetList().Sort(Order::RANDOM);
 			break;

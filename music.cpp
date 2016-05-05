@@ -23,7 +23,7 @@ void Music::PlayList() {
 
 			Play(*s);
 			
-			if(state == Status::Backing) {
+			if(GetStatus() == Status::Backing) {
 				s-=2;		
 				SetStatus(Status::Playing);
 			}
