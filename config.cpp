@@ -27,6 +27,10 @@ std::string Config::GetClientPipe() const {
   return opt.clientpipe;
 }
 
+std::string Config::GetPidFile() const {
+  return opt.pidfile;
+}
+
 path Config::GetDir() const {
   return opt.dir;
 }

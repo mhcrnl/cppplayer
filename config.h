@@ -11,6 +11,7 @@ public:
 	void Load();
 	std::string GetDaemonPipe() const;
 	std::string GetClientPipe() const;
+	std::string GetPidFile()	const;
 	path GetDir() const;
 	bool GetAutostart() const;
 private:
@@ -20,6 +21,9 @@ private:
 
 		//Pipe used by the client to write to daemon
 		std::string clientpipe = "/tmp/cplayer++";
+
+		//File to store the pid number so we can check if the daemon is really running
+		std::string pidfile = "/tmp/player++.pid";
 
 		path dir = ".";
 

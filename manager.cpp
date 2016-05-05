@@ -2,12 +2,38 @@
 #include "musiclist.h"
 
 #include <sys/stat.h>
+#include <unistd.h>
+#include <cstdio>
 #include <fstream>
 #include <thread>
 
 //Public functions
 
 Manager::Manager() {
+	//Check if we have some pid number
+	std::ifstream ipid_file(conf.GetPidFile());
+	if(ipid_file.is_open()) {
+
+		std::string pid;
+		ipid_file >> pid;
+
+		//Check if that pid is a real process
+		std::ifstream f("/proc/"+pid+"/comm");
+		if(f.is_open()) {
+			f.close();
+			throw std::runtime_error("Server are already running");
+		}
+	}
+	ipid_file.close();
+
+	//Write the pid number
+	std::ofstream opid_file(conf.GetPidFile(), std::ios::trunc | std::ios::out);
+	if(!opid_file.is_open()) {
+		throw std::runtime_error("Pid file culd not be opened");
+	}
+	opid_file << getpid();
+	opid_file.close();
+
 	//Delete pipes, if exist (the program exit abnormaly)
 	unlink(conf.GetDaemonPipe().c_str()); 
 	unlink(conf.GetClientPipe().c_str());
@@ -17,8 +43,12 @@ Manager::Manager() {
 }
 
 Manager::~Manager() {
+	//Delete pipes
 	unlink(conf.GetDaemonPipe().c_str()); 
 	unlink(conf.GetClientPipe().c_str());
+
+	//Remove pid file
+	std::remove(conf.GetPidFile().c_str());
 }
 
 void Manager::StartServer() {
