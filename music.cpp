@@ -52,7 +52,7 @@ MusicList& Music::GetList() {
 	return list;
 }
 
-Song Music::GetCurrent() {
+Song& Music::GetCurrent() {
 	std::lock_guard<std::mutex> song_guard(song_mutex);
 	return song;
 }

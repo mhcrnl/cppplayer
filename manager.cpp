@@ -83,8 +83,18 @@ void Manager::ExecuteCommand(Command c) {
 			}
 			break;
 		case Command::GET_TITLE:
+			{
+				std::fstream file(conf.GetClientPipe());
+				file << music.GetCurrent().GetTitle() << std::endl;
+				file.close();
+			}
 			break;
 		case Command::GET_FILE:
+			{
+				std::fstream file(conf.GetClientPipe());
+				file << music.GetCurrent().GetFile() << std::endl;
+				file.close();
+			}
 			break;
 	}
 }

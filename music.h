@@ -36,7 +36,7 @@ public:
 	void SetStatus(Status s);
 
 	MusicList& GetList();
-	Song GetCurrent();
+	Song& GetCurrent();
 private:
 	//Recieves sfe::mp3 or sf::Music and the path of the song
 	//and controls the detached SFML thread used to reproduce this song
