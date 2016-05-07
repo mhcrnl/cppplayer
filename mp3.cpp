@@ -34,6 +34,15 @@ bool mp3::openFromFile(const std::string& filename)
 {
     stop();
 
+    if (myBuffer)
+    {
+        delete [] myBuffer;
+        myBuffer = NULL;
+    }
+    mpg123_close(myHandle);
+    mpg123_delete(myHandle);
+    mpg123_exit();
+
     int  err = MPG123_OK;
     if ((err = mpg123_init()) != MPG123_OK)
     {

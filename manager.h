@@ -11,6 +11,7 @@
 class Manager {
 public:
 	//Create/destroy pipes for the client-server comunication
+	//and checks if there are other daemon already running
 	Manager();
 	~Manager();
 
