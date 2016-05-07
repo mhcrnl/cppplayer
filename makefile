@@ -14,9 +14,17 @@ release: CXXFLAGS += -O3 -flto
 release: LIBS += -flto
 release: player++ 
 
+address: CXXFLAGS += -fsanitize=address
+address: LIBS += -fsanitize=address
+address: debug
+
+thread: CXXFLAGS += -fsanitize=thread
+thread: LIBS += -fsanitize=thread
+thread: debug
+
 debug: clean
-debug: CXXFLAGS += -ggdb -Og -fsanitize=thread -DDEBUG
-debug: LIBS += -fsanitize=thread
+debug: CXXFLAGS += -ggdb -Og -DDEBUG
+
 debug: player++
 
 player++:	$(OBJ)
