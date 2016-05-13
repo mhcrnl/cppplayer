@@ -31,7 +31,7 @@ void Config::Load() {
 
 
   variables_map vm = variables_map();
-  store(parse_config_file(config , desc), vm);
+  store(parse_config_file(config , desc, true), vm);
   notify(vm); 
     //Load config file
 
