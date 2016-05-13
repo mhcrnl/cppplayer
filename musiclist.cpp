@@ -16,11 +16,13 @@ void MusicList::LoadDir(path p) {
 		const auto pathSong = entry.path();
 		if(is_directory(pathSong))	LoadDir(pathSong);
 		
-		#ifdef DEBUG
-		std::cerr << "Adding " << pathSong << std::endl;
-		#endif
+		
 		if(IsSupported(pathSong))	song_list.emplace_back(Song(pathSong));
 	}
+
+	#ifdef DEBUG
+		std::cerr << "Loaded " << p << std::endl;
+	#endif
 }
 
 void MusicList::Sort(Order s) {

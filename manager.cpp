@@ -10,6 +10,7 @@
 //Public functions
 
 Manager::Manager() {
+	conf.Load();
 	//Check if we have some pid number
 	std::ifstream ipid_file(conf.GetPidFile());
 	if(ipid_file.is_open()) {

@@ -4,12 +4,18 @@
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
 
+#include <mutex>
+
+static std::mutex song_mutex;
+
+
 Song::Song(path p) {
 	extension = p.extension().c_str();
 	file = p.c_str();
 }
 
 std::string Song::GetTitle() {
+	std::lock_guard<std::mutex> song_guard(song_mutex);
 	if(title == "") {
 		TagLib::FileRef f(file.c_str());
 		if(f.isNull()) {
@@ -26,6 +32,7 @@ std::string Song::GetTitle() {
 }
 
 std::string Song::GetArtist() {
+	std::lock_guard<std::mutex> song_guard(song_mutex);
 	if(artist == "") {
 		TagLib::FileRef f(file.c_str());
 		if(f.isNull()) {
@@ -42,9 +49,11 @@ std::string Song::GetArtist() {
 }
 
 std::string Song::GetFile() {
+	std::lock_guard<std::mutex> song_guard(song_mutex);
 	return file;
 }
 
 std::string Song::GetExtension() {
+	std::lock_guard<std::mutex> song_guard(song_mutex);
 	return extension;
 }

@@ -4,7 +4,7 @@
 
 #include "music.h"
 
-std::mutex song_mutex;
+static std::mutex song_mutex;
 
 //Public functions
 
