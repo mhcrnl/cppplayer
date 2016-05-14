@@ -5,6 +5,7 @@ SRCDIR=src
 INCDIR=include
 OBJDIR=obj
 
+CREATE_OBJ_DIR := $(shell mkdir -p $(OBJDIR))
 SOURCES=$(shell find $(SRCDIR) -name "*.cpp")
 INCLUDE=$(shell find $(INCDIR) -name "*.h")
 
