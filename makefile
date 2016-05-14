@@ -1,18 +1,41 @@
 CXX=g++
 CXXFLAGS=-std=c++11 -Wall -Wextra -pedantic -Iinclude
 
-LIBS=-pthread -lsfml-system -lsfml-audio -lmpg123 -lboost_system -lboost_filesystem -lboost_program_options -ltag -lsqlite3
+SRCDIR=src
+INCDIR=include
+OBJDIR=obj
 
-DEPS = include/manager.h include/config.h include/music.h include/musiclist.h include/database.h include/mp3.h include/song.h
-OBJ = src/main.o src/manager.o src/config.o src/music.o src/musiclist.o src/database.o src/mp3.o src/song.o
+CREATE_OBJ_DIR := $(shell mkdir -p $(OBJDIR))
+SOURCES=$(shell find $(SRCDIR) -name "*.cpp")
+INCLUDE=$(shell find $(INCDIR) -name "*.h")
 
-src/%.o: src/%.cpp $(DEPS)
+LIBS=-pthread \
+	 -lsfml-system \
+	 -lsfml-audio \
+	 -lmpg123 \
+	 -lboost_system \
+	 -lboost_filesystem \
+	 -lboost_program_options \
+	 -ltag -lsqlite3
+
+_OBJ = main.o \
+	  manager.o \
+	  config.o \
+	  music.o \
+	  musiclist.o \
+	  database.o \
+	  mp3.o \
+	  song.o
+
+OBJ = $(patsubst %, $(OBJDIR)/%, $(_OBJ))
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(INCLUDE)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 release: clean
 release: CXXFLAGS += -O3 -flto
 release: LIBS += -flto
-release: player++ 
+release: player++
 
 address: CXXFLAGS += -fsanitize=address
 address: LIBS += -fsanitize=address
@@ -24,18 +47,16 @@ thread: debug
 
 debug: clean
 debug: CXXFLAGS += -ggdb -Og -DDEBUG
-
 debug: player++
 
 player++:	$(OBJ)
 	$(CXX) -o dplayer++ $(OBJ) $(LIBS)
 
 clean:
-	rm -f dplayer++ src/*.o
+	rm -f dplayer++ $(OBJDIR)/*.o *~
 
 install:
 	cp dplayer++ /usr/local/bin/
 
 uninstall:
 	rm /usr/local/bin/dplayer++
-
