@@ -10,7 +10,9 @@
 //Public functions
 
 Manager::Manager() {
+	//Load configuration
 	conf.Load();
+
 	//Check if we have some pid number
 	std::ifstream ipid_file(conf.GetPidFile());
 	if(ipid_file.is_open()) {
@@ -53,6 +55,9 @@ Manager::~Manager() {
 }
 
 void Manager::StartServer() {
+	if(!db.Connect(conf.GetDbFile().c_str()))
+		throw std::runtime_error("Database could not be opened");
+	
 	music.GetList().LoadDir(conf.GetDir());
 	std::thread mplayer( [this] { music.PlayList(); } );
 
@@ -72,7 +77,7 @@ void Manager::StartServer() {
 Command Manager::ReadCommand() {
 	std::ifstream f(conf.GetDaemonPipe());
 	if(!f.is_open()) {
-		throw std::runtime_error("Daemon pipe culd not be opened");
+		throw std::runtime_error("Daemon pipe could not be opened");
 	}
 
 	auto tmp = static_cast<Command>(f.get());

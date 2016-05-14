@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "music.h"
+#include "database.h"
 #include "commands.h"
 
 
@@ -21,6 +22,6 @@ private:
 	Command ReadCommand();
 	void ExecuteCommand(Command c);
 	Music music;
-	//Database db;
+	Database db;
 	Config conf;
 };
