@@ -1,20 +1,15 @@
 #include <sqlite3.h>
 
+#define TITLE_QUERY "SELECT title FROM songs WHERE spath=?"
+
 class Database {
 public:
 	~Database();
 	bool Connect(const char*);
 	bool Exec(char*);
-
+	bool GetTitleFromDB(const std::string, std::string&);
 private:
-	struct Query{
-		//Struct containing vars involved in sql queries
-		//TODO: Binding params
-		sqlite3_stmt* stmt;
-		char* sql;
-	}query;
-
+	sqlite3_stmt* stmt;
 	sqlite3* db;
-
 	bool isConnected {false};
 };
