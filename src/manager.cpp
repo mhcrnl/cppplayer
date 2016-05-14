@@ -22,7 +22,7 @@ Manager::Manager() {
 		std::ifstream f("/proc/"+pid+"/comm");
 		if(f.is_open()) {
 			f.close();
-			throw std::runtime_error("Server are already running");
+			throw std::runtime_error("Server is already running");
 		}
 	}
 	ipid_file.close();
@@ -30,7 +30,7 @@ Manager::Manager() {
 	//Write the pid number
 	std::ofstream opid_file(conf.GetPidFile(), std::ios::trunc | std::ios::out);
 	if(!opid_file.is_open()) {
-		throw std::runtime_error("Pid file culd not be opened");
+		throw std::runtime_error("Pid file could not be opened");
 	}
 	opid_file << getpid();
 	opid_file.close();
