@@ -2,6 +2,9 @@
 
 #include <sys/stat.h>
 
+#include <iostream>
+#include <exception>
+
 //Copied from the net.
 void daemonize() {
     pid_t pid, sid;
@@ -52,7 +55,10 @@ int main() {
 	#ifndef DEBUG
 	daemonize();
 	#endif
-
-	Manager manager;
-	manager.StartServer();
+    try {
+	   Manager manager;
+	   manager.StartServer();
+    } catch(std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
 }
