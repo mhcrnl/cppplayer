@@ -132,5 +132,20 @@ void Manager::ExecuteCommand(Command c) {
 				file.close();
 			}
 			break;
+		case Command::FILTER_ARTIST:
+			{
+				std::string s;
+				std::fstream file(conf.GetDaemonPipe());
+				getline(file, s);
+				file.close();
+				music.GetList().FilterArtist(s.c_str());
+
+				//Stop the execution and restore to the previous status
+				//so we can use the new playlist
+				auto tmp = music.GetStatus();
+				music.SetStatus(Status::Stoped);
+				music.SetStatus(tmp);
+			}
+			break;
 	}
 }

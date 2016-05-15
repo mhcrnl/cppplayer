@@ -21,7 +21,9 @@ void Music::PlayList() {
 			if(state == Status::Exit || state == Status::Stoped)		break;
 			if(state == Status::Forwarding)	SetStatus(Status::Playing);
 
-			song = *s;
+			sem.notify();
+
+			song = **s;
 			Play();
 			
 			if(GetStatus() == Status::Backing) {
@@ -29,6 +31,7 @@ void Music::PlayList() {
 				SetStatus(Status::Playing);
 			}
 		}
+		sem.notify();
 	}
 }
 
@@ -43,8 +46,13 @@ Status Music::GetStatus() const {
 }
 
 void Music::SetStatus(Status s) {
+	//Wait the previous status to be processed
+	sem.wait();
+
 	std::lock_guard<std::mutex> song_guard(song_mutex);
+
 	status = s;
+
 	cv.notify_one();
 }
 

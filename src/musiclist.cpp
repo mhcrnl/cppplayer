@@ -7,6 +7,11 @@
 
 //Public functions
 
+MusicList::~MusicList() {
+	for(auto s : full_list)
+		delete s;
+}
+
 void MusicList::LoadDir(path p) {
 	if(!is_directory(p)) {
 		throw std::runtime_error("Error con el directorio");
@@ -17,8 +22,13 @@ void MusicList::LoadDir(path p) {
 		if(is_directory(pathSong))	LoadDir(pathSong);
 		
 		
-		if(IsSupported(pathSong))	song_list.emplace_back(Song(pathSong));
+		if(IsSupported(pathSong))	full_list.emplace_back(new Song(pathSong));
 	}
+
+	//Copy pointers of full_list so song_list
+	//So all the songs are able to be reproduced
+	for(auto s : full_list)
+		song_list.emplace_back(s);
 
 	#ifdef DEBUG
 		std::cerr << "Loaded " << p << std::endl;
@@ -34,7 +44,18 @@ void MusicList::Sort(Order s) {
 	}
 }
 
-const std::vector<Song>& MusicList::GetSongList() const {
+void MusicList::FilterArtist(const char* artist) {
+	song_list.clear();
+	for(auto s : full_list ) {
+		#ifdef DEBUG
+			std::cout << "Analyzing " << s->GetFile() << std::endl;
+		#endif
+		if(s->GetArtist() == artist)
+			song_list.emplace_back(s);
+	}
+}
+
+const std::vector<Song*>& MusicList::GetSongList() const {
 	return song_list;
 }
 
