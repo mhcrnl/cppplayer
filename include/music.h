@@ -9,6 +9,7 @@
 #include <string>
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
 
 using namespace boost::filesystem;
 
@@ -71,8 +72,7 @@ private:
 	bool IsStatus(Status s);
 	bool IsNotStatus(Status s);
 
-
-	Status status {Status::Stoped};	
+	std::atomic<Status> status{Status::Stoped};
 	MusicList list;
 	Song song;
 

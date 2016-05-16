@@ -4,8 +4,6 @@
 
 #include "music.h"
 
-static std::mutex song_mutex;
-
 //Public functions
 
 void Music::PlayList() {
@@ -39,15 +37,12 @@ void Music::Play() {
 }
 
 Status Music::GetStatus() const {
-	std::lock_guard<std::mutex> song_guard(song_mutex);
 	return status;
 }
 
 void Music::SetStatus(Status s) {
 	//Wait the previous status to be processed
 	mymutex.wait();
-
-	std::lock_guard<std::mutex> song_guard(song_mutex);
 
 	status = s;
 
@@ -71,7 +66,6 @@ MusicList& Music::GetList() {
 }
 
 Song& Music::GetCurrent() {
-	std::lock_guard<std::mutex> song_guard(song_mutex);
 	return song;
 }
 
