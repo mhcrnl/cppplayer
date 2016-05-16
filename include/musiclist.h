@@ -5,6 +5,7 @@
 
 #include <boost/filesystem.hpp>
 #include <vector>
+#include <string>
 
 using namespace boost::filesystem;
 
@@ -20,7 +21,7 @@ public:
 
 	void Sort(Order s);
 
-	void FilterArtist(const char* artist);
+	void FilterArtist(const std::string artist);
 
 	const std::vector<Song*>& GetSongList() const;
 private:

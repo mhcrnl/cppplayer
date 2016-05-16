@@ -44,7 +44,7 @@ void MusicList::Sort(Order s) {
 	}
 }
 
-void MusicList::FilterArtist(const char* artist) {
+void MusicList::FilterArtist(const std::string artist) {
 	song_list.clear();
 	for(auto s : full_list ) {
 		#ifdef DEBUG

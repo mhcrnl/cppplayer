@@ -138,7 +138,7 @@ void Manager::ExecuteCommand(Command c) {
 				std::fstream file(conf.GetDaemonPipe());
 				getline(file, s);
 				file.close();
-				music.GetList().FilterArtist(s.c_str());
+				music.GetList().FilterArtist(s);
 
 				//Stop the execution and restore to the previous status
 				//so we can use the new playlist
