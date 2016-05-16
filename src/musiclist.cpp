@@ -12,21 +12,21 @@ void MusicList::LoadDir(path p) {
 		throw std::runtime_error("Error con el directorio");
 	}
 
-	for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
-		const auto pathSong = entry.path();
-		if(is_directory(pathSong))	LoadDir(pathSong);
-		
-		
-		if(IsSupported(pathSong))	full_list.emplace_back(std::make_shared<Song>(pathSong));
+	for(recursive_directory_iterator dir(p), end; dir != end; ++dir) {
+		const auto pathSong = dir->path();
+
+		if(!is_directory(pathSong) && IsSupported(pathSong)) {
+			#ifdef DEBUG
+				std::cerr << "Loaded " << pathSong << std::endl;
+			#endif
+
+			full_list.emplace_back(std::make_shared<Song>(pathSong));
+		}
 	}
 
 	//Copy pointers of full_list so song_list
 	//So all the songs are able to be reproduced
 	song_list = full_list;
-
-	#ifdef DEBUG
-		std::cerr << "Loaded " << p << std::endl;
-	#endif
 }
 
 void MusicList::Sort(Order s) {
