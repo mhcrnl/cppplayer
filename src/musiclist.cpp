@@ -7,11 +7,6 @@
 
 //Public functions
 
-MusicList::~MusicList() {
-	for(auto s : full_list)
-		delete s;
-}
-
 void MusicList::LoadDir(path p) {
 	if(!is_directory(p)) {
 		throw std::runtime_error("Error con el directorio");
@@ -22,7 +17,7 @@ void MusicList::LoadDir(path p) {
 		if(is_directory(pathSong))	LoadDir(pathSong);
 		
 		
-		if(IsSupported(pathSong))	full_list.emplace_back(new Song(pathSong));
+		if(IsSupported(pathSong))	full_list.emplace_back(std::make_shared<Song>(pathSong));
 	}
 
 	//Copy pointers of full_list so song_list
@@ -55,7 +50,7 @@ void MusicList::FilterArtist(const std::string artist) {
 	}
 }
 
-const std::vector<Song*>& MusicList::GetSongList() const {
+const std::vector<std::shared_ptr<Song>>& MusicList::GetSongList() const {
 	return song_list;
 }
 
