@@ -22,8 +22,7 @@ void MusicList::LoadDir(path p) {
 
 	//Copy pointers of full_list so song_list
 	//So all the songs are able to be reproduced
-	for(auto s : full_list)
-		song_list.emplace_back(s);
+	song_list = full_list;
 
 	#ifdef DEBUG
 		std::cerr << "Loaded " << p << std::endl;
