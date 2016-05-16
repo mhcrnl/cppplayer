@@ -13,25 +13,23 @@ void Music::PlayList() {
 		//Wait here until state is not Stoped
 		std::mutex cv_m;
 		std::unique_lock<std::mutex> lk{cv_m};
-		cv.wait(lk, [this]{return GetStatus() != Status::Stoped;});
+		cv.wait(lk, [this]{return IsNotStatus(Status::Stoped);});
 
 		auto& musicList = list.GetSongList();
 		for(auto s = musicList.begin(); s != musicList.end(); ++s) {
-			auto state = GetStatus();
-			if(state == Status::Exit || state == Status::Stoped)		break;
-			if(state == Status::Forwarding)	SetStatus(Status::Playing);
+			if(IsStatus(Status::Exit) || IsStatus(Status::Stoped))		break;
+			if(IsStatus(Status::Forwarding))	SetStatus(Status::Playing);
 
-			sem.notify();
-
-			song = **s;
-			Play();
+			if(IsStatus(Status::Playing)) {
+				song = **s;
+				Play();
+			}	
 			
-			if(GetStatus() == Status::Backing) {
+			if(IsStatus(Status::Backing)) {
 				s-=2;		
 				SetStatus(Status::Playing);
 			}
 		}
-		sem.notify();
 	}
 }
 
@@ -47,13 +45,25 @@ Status Music::GetStatus() const {
 
 void Music::SetStatus(Status s) {
 	//Wait the previous status to be processed
-	sem.wait();
+	mymutex.wait();
 
 	std::lock_guard<std::mutex> song_guard(song_mutex);
 
 	status = s;
 
 	cv.notify_one();
+}
+
+bool Music::IsStatus(Status s) {
+	bool tmp = GetStatus()==s;
+	if(tmp) mymutex.notify();
+	return tmp;
+}
+
+bool Music::IsNotStatus(Status s) {
+	bool tmp = GetStatus()!=s;
+	if(tmp) mymutex.notify();
+	return tmp;
 }
 
 MusicList& Music::GetList() {
@@ -108,14 +118,14 @@ void Music::Reproduce(T& music, const char* song) {
 		#endif
 
 		//Wait until we have something to do or until the song finish
-		cv.wait_for(lk, std::chrono::milliseconds(sleep_time), [this]{return GetStatus() != Status::Playing;});
+		cv.wait_for(lk, std::chrono::milliseconds(sleep_time), [this]{return IsNotStatus(Status::Playing);});
 
-		if(GetStatus() == Status::Paused) {
+		if(IsStatus(Status::Paused)) {
 			music.pause();
-			cv.wait(lk, [this]{return GetStatus() != Status::Paused;});
+			cv.wait(lk, [this]{return IsNotStatus(Status::Paused);});
 			music.play();
 			loop = true;
-		} else if(GetStatus() == Status::Restart) {
+		} else if(IsStatus(Status::Restart)) {
 			music.setPlayingOffset(sf::seconds(0));
 			status = Status::Playing;
 		}

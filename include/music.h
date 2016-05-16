@@ -25,15 +25,12 @@ enum class Status {
 };
 
 
-class Semaphore {
+class MyMutex {
 public:
-    Semaphore (int count_ = 0)
-        : count(count_) {}
-
     inline void notify()
     {
         std::unique_lock<std::mutex> lock(mtx);
-        count++;
+        count = 1;
         cv.notify_one();
     }
 
@@ -41,16 +38,15 @@ public:
     {
         std::unique_lock<std::mutex> lock(mtx);
 
-        while(count == 0){
-            cv.wait(lock);
-        }
+        cv.wait(lock, [this]{return count>0;});
+
         count--;
     }
 
 private:
     std::mutex mtx;
     std::condition_variable cv;
-    int count;
+    int count {1};
 };
 
 class Music {
@@ -72,6 +68,10 @@ private:
 	template <typename T>
 	void Reproduce(T&, const char* song);
 
+	bool IsStatus(Status s);
+	bool IsNotStatus(Status s);
+
+
 	Status status {Status::Stoped};	
 	MusicList list;
 	Song song;
@@ -79,7 +79,7 @@ private:
 	sf::Music music;
 	sfe::mp3 mp3music;
 
-	Semaphore sem{1};
+	MyMutex mymutex;
 	std::condition_variable cv;
 
 };
