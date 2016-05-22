@@ -8,6 +8,19 @@ myHandle    (NULL),
 myBufferSize(0),
 myBuffer    (NULL)
 {
+    int  err = MPG123_OK;
+    if ((err = mpg123_init()) != MPG123_OK)
+    {
+        std::cerr << mpg123_plain_strerror(err) << std::endl;
+        return;
+    }
+
+    myHandle = mpg123_new(NULL, &err);
+    if (!myHandle)
+    {
+        std::cerr << "Unable to create mpg123 handle: " << mpg123_plain_strerror(err) << std::endl;
+        return;
+    }
 
 }
 
@@ -35,27 +48,11 @@ bool mp3::openFromFile(const std::string& filename)
     stop();
 
     if (myBuffer)
-    {
         delete [] myBuffer;
-        myBuffer = NULL;
-    }
-    mpg123_close(myHandle);
-    mpg123_delete(myHandle);
-    mpg123_exit();
+  
+    if(myHandle)
+      mpg123_close(myHandle);
 
-    int  err = MPG123_OK;
-    if ((err = mpg123_init()) != MPG123_OK)
-    {
-        std::cerr << mpg123_plain_strerror(err) << std::endl;
-        return false;
-    }
-
-    myHandle = mpg123_new(NULL, &err);
-    if (!myHandle)
-    {
-        std::cerr << "Unable to create mpg123 handle: " << mpg123_plain_strerror(err) << std::endl;
-        return false;
-    }
 
     mpg123_param(myHandle, MPG123_RESYNC_LIMIT, -1, 0); 
     #ifndef DEBUG
@@ -71,7 +68,7 @@ bool mp3::openFromFile(const std::string& filename)
     //This should improve myDuration calculation, but generates frankenstein streams¿?
     //Warning: Real sample count 9505152 differs from given gapless sample count -1152. Frankenstein stream
     if(mpg123_scan(myHandle) != MPG123_OK) {
-        std::cerr << "Failed when scanning: " << mpg123_plain_strerror(err) << std::endl;
+        std::cerr << "Failed when scanning " <<  std::endl;
         return false;
     }
 
