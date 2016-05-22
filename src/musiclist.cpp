@@ -13,20 +13,19 @@ void MusicList::LoadDir(path p) {
 	}
 
 	for(recursive_directory_iterator dir(p), end; dir != end; ++dir) {
-		const auto pathSong = dir->path();
-
-		if(!is_directory(pathSong) && IsSupported(pathSong)) {
-			#ifdef DEBUG
-				std::cerr << "Loaded " << pathSong << std::endl;
-			#endif
-
-			full_list.emplace_back(std::make_shared<Song>(pathSong));
-		}
+		LoadFile(dir->path());
 	}
+}
 
-	//Copy pointers of full_list so song_list
-	//So all the songs are able to be reproduced
-	song_list = full_list;
+void MusicList::LoadFile(const path pathSong) {
+	if(!is_directory(pathSong) && IsSupported(pathSong)) {
+		#ifdef DEBUG
+		std::cerr << "Loaded " << pathSong << std::endl;
+		#endif
+		auto song = std::make_shared<Song>(pathSong);
+		full_list.emplace_back(song);
+		song_list.emplace_back(song);
+	}
 }
 
 void MusicList::Sort(Order s) {

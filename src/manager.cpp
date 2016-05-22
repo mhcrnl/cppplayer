@@ -147,5 +147,23 @@ void Manager::ExecuteCommand(Command c) {
 				music.SetStatus(tmp);
 			}
 			break;
+		case Command::ADD_FOLDER:
+			{
+				std::string s;
+				std::fstream file(conf.GetDaemonPipe());
+				getline(file, s);
+				file.close();
+				music.GetList().LoadDir(s);
+			}
+			break;
+		case Command::ADD_FILE:
+			{
+				std::string s;
+				std::fstream file(conf.GetDaemonPipe());
+				getline(file, s);
+				file.close();
+				music.GetList().LoadFile(s);
+			}
+			break;
 	}
 }

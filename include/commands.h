@@ -12,4 +12,6 @@ enum class Command : char {
 	GET_TITLE,
 	GET_FILE,
 	FILTER_ARTIST,
+	ADD_FOLDER,
+	ADD_FILE,
 };
