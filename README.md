@@ -8,6 +8,10 @@ El programa usa las librerías mpg123, sfml, TagLib boost-program-options y boos
 
 **# apt-get install libmpg123-dev libsfml-dev libboost-filesystem-dev libboost-program-options-dev libtag1-dev**
 
+#### Configuración
+
+El programa al iniciar lee la configuración de ~/.config/player++/daemon.conf
+
 #### Features
 
 - Avanzar/Retroceder/Pausar/Reproducir etc
