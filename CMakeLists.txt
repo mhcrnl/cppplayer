@@ -8,7 +8,7 @@ add_executable(dplayer++ ${SRC_FILES})
 target_compile_features(dplayer++ PUBLIC cxx_range_for cxx_auto_type cxx_lambdas cxx_aggregate_default_initializers)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic")
-set(CMAKE_EXE_LINKER_FLAGS  "-pthread -lsfml-system -lsfml-audio -lmpg123 -ltag -lsqlite3" )
+set(CMAKE_EXE_LINKER_FLAGS  "-lsfml-system -lsfml-audio -lmpg123 -ltag -lsqlite3" )
 
 #Check if boost exists
 set(Boost_USE_STATIC_LIBS OFF) 
@@ -22,6 +22,15 @@ endif()
 
 include_directories(${Boost_INCLUDE_DIRS}) 
 target_link_libraries(dplayer++ ${Boost_LIBRARIES})
+
+#Find thread library
+find_package(Threads) 
+
+if(NOT Threads_FOUND)
+    message(FATAL_ERROR "This system doesn't support threads.")
+endif()
+
+target_link_libraries(dplayer++ ${CMAKE_THREAD_LIBS_INIT})
 
 
 #RELEASE
