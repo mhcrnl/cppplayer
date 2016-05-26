@@ -10,10 +10,10 @@ using namespace boost::program_options;
 
 void Config::Load() {
   #ifdef DEBUG
-    std::cout << "Using config file " << MakeAbsolute("~/.config/player++/daemon.conf") << std::endl;
+    std::cout << "Using config file " << MakeAbsolute(CONFIG_FOLDER+"daemon.conf") << std::endl;
   #endif
 
-	std::ifstream config(MakeAbsolute("~/.config/player++/daemon.conf"));
+	std::ifstream config(MakeAbsolute(CONFIG_FOLDER+"daemon.conf"));
   if(!config.is_open()) {
         std::cerr << "Config file could not be open, using default values" << std::endl;
   } else {
