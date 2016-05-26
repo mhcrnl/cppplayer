@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 project (cppplayer)
 
 include_directories(include) 
-add_executable(dplayer++ src/main.cpp src/config.cpp src/database.cpp src/mp3.cpp src/manager.cpp src/music.cpp src/musiclist.cpp src/song.cpp)
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
+add_executable(dplayer++ ${SRC_FILES})
+
 target_compile_features(dplayer++ PUBLIC cxx_range_for cxx_auto_type cxx_lambdas cxx_aggregate_default_initializers)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic")
