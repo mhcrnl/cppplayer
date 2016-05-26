@@ -34,20 +34,21 @@ target_link_libraries(dplayer++ ${CMAKE_THREAD_LIBS_INIT})
 
 
 #RELEASE
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -flto")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  -flto")
 
 #DEBUG
-set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -Og -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -ggdb -Og -DDEBUG")
 
 #THREAD SANITIZER
 set(CMAKE_BUILD_TYPE thread)
-set(CMAKE_CXX_FLAGS_THREAD "-fsanitize=thread")
-set(CMAKE_EXE_LINKER_FLAGS_THREAD "-fsanitize=thread")
+set(CMAKE_CXX_FLAGS_THREAD "${CMAKE_CXX_FLAGS} -fsanitize=thread")
+set(CMAKE_EXE_LINKER_FLAGS_THREAD "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=thread")
 
 #ADDRESS SANITIZER
 set(CMAKE_BUILD_TYPE address)
-set(CMAKE_CXX_FLAGS_THREAD "-fsanitize=address")
-set(CMAKE_EXE_LINKER_FLAGS_THREAD "-fsanitize=address")
+set(CMAKE_CXX_FLAGS_THREAD "${CMAKE_CXX_FLAGS} -fsanitize=address")
+set(CMAKE_EXE_LINKER_FLAGS_THREAD "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 
 
 
