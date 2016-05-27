@@ -11,10 +11,7 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic")
 set(CMAKE_EXE_LINKER_FLAGS  "-lsfml-system -lsfml-audio -lmpg123 -ltag -lsqlite3" )
 
 #Check if boost exists
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.60.0 COMPONENTS filesystem program_options ) 
+find_package(Boost 1.60.0 COMPONENTS filesystem program_options) 
 
 if(NOT Boost_FOUND)
     message( FATAL_ERROR "Boost libraries not found." )
