@@ -81,7 +81,6 @@ Command Manager::ReadCommand() {
 	}
 
 	auto tmp = static_cast<Command>(f.get());
-	f.close();
 	return tmp;
 }
 
@@ -115,21 +114,18 @@ void Manager::ExecuteCommand(Command c) {
 			{
 				std::fstream file(conf.GetClientPipe());
 				file << music.GetCurrent().GetArtist() << std::endl;
-				file.close();
 			}
 			break;
 		case Command::GET_TITLE:
 			{
 				std::fstream file(conf.GetClientPipe());
 				file << music.GetCurrent().GetTitle() << std::endl;
-				file.close();
 			}
 			break;
 		case Command::GET_FILE:
 			{
 				std::fstream file(conf.GetClientPipe());
 				file << music.GetCurrent().GetFile() << std::endl;
-				file.close();
 			}
 			break;
 		case Command::FILTER_ARTIST:
@@ -138,12 +134,11 @@ void Manager::ExecuteCommand(Command c) {
 				std::fstream file(conf.GetDaemonPipe());
 				getline(file, s);
 				file.close();
-				music.GetList().FilterArtist(s);
 
-				//Stop the execution and restore to the previous status
-				//so we can use the new playlist
+				//Stop reproduction while we are filtering the list
 				auto tmp = music.GetStatus();
 				music.SetStatus(Status::Stoped);
+				music.GetList().FilterArtist(s);
 				music.SetStatus(tmp);
 			}
 			break;
@@ -164,6 +159,8 @@ void Manager::ExecuteCommand(Command c) {
 				file.close();
 				music.GetList().LoadFile(s);
 			}
+			break;
+		case Command::SAVE_FILE:
 			break;
 	}
 }

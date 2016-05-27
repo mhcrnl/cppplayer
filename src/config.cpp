@@ -31,8 +31,6 @@ void Config::Load() {
     variables_map vm = variables_map();
     store(parse_config_file(config , desc, true), vm);
     notify(vm); 
-
-    config.close();
   }
 
   opt.daemonpipe  =MakeAbsolute(opt.daemonpipe);
