@@ -55,8 +55,8 @@ Manager::~Manager() {
 }
 
 void Manager::StartServer() {
-	if(!db.Connect(conf.GetDbFile().c_str()))
-		throw std::runtime_error("Database could not be opened");
+	//if(!db.Connect(conf.GetDbFile().c_str()))
+	//	throw std::runtime_error("Database could not be opened");
 	
 	music.GetList().LoadDir(conf.GetDir());
 	std::thread mplayer( [this] { music.PlayList(); } );
@@ -160,7 +160,7 @@ void Manager::ExecuteCommand(Command c) {
 				music.GetList().LoadFile(s);
 			}
 			break;
-		case Command::SAVE_FILE:
-			break;
+		//case Command::SAVE_FILE:
+		//	break;
 	}
 }
