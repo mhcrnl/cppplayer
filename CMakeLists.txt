@@ -7,8 +7,6 @@ add_executable(dplayer++ ${SRC_FILES})
 
 target_compile_features(dplayer++ PUBLIC cxx_range_for cxx_auto_type cxx_lambdas cxx_aggregate_default_initializers)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic")
-set(CMAKE_EXE_LINKER_FLAGS  "-lsfml-system -lsfml-audio -lmpg123 -ltag -lsqlite3" )
 
 #Check if boost exists
 find_package(Boost 1.60.0 COMPONENTS filesystem program_options) 
@@ -29,24 +27,21 @@ endif()
 
 target_link_libraries(dplayer++ ${CMAKE_THREAD_LIBS_INIT})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+set(CMAKE_EXE_LINKER_FLAGS  "-lsfml-system -lsfml-audio -lmpg123 -ltag -lsqlite3" )
 
 #RELEASE
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -flto")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -flto")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  -flto")
 
 #DEBUG
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -ggdb -Og -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -Og -DDEBUG")
 
 #THREAD SANITIZER
-set(CMAKE_BUILD_TYPE thread)
-set(CMAKE_CXX_FLAGS_THREAD "${CMAKE_CXX_FLAGS} -fsanitize=thread")
+set(CMAKE_CXX_FLAGS_THREAD "${CMAKE_CXX_FLAGS_THREAD} -fsanitize=thread -DDEBUG -Og -ggdb")
 set(CMAKE_EXE_LINKER_FLAGS_THREAD "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=thread")
 
 #ADDRESS SANITIZER
-set(CMAKE_BUILD_TYPE address)
-set(CMAKE_CXX_FLAGS_THREAD "${CMAKE_CXX_FLAGS} -fsanitize=address")
+set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS_ADDRESS} -fsanitize=address -DDEBUG -Og -ggdb")
 set(CMAKE_EXE_LINKER_FLAGS_THREAD "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
-
-
-
 
