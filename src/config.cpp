@@ -7,6 +7,12 @@
 
 using namespace boost::program_options;
 
+Config::Config() {
+  path dir(MakeAbsolute(CONFIG_FOLDER));
+  if(!exists(dir) && !create_directory(dir))
+    throw std::runtime_error("Could not create config directory");
+
+}
 
 void Config::Load() {
   #ifdef DEBUG
