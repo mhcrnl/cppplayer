@@ -12,6 +12,7 @@ const std::string CONFIG_FOLDER = "~/.config/player++/";
 
 class Config {
 public:
+	Config();
 	void Load();
 	std::string GetDaemonPipe() const;
 	std::string GetClientPipe() const;
@@ -24,13 +25,13 @@ private:
 	std::string GetHome();
 	struct Options {
 		//Pipe used by the daemon to write to client
-		std::string daemonpipe 	= "/tmp/dplayer++";
+		std::string daemonpipe 	= CONFIG_FOLDER+"dplayer++";
 
 		//Pipe used by the client to write to daemon
-		std::string clientpipe 	= "/tmp/cplayer++";
+		std::string clientpipe 	= CONFIG_FOLDER+"cplayer++";
 
 		//File to store the pid number so we can check if the daemon is really running
-		std::string pidfile 	= "/tmp/player++.pid";
+		std::string pidfile 	= CONFIG_FOLDER+"player++.pid";
 
 		//Database file
 		std::string dbfile		= CONFIG_FOLDER+"db.sql";
