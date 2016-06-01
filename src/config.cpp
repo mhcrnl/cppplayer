@@ -19,6 +19,15 @@ void Config::Load() {
     std::cout << "Using config file " << MakeAbsolute(CONFIG_FOLDER+"daemon.conf") << std::endl;
   #endif
 
+
+  //Try to autodetect music dir
+  //Here we should use libxdg to parse ~/.config/user-dirs.dirs (if exists)
+  //and get the default music dir.
+  path default_music(MakeAbsolute("~/Music/"));
+  if(exists(default_music))
+    opt.dir = default_music.c_str();
+
+
 	std::ifstream config(MakeAbsolute(CONFIG_FOLDER+"daemon.conf"));
   if(!config.is_open()) {
         std::cerr << "Config file could not be open, using default values" << std::endl;
