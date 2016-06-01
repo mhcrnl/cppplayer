@@ -55,8 +55,11 @@ void daemonize() {
 
 int main(int argc, char* argv[]) {
 
-    if(argc == 2 && argv[1] == "-d"s)
+    if(argc == 2 && argv[1] == "-d"s) {
     	daemonize();
+    } else {
+        std::cout << "If you want to run it as a daemon restart it with \"-d\" flag" << std::endl;
+    }
 
     try {
 	   Manager manager;
