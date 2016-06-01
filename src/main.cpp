@@ -5,6 +5,8 @@
 #include <iostream>
 #include <exception>
 
+using namespace std::string_literals;
+
 //Copied from the net.
 void daemonize() {
     pid_t pid, sid;
@@ -51,10 +53,11 @@ void daemonize() {
         exit(EXIT_FAILURE);
 }
 
-int main() {
-	#ifndef DEBUG
-	daemonize();
-	#endif
+int main(int argc, char* argv[]) {
+
+    if(argc == 2 && argv[1] == "-d"s)
+    	daemonize();
+
     try {
 	   Manager manager;
 	   manager.StartServer();
