@@ -25,6 +25,7 @@ El programa al iniciar lee la configuración de ~/.config/player++/daemon.conf
 
 #### TODO
 
+- usar libxdg para buscar el directorio por defecto donde buscar cancioens (parsear ~/.config/user-dirs.dirs si existe)
 - Playlists
 - Base de datos SQL
 - Soporte para plugins
