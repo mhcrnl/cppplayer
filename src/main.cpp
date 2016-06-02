@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <exception>
+#include <string>
 
 //Copied from the net.
 void daemonize() {
@@ -53,7 +54,7 @@ void daemonize() {
 
 int main(int argc, char* argv[]) {
 
-    if(argc == 2 && argv[1] == string("-d")) {
+    if(argc == 2 && argv[1] == std::string("-d")) {
     	daemonize();
     } else {
         std::cout << "If you want to run it as a daemon restart it with \"-d\" flag" << std::endl;
