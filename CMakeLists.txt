@@ -4,6 +4,7 @@ project (cppplayer)
 include_directories(include) 
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_executable(dplayer++ ${SRC_FILES})
+install(PROGRAMS build/dplayer++ DESTINATION /usr/local/bin)
 
 target_compile_features(dplayer++ PUBLIC cxx_range_for cxx_auto_type cxx_lambdas cxx_aggregate_default_initializers)
 
