@@ -5,8 +5,6 @@
 #include <iostream>
 #include <exception>
 
-using namespace std::string_literals;
-
 //Copied from the net.
 void daemonize() {
     pid_t pid, sid;
@@ -55,7 +53,7 @@ void daemonize() {
 
 int main(int argc, char* argv[]) {
 
-    if(argc == 2 && argv[1] == "-d"s) {
+    if(argc == 2 && argv[1] == string("-d")) {
     	daemonize();
     } else {
         std::cout << "If you want to run it as a daemon restart it with \"-d\" flag" << std::endl;
