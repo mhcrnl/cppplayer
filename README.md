@@ -9,7 +9,9 @@ El programa usa las librerías mpg123, sfml, TagLib boost-program-options y boos
 **# apt-get install libmpg123-dev libsfml-dev libboost-filesystem-dev libboost-program-options-dev libtag1-dev**
 
 Para compilarlo
-  mkdir -p build; cd build; cmake ..; make
+> mkdir -p build; cd build; cmake ..; make
+
+Nota: En debian stable (jessie) no hay la versión necesaria de cmake, para arreglarlo se puede pasar a debian testing, que si tiene la versión necesaria. 
 
 #### Configuración
 
