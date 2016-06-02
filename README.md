@@ -33,3 +33,7 @@ El programa al iniciar lee la configuración de ~/.config/player++/daemon.conf
 - Soporte para plugins
 - Ecualizador
 - Cache de canciones recientes (para agilizar la búsqueda)
+
+#### Colaboradores
+Lista de gente que ha colaborado de alguna forma con el proyecto
+[@masapastosa](https://github.com/masapastosa) [@javorcd](https://github.com/javorcd)
