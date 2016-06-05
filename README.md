@@ -1,5 +1,7 @@
 # cppplayer
 
+[![Build Status](https://travis-ci.org/stakewinner00/cppplayer.svg?branch=master)](https://travis-ci.org/stakewinner00/cppplayer)
+
 Reproductor de música sencillo que busca la simplicidad y facilidad de configuración (se podría ver como alternativa a mpd)
 
 El programa usa las librerías mpg123, sfml, TagLib boost-program-options y boost-filesystem. 
