@@ -160,6 +160,21 @@ void Manager::ExecuteCommand(Command c) {
 				music.GetList().LoadFile(s);
 			}
 			break;
+		case Command::VOLUME_SET:
+			{
+				std::string s;
+				std::fstream file(conf.GetDaemonPipe());
+				getline(file, s);
+				file.close();
+				music.SetVolume(std::atof(s.c_str()));
+			}
+			break;
+		case Command::VOLUME_GET:
+			{
+				std::fstream file(conf.GetClientPipe());
+				file << std::to_string(music.GetVolume()) << std::endl;
+			}
+			break;
 		//case Command::SAVE_FILE:
 		//	break;
 	}

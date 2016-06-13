@@ -61,6 +61,9 @@ public:
 	Status GetStatus() const;
 	void SetStatus(Status s);
 
+	void SetVolume(float v);
+	float GetVolume();
+
 	MusicList& GetList();
 	Song& GetCurrent();
 private:

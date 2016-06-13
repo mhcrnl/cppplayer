@@ -35,7 +35,7 @@ void Music::PlayList() {
 
 void Music::Play() {
 	if(song.GetExtension() == ".mp3") Reproduce(mp3music, song.GetFile().c_str());
-	else	Reproduce(music, song.GetFile().c_str());
+	else Reproduce(music, song.GetFile().c_str());
 }
 
 Status Music::GetStatus() const {
@@ -49,6 +49,17 @@ void Music::SetStatus(Status s) {
 	status = s;
 
 	cv.notify_one();
+}
+
+void Music::SetVolume(float v) {
+	music.setVolume(v);
+	mp3music.setVolume(v);
+}
+
+float Music::GetVolume() {
+	//XXX: mp3music and music have the same value, doesn't
+	//matter if we return mp3music.getVolume() or music.getVolume()
+	return music.getVolume();
 }
 
 bool Music::IsStatus(Status s) {
