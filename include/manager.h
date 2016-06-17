@@ -5,6 +5,8 @@
 #include "database.h"
 #include "commands.h"
 
+#include <fstream>
+
 
 //The main work is done in this class
 //It process the commands from the client
@@ -19,8 +21,8 @@ public:
 	//Start the main loop
 	void StartServer();
 private:
-	Command ReadCommand();
-	void ExecuteCommand(Command c);
+	Command ReadCommand(std::ifstream&);
+	void ExecuteCommand(Command c, std::ifstream&);
 	Music music;
 	Database db;
 	Config conf;

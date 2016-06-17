@@ -8,7 +8,7 @@
 using namespace boost::program_options;
 
 Config::Config() {
-  path dir(MakeAbsolute(CONFIG_FOLDER));
+  path dir(Expand(CONFIG_FOLDER));
   if(!exists(dir) && !create_directory(dir))
     throw std::runtime_error("Could not create config directory");
 
@@ -17,23 +17,23 @@ Config::Config() {
 void Config::Load() {
   //TODO: Maybe we should use boost propertytree library
   #ifdef DEBUG
-    std::cout << "Using config file " << MakeAbsolute(CONFIG_FOLDER+"daemon.conf") << std::endl;
+    std::cout << "Using config file " << Expand(CONFIG_FOLDER+"daemon.conf") << std::endl;
   #endif
 
 
   //Try to autodetect music dir
   //Here we should use libxdg to parse ~/.config/user-dirs.dirs (if exists)
   //and get the default music dir.
-  path default_music(MakeAbsolute("~/Music/"));
+  path default_music(Expand("~/Music/"));
   if(exists(default_music))
     opt.dir = default_music.c_str();
 
 
-	std::ifstream config(MakeAbsolute(CONFIG_FOLDER+"daemon.conf"));
+	std::ifstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
   if(!config.is_open()) {
         std::cerr << "Config file could not be open, using default values" << std::endl;
         //Write a dumb config file
-        std::ofstream config(MakeAbsolute(CONFIG_FOLDER+"daemon.conf"));
+        std::ofstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
         config.setf(std::ios::boolalpha);
         config  << "daemon_pipe   = "   << GetDaemonPipe()  << std::endl
                 << "client_pipe   = "   << GetClientPipe()  << std::endl
@@ -58,11 +58,11 @@ void Config::Load() {
     notify(vm); 
   }
 
-  opt.daemonpipe  =MakeAbsolute(opt.daemonpipe);
-  opt.clientpipe  =MakeAbsolute(opt.clientpipe);
-  opt.pidfile     =MakeAbsolute(opt.pidfile);
-  opt.dbfile      =MakeAbsolute(opt.dbfile);
-  opt.dir         =MakeAbsolute(opt.dir.c_str());
+  opt.daemonpipe  =Expand(opt.daemonpipe);
+  opt.clientpipe  =Expand(opt.clientpipe);
+  opt.pidfile     =Expand(opt.pidfile);
+  opt.dbfile      =Expand(opt.dbfile);
+  opt.dir         =Expand(opt.dir.c_str());
 }
 
 std::string Config::GetDaemonPipe() const {
@@ -91,7 +91,7 @@ bool Config::GetAutostart() const {
 
 //Private functions
 
-std::string Config::MakeAbsolute(std::string file) {
+std::string Config::Expand(std::string file) {
   auto pos = file.find('~');
   if(pos != std::string::npos) {
     file.erase(pos,1);

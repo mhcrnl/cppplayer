@@ -21,7 +21,7 @@ public:
 	path GetDir() const;
 	bool GetAutostart() const;
 private:
-	std::string MakeAbsolute(const std::string file);
+	std::string Expand(const std::string file);
 	std::string GetHome();
 	struct Options {
 		//Pipe used by the daemon to write to client

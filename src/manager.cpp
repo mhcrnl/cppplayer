@@ -4,8 +4,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <cstdio>
-#include <fstream>
 #include <thread>
+#include <iostream>
 
 //Public functions
 
@@ -65,8 +65,9 @@ void Manager::StartServer() {
 		music.SetStatus(Status::Playing);
 	}
 
+	std::ifstream f;
 	while(music.GetStatus() != Status::Exit) {
-		ExecuteCommand(ReadCommand());
+		ExecuteCommand(ReadCommand(f), f);
 	}
 	mplayer.join();
 }
@@ -74,17 +75,19 @@ void Manager::StartServer() {
 
 //Private Functions 
 
-Command Manager::ReadCommand() {
-	std::ifstream f(conf.GetDaemonPipe());
+Command Manager::ReadCommand(std::ifstream& f) {
+	f.open(conf.GetDaemonPipe());
 	if(!f.is_open()) {
 		throw std::runtime_error("Daemon pipe could not be opened");
 	}
-
 	auto tmp = static_cast<Command>(f.get());
 	return tmp;
 }
 
-void Manager::ExecuteCommand(Command c) {
+void Manager::ExecuteCommand(Command c, std::ifstream& dfile) {
+	#ifdef DEBUG
+	std::cout << "Command:" <<(int)c << std::endl;
+	#endif
 	switch (c) {
 		case Command::QUIT:
 			music.SetStatus(Status::Exit);
@@ -112,28 +115,26 @@ void Manager::ExecuteCommand(Command c) {
 			break;
 		case Command::GET_ARTIST:
 			{
-				std::fstream file(conf.GetClientPipe());
-				file << music.GetCurrent().GetArtist() << std::endl;
+				std::ofstream cfile(conf.GetClientPipe());
+				cfile << music.GetCurrent().GetArtist() << std::endl;
 			}
 			break;
 		case Command::GET_TITLE:
 			{
-				std::fstream file(conf.GetClientPipe());
-				file << music.GetCurrent().GetTitle() << std::endl;
+				std::ofstream cfile(conf.GetClientPipe());
+				cfile << music.GetCurrent().GetTitle() << std::endl;
 			}
 			break;
 		case Command::GET_FILE:
 			{
-				std::fstream file(conf.GetClientPipe());
-				file << music.GetCurrent().GetFile() << std::endl;
+				std::ofstream cfile(conf.GetClientPipe());
+				cfile << music.GetCurrent().GetFile() << std::endl;
 			}
 			break;
 		case Command::FILTER_ARTIST:
 			{
 				std::string s;
-				std::fstream file(conf.GetDaemonPipe());
-				getline(file, s);
-				file.close();
+				getline(dfile, s);
 
 				//Stop reproduction while we are filtering the list
 				auto tmp = music.GetStatus();
@@ -145,37 +146,37 @@ void Manager::ExecuteCommand(Command c) {
 		case Command::ADD_FOLDER:
 			{
 				std::string s;
-				std::fstream file(conf.GetDaemonPipe());
-				getline(file, s);
-				file.close();
+				getline(dfile, s);
 				music.GetList().LoadDir(s);
 			}
 			break;
 		case Command::ADD_FILE:
 			{
 				std::string s;
-				std::fstream file(conf.GetDaemonPipe());
-				getline(file, s);
-				file.close();
+				getline(dfile, s);
 				music.GetList().LoadFile(s);
 			}
 			break;
 		case Command::VOLUME_SET:
 			{
-				std::string s;
-				std::fstream file(conf.GetDaemonPipe());
-				getline(file, s);
-				file.close();
-				music.SetVolume(std::atof(s.c_str()));
+				std::string volum;
+				dfile >> volum;
+				#ifdef DEBUG
+				std::cout << volum << std::endl;
+				#endif
+				music.SetVolume(std::atof(volum.c_str()));
 			}
 			break;
 		case Command::VOLUME_GET:
 			{
-				std::fstream file(conf.GetClientPipe());
-				file << std::to_string(music.GetVolume()) << std::endl;
+				std::ofstream cfile(conf.GetClientPipe());
+				cfile << std::to_string(music.GetVolume()) << std::endl;
 			}
 			break;
 		//case Command::SAVE_FILE:
 		//	break;
 	}
+
+	dfile.get();
+	dfile.close();
 }
