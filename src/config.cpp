@@ -15,6 +15,7 @@ Config::Config() {
 }
 
 void Config::Load() {
+  //TODO: Maybe we should use boost propertytree library
   #ifdef DEBUG
     std::cout << "Using config file " << MakeAbsolute(CONFIG_FOLDER+"daemon.conf") << std::endl;
   #endif
@@ -31,6 +32,15 @@ void Config::Load() {
 	std::ifstream config(MakeAbsolute(CONFIG_FOLDER+"daemon.conf"));
   if(!config.is_open()) {
         std::cerr << "Config file could not be open, using default values" << std::endl;
+        //Write a dumb config file
+        std::ofstream config(MakeAbsolute(CONFIG_FOLDER+"daemon.conf"));
+        config.setf(std::ios::boolalpha);
+        config  << "daemon_pipe   = "   << GetDaemonPipe()  << std::endl
+                << "client_pipe   = "   << GetClientPipe()  << std::endl
+                << "music_folder  = "   << GetDir()         << std::endl
+                << "auto_start    = "   << GetAutostart()   << std::endl
+                << "pid_file      = "   << GetPidFile()     << std::endl
+                << "db_file       = "   << GetDbFile()      << std::endl;
   } else {
     options_description desc("Options");
     desc.add_options()
