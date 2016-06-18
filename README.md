@@ -37,6 +37,11 @@ Si no existe ninguna configuración se crea una por defecto
 - Ecualizador
 - Cache de canciones recientes (para agilizar la búsqueda)
 
+#### Clientes 
+
+- https://github.com/stakewinner00/web_cppplayer (cliente web)
+- https://github.com/stakewinner00/cl_cppplayer (cliente por terminal)
+
 #### Colaboradores
 Lista de gente que ha colaborado de alguna forma con el proyecto
-[@masapastosa](https://github.com/masapastosa) [@javorcd](https://github.com/javorcd)
+[@masapastosa](https://github.com/masapastosa) [@javorcd](https://github.com/javorcd) [@kid_goth](https://github.com/bssanchez)
