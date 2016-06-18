@@ -38,13 +38,17 @@ void MusicList::Sort(Order s) {
 }
 
 void MusicList::FilterArtist(const std::string artist) {
-	song_list.clear();
-	for(auto s : full_list ) {
-		#ifdef DEBUG
-			std::cout << "Analyzing " << s->GetFile() << std::endl;
-		#endif
-		if(s->GetArtist() == artist)
-			song_list.emplace_back(s);
+	if(artist != "") {
+		song_list.clear();
+		for(auto s : full_list ) {
+			#ifdef DEBUG
+				std::cout << "Analyzing " << s->GetFile() << std::endl;
+			#endif
+			if(s->GetArtist() == artist)
+				song_list.emplace_back(s);
+		}
+	} else {
+		song_list = full_list;
 	}
 }
 
