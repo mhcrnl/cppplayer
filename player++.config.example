@@ -1,5 +1,0 @@
-#daemon_pipe  = /tmp/dplayer++
-#client_pipe  = /tmp/cplayer++
-music_folder  = ~/Music
-auto_start    = false
-pid_file      = /tmp/player++.pid

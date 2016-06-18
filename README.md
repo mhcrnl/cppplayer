@@ -17,7 +17,8 @@ Nota: En debian stable (jessie) no hay la versión necesaria de cmake, para arre
 
 #### Configuración
 
-El programa al iniciar lee la configuración de ~/.config/player++/daemon.conf
+El programa al iniciar lee la configuración de ~/.config/player++/daemon.conf 
+Si no existe ninguna configuración se crea una por defecto
 
 #### Features
 
