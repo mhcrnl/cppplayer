@@ -65,9 +65,11 @@ void Manager::StartServer() {
 		music.SetStatus(Status::Playing);
 	}
 
-	std::ifstream f;
 	while(music.GetStatus() != Status::Exit) {
+		std::ifstream f(conf.GetDaemonPipe());
 		ExecuteCommand(ReadCommand(f), f);
+
+		f.get();
 	}
 	mplayer.join();
 }
@@ -76,7 +78,6 @@ void Manager::StartServer() {
 //Private Functions 
 
 Command Manager::ReadCommand(std::ifstream& f) {
-	f.open(conf.GetDaemonPipe());
 	if(!f.is_open()) {
 		throw std::runtime_error("Daemon pipe could not be opened");
 	}
@@ -176,7 +177,4 @@ void Manager::ExecuteCommand(Command c, std::ifstream& dfile) {
 		//case Command::SAVE_FILE:
 		//	break;
 	}
-
-	dfile.get();
-	dfile.close();
 }
