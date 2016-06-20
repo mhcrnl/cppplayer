@@ -2,10 +2,11 @@
 #include <fstream>
 #include <iostream>
 
-#include <boost/program_options.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
 
-using namespace boost::program_options;
+namespace pt = boost::property_tree;
 
 Config::Config() {
   path dir(Expand(CONFIG_FOLDER));
@@ -21,6 +22,8 @@ void Config::Load() {
   #endif
 
 
+
+
   //Try to autodetect music dir
   //Here we should use libxdg to parse ~/.config/user-dirs.dirs (if exists)
   //and get the default music dir.
@@ -31,38 +34,36 @@ void Config::Load() {
 
 	std::ifstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
   if(!config.is_open()) {
-        std::cerr << "Config file could not be open, using default values" << std::endl;
-        //Write a dumb config file
-        std::ofstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
-        config.setf(std::ios::boolalpha);
-        config  << "daemon_pipe   = "   << GetDaemonPipe()  << std::endl
-                << "client_pipe   = "   << GetClientPipe()  << std::endl
-                << "music_folder  = "   << GetDir()         << std::endl
-                << "auto_start    = "   << GetAutostart()   << std::endl
-                << "pid_file      = "   << GetPidFile()     << std::endl
-                << "db_file       = "   << GetDbFile()      << std::endl;
+    std::cerr << "Config file could not be open, using default values" << std::endl;
+    //Write a dumb config file
+    std::ofstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
+    config.setf(std::ios::boolalpha);
+    config  << "daemon_pipe   = "   << GetDaemonPipe()  << std::endl
+            << "client_pipe   = "   << GetClientPipe()  << std::endl
+            << "music_folder  = "   << GetDir()         << std::endl
+            << "auto_start    = "   << GetAutostart()   << std::endl
+            << "pid_file      = "   << GetPidFile()     << std::endl
+            << "db_file       = "   << GetDbFile()      << std::endl;
+
+    opt.daemonpipe  =Expand(opt.daemonpipe);
+    opt.clientpipe  =Expand(opt.clientpipe);
+    opt.pidfile     =Expand(opt.pidfile);
+    opt.dbfile      =Expand(opt.dbfile);
+    opt.dir         =Expand(opt.dir.c_str());
+
   } else {
-    options_description desc("Options");
-    desc.add_options()
-      ("daemon_pipe", value<std::string>(&opt.daemonpipe))
-      ("client_pipe", value<std::string>(&opt.clientpipe))
-      ("pid_file",    value<std::string>(&opt.pidfile))
-      ("db_file",     value<std::string>(&opt.dbfile))
-      ("music_folder", value<path>(&opt.dir))
-      ("auto_start", value<bool>(&opt.autostart))
+    pt::ptree tree;
+    pt::read_ini(config, tree);
 
-    ;
+    //The second argument of tree.get is the default value
 
-    variables_map vm = variables_map();
-    store(parse_config_file(config , desc, true), vm);
-    notify(vm); 
+    opt.daemonpipe = Expand(tree.get("daemon_pipe", opt.daemonpipe));
+    opt.clientpipe = Expand(tree.get("client_pipe", opt.clientpipe));
+    opt.pidfile    = Expand(tree.get("pid_file", opt.pidfile));
+    opt.dbfile     = Expand(tree.get("db_file", opt.dbfile));
+    opt.dir        = Expand(tree.get("music_folder", opt.dir).c_str());
+    opt.autostart  = tree.get("auto_start", opt.autostart);
   }
-
-  opt.daemonpipe  =Expand(opt.daemonpipe);
-  opt.clientpipe  =Expand(opt.clientpipe);
-  opt.pidfile     =Expand(opt.pidfile);
-  opt.dbfile      =Expand(opt.dbfile);
-  opt.dir         =Expand(opt.dir.c_str());
 }
 
 std::string Config::GetDaemonPipe() const {
