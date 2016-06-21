@@ -37,13 +37,14 @@ void Config::Load() {
     std::cerr << "Config file could not be open, using default values" << std::endl;
     //Write a dumb config file
     std::ofstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
-    config.setf(std::ios::boolalpha);
-    config  << "daemon_pipe   = "   << GetDaemonPipe()  << std::endl
-            << "client_pipe   = "   << GetClientPipe()  << std::endl
-            << "music_folder  = "   << GetDir()         << std::endl
-            << "auto_start    = "   << GetAutostart()   << std::endl
-            << "pid_file      = "   << GetPidFile()     << std::endl
-            << "db_file       = "   << GetDbFile()      << std::endl;
+    pt::ptree tree;
+    tree.put("daemon_pipe", opt.daemonpipe);
+    tree.put("client_pipe", opt.clientpipe);
+    tree.put("pid_file", opt.pidfile);
+    tree.put("db_file", opt.dbfile);
+    tree.put("music_folder", opt.dir);
+    tree.put("auto_start", opt.autostart);
+    pt::write_ini(config, tree);
 
     opt.daemonpipe  =Expand(opt.daemonpipe);
     opt.clientpipe  =Expand(opt.clientpipe);
