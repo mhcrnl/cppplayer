@@ -1,6 +1,10 @@
 #pragma once
 
+#ifdef __cplusplus
 enum class Command : char {
+#else
+typedef enum {
+#endif
 	QUIT,
 	PLAY,
 	NEXT,
@@ -29,4 +33,9 @@ enum class Command : char {
 
 	VOLUME_SET,
 	VOLUME_GET,
+#ifdef __cplusplus
 };
+#else 
+} Command;
+#endif
+

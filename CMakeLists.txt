@@ -5,6 +5,8 @@ include_directories(include)
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_executable(dplayer++ ${SRC_FILES})
 install(PROGRAMS build/dplayer++ DESTINATION /usr/local/bin)
+install(DIRECTORY DESTINATION /usr/include/cppplayer)
+install(FILES include/commands.h DESTINATION /usr/include/cppplayer)
 
 target_compile_features(dplayer++ PUBLIC cxx_range_for cxx_auto_type cxx_lambdas)
 
