@@ -62,6 +62,11 @@ float Music::GetVolume() {
 	return music.getVolume();
 }
 
+int Music::GetRemainingMilliseconds() {
+	return (music.getDuration().asMilliseconds() - music.getPlayingOffset().asMilliseconds()) 
+			+ (mp3music.getDuration().asMilliseconds() - mp3music.getPlayingOffset().asMilliseconds());
+}
+
 bool Music::IsStatus(Status s) {
 	bool tmp = GetStatus()==s;
 	if(tmp) mymutex.notify();

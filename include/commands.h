@@ -1,3 +1,25 @@
+#if 0
+#This way i can source this file and debug with bash
+export CPPPLAYER_QUIT="\x00"
+export CPPPLAYER_PLAY="\x01"
+export CPPPLAYER_NEXT="\x02"
+export CPPPLAYER_BACK="\x03"
+export CPPPLAYER_PAUSE="\x04"
+export CPPPLAYER_STOP="\x05"
+export CPPPLAYER_SORT_RANDOM="\x06"
+export CPPPLAYER_GET_ARTIST="\x07"
+export CPPPLAYER_GET_TITLE="\x08"
+export CPPPLAYER_GET_FILE="\x09"
+export CPPPLAYER_FILTER_ARTIST="\x0a"
+export CPPPLAYER_ADD_FOLDER="\x0b"
+export CPPPLAYER_ADD_FILE="\x0c"
+export CPPPLAYER_SAVE_FILE="\x0d"
+export CPPPLAYER_VOLUME_SET="\x0e"
+export CPPPLAYER_VOLUME_GET="\x0f"
+export CPPPLAYER_TIME_GET_REMAINING="\x10"
+return
+#endif
+
 #pragma once
 
 #ifdef __cplusplus
@@ -33,6 +55,8 @@ typedef enum {
 
 	VOLUME_SET,
 	VOLUME_GET,
+
+	TIME_GET_REMAINING,
 #ifdef __cplusplus
 };
 #else 

@@ -174,6 +174,11 @@ void Manager::ExecuteCommand(Command c, std::ifstream& dfile) {
 				cfile << std::to_string(music.GetVolume()) << std::endl;
 			}
 			break;
+		case Command::TIME_GET_REMAINING:
+			{
+				std::ofstream cfile(conf.GetClientPipe());
+				cfile << music.GetRemainingMilliseconds() << std::endl;
+			}
 		//case Command::SAVE_FILE:
 		//	break;
 	}

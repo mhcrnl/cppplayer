@@ -64,6 +64,8 @@ public:
 	void SetVolume(float v);
 	float GetVolume();
 
+	int GetRemainingMilliseconds();
+
 	MusicList& GetList();
 	Song& GetCurrent();
 private:
