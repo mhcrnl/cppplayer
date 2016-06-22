@@ -14,35 +14,35 @@ Song::Song(path p) {
 	file = p.c_str();
 }
 
-std::string Song::GetTitle() {
+std::wstring Song::GetTitle() {
 	std::lock_guard<std::mutex> song_guard(song_mutex);
 	if(title == "") {
 		TagLib::FileRef f(file.c_str());
 		if(f.isNull()) {
-			artist = title = "Unknown";
+			artist = title = L"Unknown";
 		} else {
 			auto tmp = f.tag()->title();
 			if( tmp == TagLib::String::null) {
 				tmp = TagLib::String("Unknown");
 			}
-			title = tmp.to8Bit();
+			title = tmp.toWString();
 		}
 	}
 	return title;
 }
 
-std::string Song::GetArtist() {
+std::wstring Song::GetArtist() {
 	std::lock_guard<std::mutex> song_guard(song_mutex);
 	if(artist == "") {
 		TagLib::FileRef f(file.c_str());
 		if(f.isNull()) {
-			artist = title = "Unknown";
+			artist = title = L"Unknown";
 		} else {
 			auto tmp = f.tag()->artist();
 			if( tmp == TagLib::String::null) {
 				tmp = TagLib::String("Unknown");
 			}
-			artist = tmp.to8Bit();
+			artist = tmp.toWString();
 		}
 	}
 	return artist;

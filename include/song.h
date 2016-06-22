@@ -9,13 +9,13 @@ class Song {
 public:
 	Song(path p);
 	Song() =default;
-	std::string GetTitle();
-	std::string GetArtist();
+	std::wstring GetTitle();
+	std::wstring GetArtist();
 	std::string GetFile();
 	std::string GetExtension();
 private:
 	std::string extension;
-	std::string artist;
-	std::string title;
+	std::wstring artist;
+	std::wstring title;
 	std::string file;
 };

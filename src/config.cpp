@@ -16,13 +16,9 @@ Config::Config() {
 }
 
 void Config::Load() {
-  //TODO: Maybe we should use boost propertytree library
   #ifdef DEBUG
     std::cout << "Using config file " << Expand(CONFIG_FOLDER+"daemon.conf") << std::endl;
   #endif
-
-
-
 
   //Try to autodetect music dir
   //Here we should use libxdg to parse ~/.config/user-dirs.dirs (if exists)
