@@ -4,11 +4,11 @@
 
 Reproductor de música sencillo que busca la simplicidad y facilidad de configuración (se podría ver como alternativa a mpd)
 
-El programa usa las librerías mpg123, sfml, TagLib boost-program-options y boost-filesystem. 
+El programa usa las librerías mpg123, sfml, TagLib, boost-filesystem y sqlite. 
 
 #### Instalación en Debian/Ubuntu
 
-**# apt-get install libmpg123-dev libsfml-dev libboost-filesystem-dev libboost-program-options-dev libtag1-dev**
+**# apt-get install libmpg123-dev libsfml-dev libboost-filesystem-dev libsqlite3-dev libtag1-dev**
 
 Para compilarlo y instalarlo
 > mkdir -p build; cd build; cmake ..; make; sudo make install
