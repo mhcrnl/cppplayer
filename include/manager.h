@@ -4,8 +4,7 @@
 #include "music.h"
 #include "database.h"
 #include "commands.h"
-
-#include <fstream>
+#include "protocol.h"
 
 
 //The main work is done in this class
@@ -21,8 +20,12 @@ public:
 	//Start the main loop
 	void StartServer();
 private:
-	Command ReadCommand(std::ifstream&);
-	void ExecuteCommand(Command c, std::ifstream&);
+	template <typename T>
+	void ProcessCommand(T& proto);
+
+	template <typename T>
+	void ExecuteCommand(Command c, T& proto);
+	
 	Music music;
 	Database db;
 	Config conf;

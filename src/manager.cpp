@@ -66,10 +66,14 @@ void Manager::StartServer() {
 	}
 
 	while(music.GetStatus() != Status::Exit) {
-		std::ifstream f(conf.GetDaemonPipe());
-		ExecuteCommand(ReadCommand(f), f);
+		//TODO: Allow to use more than one protocol simultaneously
 
-		f.get();
+		#ifdef _NAMED_PIPE
+			static NamedPipe pipe(conf.GetDaemonPipe(), conf.GetClientPipe());
+			ProcessCommand(pipe);	
+		#else
+		#error At least we need one protocol to use
+		#endif
 	}
 	mplayer.join();
 }
@@ -77,15 +81,13 @@ void Manager::StartServer() {
 
 //Private Functions 
 
-Command Manager::ReadCommand(std::ifstream& f) {
-	if(!f.is_open()) {
-		throw std::runtime_error("Daemon pipe could not be opened");
-	}
-	auto tmp = static_cast<Command>(f.get());
-	return tmp;
+template <typename T>
+void Manager::ProcessCommand(T& proto) {
+	ExecuteCommand(proto.ReadCommand(), proto);
 }
 
-void Manager::ExecuteCommand(Command c, std::ifstream& dfile) {
+template <typename T>
+void Manager::ExecuteCommand(Command c, T& proto) {
 	#ifdef DEBUG
 	std::cout << "Command:" <<(int)c << std::endl;
 	#endif
@@ -115,53 +117,33 @@ void Manager::ExecuteCommand(Command c, std::ifstream& dfile) {
 			music.GetList().Sort(Order::RANDOM);
 			break;
 		case Command::GET_ARTIST:
-			{
-				std::ofstream cfile(conf.GetClientPipe());
-				cfile << music.GetCurrent().GetArtist() << std::endl;
-			}
+			proto << music.GetCurrent().GetArtist() << std::endl;
 			break;
 		case Command::GET_TITLE:
-			{
-				std::ofstream cfile(conf.GetClientPipe());
-				cfile << music.GetCurrent().GetTitle() << std::endl;
-			}
+			proto << music.GetCurrent().GetTitle() << std::endl;
 			break;
 		case Command::GET_FILE:
-			{
-				std::ofstream cfile(conf.GetClientPipe());
-				cfile << music.GetCurrent().GetFile() << std::endl;
-			}
+			proto << music.GetCurrent().GetFile() << std::endl;
 			break;
 		case Command::FILTER_ARTIST:
 			{
-				std::string s;
-				getline(dfile, s);
-
 				//Stop reproduction while we are filtering the list
 				auto tmp = music.GetStatus();
 				music.SetStatus(Status::Stoped);
-				music.GetList().FilterArtist(s);
+				music.GetList().FilterArtist(proto.GetLine());
 				music.SetStatus(tmp);
 			}
 			break;
 		case Command::ADD_FOLDER:
-			{
-				std::string s;
-				getline(dfile, s);
-				music.GetList().LoadDir(s);
-			}
+			music.GetList().LoadDir(proto.GetLine());
 			break;
 		case Command::ADD_FILE:
-			{
-				std::string s;
-				getline(dfile, s);
-				music.GetList().LoadFile(s);
-			}
+			music.GetList().LoadFile(proto.GetLine());
 			break;
 		case Command::VOLUME_SET:
 			{
 				std::string volum;
-				dfile >> volum;
+				proto >> volum;
 				#ifdef DEBUG
 				std::cout << volum << std::endl;
 				#endif
@@ -169,16 +151,11 @@ void Manager::ExecuteCommand(Command c, std::ifstream& dfile) {
 			}
 			break;
 		case Command::VOLUME_GET:
-			{
-				std::ofstream cfile(conf.GetClientPipe());
-				cfile << std::to_string(music.GetVolume()) << std::endl;
-			}
+			proto << std::to_string(music.GetVolume()) << std::endl;
 			break;
 		case Command::TIME_GET_REMAINING:
-			{
-				std::ofstream cfile(conf.GetClientPipe());
-				cfile << music.GetRemainingMilliseconds() << std::endl;
-			}
+			proto << music.GetRemainingMilliseconds() << std::endl;
+
 		//case Command::SAVE_FILE:
 		//	break;
 	}

@@ -1,8 +1,15 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 project (cppplayer)
 
+#Compiler define
+option(_NAMED_PIPE "Use named pipes as a comunnication protocol" ON)
+IF (_NAMED_PIPE)
+    ADD_DEFINITIONS(-D_NAMED_PIPE)
+ENDIF()
+
 include_directories(include) 
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
+ 
 add_executable(dplayer++ ${SRC_FILES})
 install(PROGRAMS build/dplayer++ DESTINATION /usr/local/bin)
 install(DIRECTORY DESTINATION /usr/include/cppplayer)
