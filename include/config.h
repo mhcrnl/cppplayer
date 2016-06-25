@@ -24,12 +24,14 @@ private:
 	std::string Expand(const std::string file);
 	std::string GetHome();
 	struct Options {
+		#ifdef _NAMED_PIPE
 		//Pipe used by the daemon to write to client
 		std::string daemonpipe 	= CONFIG_FOLDER+"dplayer++";
 
 		//Pipe used by the client to write to daemon
 		std::string clientpipe 	= CONFIG_FOLDER+"cplayer++";
-
+		#endif
+		
 		//File to store the pid number so we can check if the daemon is really running
 		std::string pidfile 	= CONFIG_FOLDER+"player++.pid";
 

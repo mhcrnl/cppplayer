@@ -1,17 +1,19 @@
 #pragma once
 
+#include "commands.h"
+#include "config.h"
+
 #include <fstream>
 #include <ostream>
 #include <string>
-#include "commands.h"
 
 
 //This should only be used for debugging/scripting pourpose
 // or if only one client are in use.
 class NamedPipe {
 public:
-	NamedPipe(std::string d, std::string c) 			
-				: daemon(d), client(c)
+	NamedPipe(Config& c) 			
+				: conf(c)
 	{}
 
 	Command ReadCommand() {
@@ -43,7 +45,7 @@ private:
 
 	void CheckClient() {
 		if(!fclient.is_open()) {
-			fclient.open(client);
+			fclient.open(conf.GetClientPipe());
 			if(!fclient.is_open()) {
 				throw std::runtime_error("Client pipe could not be opened");
 			}
@@ -56,15 +58,14 @@ private:
 
 		if(!fdaemon.good() || !fdaemon.is_open()) {
 			fdaemon.close();
-            fdaemon.open(daemon);
+            fdaemon.open(conf.GetDaemonPipe());
 			if(!fdaemon.is_open()) {
 				throw std::runtime_error("Daemon pipe could not be opened");
 			}
 		}
 	}
 
-	std::string daemon;
-	std::string client;
+	Config& conf;
 	std::ofstream fclient;
 	std::ifstream fdaemon;
 };

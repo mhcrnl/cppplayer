@@ -34,16 +34,20 @@ void Config::Load() {
     //Write a dumb config file
     std::ofstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
     pt::ptree tree;
+    #ifdef _NAMED_PIPE
     tree.put("daemon_pipe", opt.daemonpipe);
     tree.put("client_pipe", opt.clientpipe);
+    #endif
     tree.put("pid_file", opt.pidfile);
     tree.put("db_file", opt.dbfile);
     tree.put("music_folder", opt.dir);
     tree.put("auto_start", opt.autostart);
     pt::write_ini(config, tree);
 
+    #ifdef _NAMED_PIPE
     opt.daemonpipe  =Expand(opt.daemonpipe);
     opt.clientpipe  =Expand(opt.clientpipe);
+    #endif
     opt.pidfile     =Expand(opt.pidfile);
     opt.dbfile      =Expand(opt.dbfile);
     opt.dir         =Expand(opt.dir.c_str());
@@ -53,9 +57,10 @@ void Config::Load() {
     pt::read_ini(config, tree);
 
     //The second argument of tree.get is the default value
-
+    #ifdef _NAMED_PIPE
     opt.daemonpipe = Expand(tree.get("daemon_pipe", opt.daemonpipe));
     opt.clientpipe = Expand(tree.get("client_pipe", opt.clientpipe));
+    #endif
     opt.pidfile    = Expand(tree.get("pid_file", opt.pidfile));
     opt.dbfile     = Expand(tree.get("db_file", opt.dbfile));
     opt.dir        = Expand(tree.get("music_folder", opt.dir).c_str());

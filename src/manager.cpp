@@ -69,7 +69,7 @@ void Manager::StartServer() {
 		//TODO: Allow to use more than one protocol simultaneously
 
 		#ifdef _NAMED_PIPE
-			static NamedPipe pipe(conf.GetDaemonPipe(), conf.GetClientPipe());
+			static NamedPipe pipe(conf);
 			ProcessCommand(pipe);	
 		#else
 		#error At least we need one protocol to use
