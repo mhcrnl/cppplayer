@@ -67,11 +67,10 @@ public:
 private:
 
 	void CheckClient() {
+		fclient.close();
+		fclient.open(conf.GetClientPipe());
 		if(!fclient.is_open()) {
-			fclient.open(conf.GetClientPipe());
-			if(!fclient.is_open()) {
-				throw std::runtime_error("Client pipe could not be opened");
-			}
+			throw std::runtime_error("Client pipe could not be opened");
 		}
 	}
 
