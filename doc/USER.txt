@@ -1,0 +1,99 @@
+=== Compiling & Installing ===
+
+Obviously, we need to clone and create the build directory
+
+	git clone https://github.com/stakewinner00/cppplayer
+	cd cppplayer
+	mkdir build; cd build
+
+Then we have some flags we can change at compile time. 
+First, we have the build type, currently there are 4 build types, RELEASE, DEBUG, THREAD and ADDRESS.
+
+The RELEASE type enables -O3 and -flto compiler flags. 
+The DEBUG type enables -ggdb -Og and -DDEBUG compiler flags and enables a verbose output for debugging purpose.
+The THREAD type enables the same of DEBUG type plus -fsanitize=thread for detecting data races.
+The ADDRESS type enables the same of DEBUG type plus -fsanitize=address for detecting data leaks.
+
+Then we can define the protocols we want to use, for now there are _NAMED_PIPE and _TCP_SOCKET.
+
+If we wanted to compile with DEBUG build type and with _TCP_SOCKET enable and _NAMED_PIPE disabled, but with _TCP_SOCKET enabled we can execute
+	
+	cmake -DCMAKE_BUILD_TYPE=debug -D_NAMED_PIPE=Off -D_TCP_SOCKET=On ..
+
+Once this is done we can compile with
+
+	make
+
+or if we want verbose output
+
+	make VERBOSE=1
+
+For installing we can execute
+
+	sudo make install
+
+It will copy the commands.h header to /usr/include/cppplayer/commands.h and the executable to /usr/local/bin/dplayer++
+
+NOTES / LIMITATIONS: Currently only of the two protocols can be used (this will change soon).
+
+
+=== Configuration ===
+
+All the information and related files will be located in ~/.config/player++/. The configuration file used by the daemon is called daemon.conf. 
+For default if the file doesn't exist, it will be created with the default values. If some value is not especified, it will use default values.
+
+We can write these configuration for our own, or if our music folder is located in ~/Music, let the daemon to use the default values (for default the daemon search if the ~/Music directory exists, and in that case play the music inside of the directory recursively). 
+
+Currently the configuration file have the next options.
+pid_file: Is the location of the pid file used for detecting daemons already running. Default is ~/.config/player++/player++.pid
+
+db_file:Is the location of the sql database, currently unused
+
+music_folder: Is the directory where the music is searched. Default is . or ~/Music if exists
+
+auto_start: A boolean that says if the status of the daemon should change from Stop to Playing automatically. Default is false
+
+Inside section [tcp].
+
+port_number: Port number used for receiving orders and sending information to clients. Default is 6600
+
+bind_address: Address used for listening connections. Default is 0.0.0.0
+
+Inside section [fifo]
+
+daemon_pipe: Location of the pipe that the daemon uses for reading from clients. Default is: ~/.config/player++/dplayer++
+
+client_pipe: Location of the pipe that the client uses for reading from daemon. Default is ~/.config/player++/cplayer++
+
+
+=== Running & Scripting === 
+
+For default the player will not fork so if some error happens, it will be printed on the console.
+If we want to run it as a daemon, we could add the "-d" flag.
+
+Once we have the daemon running, we can use some more usable clients like https://github.com/stakewinner00/cl_cppplayer for a client console or https://github.com/stakewinner00/web_cppplayer for a web client, but we can use bash too.
+
+If we want to use bash first we should 
+
+	source /usr/include/cppplayer/commands.h 
+
+so we don't need to remember or search for the hexadecimal number for each command.
+Supposing we are using named pipes, and the pipes are in the default location. We can:
+	cd ~/.config/player++
+	
+	#pause/play the reproduction, if status=pause it will change to play, if status=play it will change to pause
+	echo -n $CPPPLAYER_PAUSE > ./dplayer++
+
+	#forward to the next song
+	echo -n $CPPPLAYER_NEXT > ./dplayer++
+
+	#get the current artist name
+	echo -n $CPPPLAYER_GET_ARTIST > ./dplayer++; sed q cplayer++
+
+	#get current volume
+	echo -n $CPPPLAYER_VOLUME_GET > ./dplayer++; sed q cplayer++
+
+	#set volume to 50
+	echo -n $CPPPLAYER_VOLUME_SET"50" > ./dplayer++
+
+etc, to see all supported commands you can read the /usr/include/cppplayer/commands.h  header file
