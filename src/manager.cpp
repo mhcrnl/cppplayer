@@ -1,8 +1,6 @@
 #include "manager.h"
 #include "musiclist.h"
 
-#include <sys/stat.h>
-#include <unistd.h>
 #include <cstdio>
 #include <thread>
 #include <iostream>
@@ -36,20 +34,9 @@ Manager::Manager() {
 	}
 	opid_file << getpid();
 	opid_file.close();
-
-	//Delete pipes, if exist (the program exit abnormaly)
-	unlink(conf.GetDaemonPipe().c_str()); 
-	unlink(conf.GetClientPipe().c_str());
-
-	mkfifo(conf.GetDaemonPipe().c_str(), 0666);
-	mkfifo(conf.GetClientPipe().c_str(), 0666);
 }
 
 Manager::~Manager() {
-	//Delete pipes
-	unlink(conf.GetDaemonPipe().c_str()); 
-	unlink(conf.GetClientPipe().c_str());
-
 	//Remove pid file
 	std::remove(conf.GetPidFile().c_str());
 }
@@ -71,6 +58,9 @@ void Manager::StartServer() {
 		#ifdef _NAMED_PIPE
 			static NamedPipe pipe(conf);
 			ProcessCommand(pipe);	
+		#elif _TCP_SOCKET
+			static Tcp tcp(conf);
+			ProcessCommand(tcp);
 		#else
 		#error At least we need one protocol to use
 		#endif
@@ -117,13 +107,13 @@ void Manager::ExecuteCommand(Command c, T& proto) {
 			music.GetList().Sort(Order::RANDOM);
 			break;
 		case Command::GET_ARTIST:
-			proto << music.GetCurrent().GetArtist() << std::endl;
+			proto << music.GetCurrent().GetArtist();
 			break;
 		case Command::GET_TITLE:
-			proto << music.GetCurrent().GetTitle() << std::endl;
+			proto << music.GetCurrent().GetTitle();
 			break;
 		case Command::GET_FILE:
-			proto << music.GetCurrent().GetFile() << std::endl;
+			proto << music.GetCurrent().GetFile();
 			break;
 		case Command::FILTER_ARTIST:
 			{
@@ -151,10 +141,10 @@ void Manager::ExecuteCommand(Command c, T& proto) {
 			}
 			break;
 		case Command::VOLUME_GET:
-			proto << std::to_string(music.GetVolume()) << std::endl;
+			proto << std::to_string(music.GetVolume());
 			break;
 		case Command::TIME_GET_REMAINING:
-			proto << music.GetRemainingMilliseconds() << std::endl;
+			proto << music.GetRemainingMilliseconds();
 
 		//case Command::SAVE_FILE:
 		//	break;

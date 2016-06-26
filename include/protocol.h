@@ -3,18 +3,41 @@
 #include "commands.h"
 #include "config.h"
 
-#include <fstream>
-#include <ostream>
 #include <string>
+#include <ostream>
+#include <istream>
 
+#ifdef _NAMED_PIPE
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fstream>
+#elif _TCP_SOCKET
+#include <boost/asio.hpp>
+#else
+#error At least we need one protocol to use
+#endif
 
+#ifdef _NAMED_PIPE
 //This should only be used for debugging/scripting pourpose
 // or if only one client are in use.
 class NamedPipe {
 public:
 	NamedPipe(Config& c) 			
 				: conf(c)
-	{}
+	{
+		//Delete pipes, if exist (the program exit abnormaly)
+		unlink(conf.GetDaemonPipe().c_str()); 
+		unlink(conf.GetClientPipe().c_str());
+
+		mkfifo(conf.GetDaemonPipe().c_str(), 0666);
+		mkfifo(conf.GetClientPipe().c_str(), 0666);
+	}
+
+	~NamedPipe() {
+		//Delete pipes
+		unlink(conf.GetDaemonPipe().c_str()); 
+		unlink(conf.GetClientPipe().c_str());
+	}
 
 	Command ReadCommand() {
 		CheckDaemon();
@@ -31,7 +54,7 @@ public:
 	template <typename T>
 	std::ostream& operator<<(const T& obj) {
 		CheckClient();
-		fclient << obj;
+		fclient << obj << std::endl;
 		return fclient;
 	}
 
@@ -69,3 +92,69 @@ private:
 	std::ofstream fclient;
 	std::ifstream fdaemon;
 };
+
+#elif _TCP_SOCKET
+
+using boost::asio::ip::tcp;
+
+class Tcp {
+public:
+	Tcp(Config& c)
+			: conf(c)
+	{
+		//TODO: Setear la bindadddress
+		acceptor = new tcp::acceptor(io_service, tcp::endpoint(tcp::v4(), 6600));
+	}
+
+	~Tcp() {
+		delete acceptor;
+	}
+
+	Command ReadCommand() {
+		delete socket;
+
+		socket = new tcp::socket(io_service);
+		acceptor->accept(*socket);
+
+		char buffer[1];
+        boost::asio::read(*socket, boost::asio::buffer(buffer, 1));
+        return static_cast<Command>(buffer[0]);
+	}
+
+	std::string GetLine() {
+		auto bytes = boost::asio::read_until(*socket, buffer, '\n');
+		buffer.commit(bytes);
+		std::string line;
+		std::getline(is, line);
+		return line;
+	}
+
+	template <typename T>
+	std::ostream& operator<<(const T& obj) {
+		os << obj << std::endl;
+		auto bytes = boost::asio::write(*socket, buffer);
+		buffer.consume(bytes);
+		return os;
+	}
+
+	template <typename T>
+	std::istream& operator>>(T& obj) {
+		auto bytes = boost::asio::read_until(*socket, buffer, '\n');
+		buffer.commit(bytes);
+		is >> obj;
+		return is;
+	}
+private:
+	Config& conf;
+	boost::asio::io_service io_service;
+	tcp::acceptor* acceptor;
+	tcp::socket* socket;
+
+	boost::asio::streambuf buffer;
+	std::istream is{&buffer};
+	std::ostream os{&buffer};
+};
+
+#else
+#error At least we need one protocol to use
+#endif

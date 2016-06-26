@@ -14,8 +14,16 @@ class Config {
 public:
 	Config();
 	void Load();
+
+	#ifdef _NAMED_PIPE
 	std::string GetDaemonPipe() const;
 	std::string GetClientPipe() const;
+	#elif _TCP_SOCKET
+	unsigned GetPortNumber() const;
+	std::string GetBindAddress() const;
+	#else 
+	#error At least we need one protocol to use
+	#endif
 	std::string GetPidFile()	const;
 	std::string GetDbFile()		const;
 	path GetDir() const;
@@ -30,8 +38,14 @@ private:
 
 		//Pipe used by the client to write to daemon
 		std::string clientpipe 	= CONFIG_FOLDER+"cplayer++";
+		#elif _TCP_SOCKET
+		//TODO: ipv6
+		unsigned portnumber		= 6600;
+		std::string bindaddress	= "0.0.0.0";
+		#else
+		#error At least we need one protocol to use
 		#endif
-		
+
 		//File to store the pid number so we can check if the daemon is really running
 		std::string pidfile 	= CONFIG_FOLDER+"player++.pid";
 

@@ -7,6 +7,11 @@ IF (_NAMED_PIPE)
     ADD_DEFINITIONS(-D_NAMED_PIPE)
 ENDIF()
 
+option(_TCP_SOCKET "Use  a tcp socket for the comunnication" ON)
+IF (_TCP_SOCKET)
+    ADD_DEFINITIONS(-D_TCP_SOCKET)
+ENDIF()
+
 include_directories(include) 
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
  

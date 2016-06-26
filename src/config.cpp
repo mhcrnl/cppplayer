@@ -34,14 +34,23 @@ void Config::Load() {
     //Write a dumb config file
     std::ofstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
     pt::ptree tree;
-    #ifdef _NAMED_PIPE
-    tree.put("daemon_pipe", opt.daemonpipe);
-    tree.put("client_pipe", opt.clientpipe);
-    #endif
+
     tree.put("pid_file", opt.pidfile);
     tree.put("db_file", opt.dbfile);
     tree.put("music_folder", opt.dir);
     tree.put("auto_start", opt.autostart);
+
+    #ifdef _NAMED_PIPE
+      tree.put("fifo.daemon_pipe", opt.daemonpipe);
+      tree.put("fifo.client_pipe", opt.clientpipe);
+    #elif _TCP_SOCKET
+      //TODO: ipv6
+      tree.put("tcp.port_number", opt.portnumber);
+      tree.put("tcp.bind_address", opt.bindaddress);
+    #else
+    #error At least we need one protocol to use
+    #endif
+
     pt::write_ini(config, tree);
 
     #ifdef _NAMED_PIPE
@@ -58,8 +67,13 @@ void Config::Load() {
 
     //The second argument of tree.get is the default value
     #ifdef _NAMED_PIPE
-    opt.daemonpipe = Expand(tree.get("daemon_pipe", opt.daemonpipe));
-    opt.clientpipe = Expand(tree.get("client_pipe", opt.clientpipe));
+    opt.daemonpipe = Expand(tree.get("fifo.daemon_pipe", opt.daemonpipe));
+    opt.clientpipe = Expand(tree.get("fifo.client_pipe", opt.clientpipe));
+    #elif _TCP_SOCKET
+    opt.portnumber = tree.get("tcp.port_number", opt.portnumber);
+    opt.bindaddress = tree.get("tcp.bind_address", opt.bindaddress);
+    #else
+    #error At least we need one protocol to use
     #endif
     opt.pidfile    = Expand(tree.get("pid_file", opt.pidfile));
     opt.dbfile     = Expand(tree.get("db_file", opt.dbfile));
@@ -68,13 +82,29 @@ void Config::Load() {
   }
 }
 
-std::string Config::GetDaemonPipe() const {
-  return opt.daemonpipe;
-}
+#ifdef _NAMED_PIPE
 
-std::string Config::GetClientPipe() const {
-  return opt.clientpipe;
-}
+  std::string Config::GetDaemonPipe() const {
+    return opt.daemonpipe;
+  }
+
+  std::string Config::GetClientPipe() const {
+    return opt.clientpipe;
+  }
+
+#elif _TCP_SOCKET
+  
+  unsigned Config::GetPortNumber() const {
+    return opt.portnumber;
+  }
+  
+  std::string Config::GetBindAddress() const {
+    return opt.bindaddress;
+  }
+
+#else 
+#error At least we need one protocol to use
+#endif
 
 std::string Config::GetPidFile() const {
   return opt.pidfile;
