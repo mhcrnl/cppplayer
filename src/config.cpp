@@ -21,7 +21,7 @@ void Config::Load() {
   #endif
 
   //Try to autodetect music dir
-  //Here we should use libxdg to parse ~/.config/user-dirs.dirs (if exists)
+  //TODO: We should use libxdg to parse ~/.config/user-dirs.dirs (if exists)
   //and get the default music dir.
   path default_music(Expand("~/Music/"));
   if(exists(default_music))

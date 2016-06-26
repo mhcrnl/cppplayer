@@ -95,15 +95,18 @@ private:
 
 #elif _TCP_SOCKET
 
+//TODO: Accept multiple connections simultaneously
+
 using boost::asio::ip::tcp;
+using namespace boost::asio;
 
 class Tcp {
 public:
 	Tcp(Config& c)
 			: conf(c)
 	{
-		//TODO: Setear la bindadddress
-		acceptor = new tcp::acceptor(io_service, tcp::endpoint(tcp::v4(), 6600));
+		auto ip = ip::address_v4().from_string(conf.GetBindAddress());
+		acceptor = new tcp::acceptor(io_service, tcp::endpoint(ip, 6600));
 	}
 
 	~Tcp() {
@@ -117,12 +120,12 @@ public:
 		acceptor->accept(*socket);
 
 		char buffer[1];
-        boost::asio::read(*socket, boost::asio::buffer(buffer, 1));
+        read(*socket, boost::asio::buffer(buffer, 1));
         return static_cast<Command>(buffer[0]);
 	}
 
 	std::string GetLine() {
-		auto bytes = boost::asio::read_until(*socket, buffer, '\n');
+		auto bytes = read_until(*socket, buffer, '\n');
 		buffer.commit(bytes);
 		std::string line;
 		std::getline(is, line);
@@ -132,7 +135,7 @@ public:
 	template <typename T>
 	std::ostream& operator<<(const T& obj) {
 		os << obj << std::endl;
-		auto bytes = boost::asio::write(*socket, buffer);
+		auto bytes = write(*socket, buffer);
 		buffer.consume(bytes);
 		return os;
 	}
@@ -150,7 +153,7 @@ private:
 	tcp::acceptor* acceptor;
 	tcp::socket* socket;
 
-	boost::asio::streambuf buffer;
+	streambuf buffer;
 	std::istream is{&buffer};
 	std::ostream os{&buffer};
 };
