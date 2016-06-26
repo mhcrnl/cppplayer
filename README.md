@@ -42,6 +42,9 @@ Si no existe ninguna configuración se crea una por defecto
 
 - https://github.com/stakewinner00/web_cppplayer (cliente web)
 - https://github.com/stakewinner00/cl_cppplayer (cliente por terminal)
+ 
+#### Documentation
+- [user tutorial](doc/USER.txt)
 
 #### Colaboradores
 Lista de gente que ha colaborado de alguna forma con el proyecto
