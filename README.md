@@ -36,6 +36,7 @@ Si no existe ninguna configuración se crea una por defecto
 - Soporte para plugins
 - Ecualizador
 - Cache de canciones recientes (para agilizar la búsqueda)
+- Soporte para carácteres raros/extranjeros.
 
 #### Clientes 
 
