@@ -1,3 +1,14 @@
+=== Dependencies ===
+
+For be able to download and compile the code we need *git* and *cmake* tools plus the next libraries: mpg123, sfml, TagLib, boost-filesystem and sqlite. 
+In a debian/ubuntu distro we can install it executing the next two commands
+
+  sudo apt install git cmake
+  sudo apt install libmpg123-dev libsfml-dev libboost-filesystem-dev libsqlite3-dev libtag1-dev
+
+Important note: In stable debian (jessie) the provided cmake version is not compatible, for be able to compile the project we can use debian testing or compile the version ourselves. The minimum version is 3.1.0
+
+
 === Compiling & Installing ===
 
 Obviously, we need to clone and create the build directory

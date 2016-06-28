@@ -4,21 +4,8 @@
 
 Reproductor de música sencillo que busca la simplicidad y facilidad de configuración (se podría ver como alternativa a mpd)
 
-El programa usa las librerías mpg123, sfml, TagLib, boost-filesystem y sqlite. 
-
-#### Instalación en Debian/Ubuntu
-
-**# apt-get install libmpg123-dev libsfml-dev libboost-filesystem-dev libsqlite3-dev libtag1-dev**
-
-Para compilarlo y instalarlo
-> mkdir -p build; cd build; cmake ..; make; sudo make install
-
-Nota: En debian stable (jessie) no hay la versión necesaria de cmake, para arreglarlo se puede pasar a debian testing, que si tiene la versión necesaria. 
-
-#### Configuración
-
-El programa al iniciar lee la configuración de ~/.config/player++/daemon.conf 
-Si no existe ninguna configuración se crea una por defecto
+#### Documentation
+- [USER tutorial (compiling, installing, configuring and scripting)](doc/USER.txt)
 
 #### Features
 
@@ -43,8 +30,6 @@ Si no existe ninguna configuración se crea una por defecto
 - https://github.com/stakewinner00/web_cppplayer (cliente web)
 - https://github.com/stakewinner00/cl_cppplayer (cliente por terminal)
  
-#### Documentation
-- [user tutorial](doc/USER.txt)
 
 #### Colaboradores
 Lista de gente que ha colaborado de alguna forma con el proyecto
