@@ -58,6 +58,9 @@ typedef enum {
 	VOLUME_GET,
 
 	TIME_GET_REMAINING,
+
+	// Placed here for keeping consistency in existing clients. Future replacement for proper code reading...
+	LOAD_PLAYLIST,
 #ifdef __cplusplus
 };
 #else 

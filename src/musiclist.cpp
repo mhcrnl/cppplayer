@@ -28,6 +28,18 @@ void MusicList::LoadFile(const path pathSong) {
 	}
 }
 
+void MusicList::LoadPlaylist(path pathPl) {
+	std::ifstream pl(pathPl.string());
+	if(pl.is_open()) {
+		song_list.clear();
+
+		for(std::string l; std::getline(pl, l);) {
+			LoadFile(*(new path(l))); // This is clean safe code ???
+		}
+	}
+	pl.close();
+}
+
 void MusicList::Sort(Order s) {
 	switch(s) {
 		case Order::RANDOM:
