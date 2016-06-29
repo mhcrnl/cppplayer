@@ -28,8 +28,8 @@ void MusicList::LoadFile(const path pathSong) {
 	}
 }
 
-void MusicList::LoadPlaylist(path pathPl) {
-	std::ifstream pl(pathPl.string());
+void MusicList::LoadPlaylist(std::string pathPl) {
+	std::ifstream pl(pathPl);
 	if(pl.is_open()) {
 		song_list.clear();
 
