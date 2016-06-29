@@ -43,6 +43,9 @@ Status Music::GetStatus() const {
 }
 
 void Music::SetStatus(Status s) {
+	//Fix bug: when setting two times the same status it stops reading
+	if(status == s) return;
+
 	//Wait the previous status to be processed
 	mymutex.wait();
 

@@ -133,17 +133,11 @@ void Manager::ExecuteCommand(Command c, T& proto) {
 		case Command::LOAD_PLAYLIST:
 			{
 				auto tmp = music.GetStatus();
-				// TODO: These checks are because the player breaks when setting to the same status
-				if(tmp != Status::Stoped) {				
-					music.SetStatus(Status::Stoped);
-				}
+				music.SetStatus(Status::Stoped);
 
 				// For the moment works passing the full path of the PlayList
 				music.GetList().LoadPlaylist(proto.GetLine());
-
-				if(tmp != music.GetStatus()) {
-					music.SetStatus(tmp);
-				}
+				music.SetStatus(tmp);
 			}
 			break;
 		case Command::VOLUME_SET:
