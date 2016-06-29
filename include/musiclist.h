@@ -21,6 +21,8 @@ public:
 
 	void LoadFile(const path pathSong);
 
+	void LoadPlaylist(std::string pathPl);
+
 
 	void Sort(Order s);
 

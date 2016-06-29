@@ -55,7 +55,6 @@ void Manager::StartServer() {
 
 	while(music.GetStatus() != Status::Exit) {
 		//TODO: Allow to use more than one protocol simultaneously
-
 		#ifdef _NAMED_PIPE
 			static NamedPipe pipe(conf);
 			ProcessCommand(pipe);	
@@ -130,6 +129,22 @@ void Manager::ExecuteCommand(Command c, T& proto) {
 			break;
 		case Command::ADD_FILE:
 			music.GetList().LoadFile(proto.GetLine());
+			break;
+		case Command::LOAD_PLAYLIST:
+			{
+				auto tmp = music.GetStatus();
+				// TODO: These checks are because the player breaks when setting to the same status
+				if(tmp != Status::Stoped) {				
+					music.SetStatus(Status::Stoped);
+				}
+
+				// For the moment works passing the full path of the PlayList
+				music.GetList().LoadPlaylist(proto.GetLine());
+
+				if(tmp != music.GetStatus()) {
+					music.SetStatus(tmp);
+				}
+			}
 			break;
 		case Command::VOLUME_SET:
 			{
