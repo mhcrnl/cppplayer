@@ -1,8 +1,10 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <mutex>
 
 #include "music.h"
+
 
 //Public functions
 
@@ -43,11 +45,11 @@ Status Music::GetStatus() const {
 }
 
 void Music::SetStatus(Status s) {
-	//Fix bug: when setting two times the same status it stops reading
-	if(status == s) return;
-
 	//Wait the previous status to be processed
 	mymutex.wait();
+	
+	//Fix bug: when setting two times the same status it stops reading
+	if(status == s) return;
 
 	status = s;
 
@@ -84,6 +86,12 @@ bool Music::IsNotStatus(Status s) {
 
 MusicList& Music::GetList() {
 	return list;
+}
+
+void Music::WaitStatus(Status s) {
+	std::mutex cv_m;
+	std::unique_lock<std::mutex> lk{cv_m};
+	cv.wait(lk, [this, s]{return IsNotStatus(s);});
 }
 
 Song& Music::GetCurrent() {

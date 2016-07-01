@@ -88,21 +88,28 @@ void Manager::ExecuteCommand(Command c, T& proto) {
 			break;
 		case Command::PLAY:
 			music.SetStatus(Status::Playing);
+			music.WaitStatus(Status::Playing);
 			break;
 		case Command::PAUSE:
-			if(music.GetStatus() != Status::Playing)
+			if(music.GetStatus() != Status::Playing) {
 				music.SetStatus(Status::Playing);
-			else
+				music.WaitStatus(Status::Playing);
+			} else {
 				music.SetStatus(Status::Paused);
+				music.WaitStatus(Status::Paused);
+			}
 			break;
 		case Command::STOP:
 			music.SetStatus(Status::Stoped);
+			music.WaitStatus(Status::Stoped);
 			break;
 		case Command::NEXT:
 			music.SetStatus(Status::Forwarding);
+			music.WaitStatus(Status::Forwarding);
 			break;
 		case Command::BACK:
 			music.SetStatus(Status::Backing);
+			music.WaitStatus(Status::Backing);
 			break;
 		case Command::SORT_RANDOM:
 			music.GetList().Sort(Order::RANDOM);

@@ -61,6 +61,20 @@ public:
 	Status GetStatus() const;
 	void SetStatus(Status s);
 
+	/* 	XXX: Probably there are better ways to avoid this data race
+	*
+	*	When changing the status, there are a lapse.
+	*	Some commands like GET_ARTIST can return the 
+	*  	content of the previous song, so we must provide
+	*	some mecanism to wait while the status are in this lapse.
+	*
+	* 	This function waits the status "s" to be done.
+	*
+	*	This function should be called after SetStatus in case that 
+	*	we want to ensure that the status is changed.
+	*/
+	void WaitStatus(Status s);
+
 	void SetVolume(float v);
 	float GetVolume();
 
