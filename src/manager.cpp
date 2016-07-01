@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <thread>
 #include <iostream>
+#include <fstream>
 
 //Public functions
 
