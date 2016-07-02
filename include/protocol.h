@@ -3,6 +3,7 @@
 #include "commands.h"
 #include "config.h"
 
+#include <cstring>
 #include <string>
 #include <ostream>
 #include <istream>
@@ -26,17 +27,23 @@ public:
 				: conf(c)
 	{
 		//Delete pipes, if exist (the program exit abnormaly)
-		unlink(conf.GetDaemonPipe().c_str()); 
-		unlink(conf.GetClientPipe().c_str());
+		if(unlink(conf.GetDaemonPipe().c_str()) == -1) 
+			throw std::runtime_error(strerror(errno));
+		if(unlink(conf.GetClientPipe().c_str()) == -1)
+			throw std::runtime_error(strerror(errno));
 
-		mkfifo(conf.GetDaemonPipe().c_str(), 0666);
-		mkfifo(conf.GetClientPipe().c_str(), 0666);
+		if(mkfifo(conf.GetDaemonPipe().c_str(), 0666) == -1)
+			throw std::runtime_error(strerror(errno));
+		if(mkfifo(conf.GetClientPipe().c_str(), 0666) == -1)
+			throw std::runtime_error(strerror(errno));
 	}
 
 	~NamedPipe() {
 		//Delete pipes
-		unlink(conf.GetDaemonPipe().c_str()); 
-		unlink(conf.GetClientPipe().c_str());
+		if(unlink(conf.GetDaemonPipe().c_str()) == -1) 
+			throw std::runtime_error(strerror(errno));
+		if(unlink(conf.GetClientPipe().c_str()) == -1)
+			throw std::runtime_error(strerror(errno));
 	}
 
 	Command ReadCommand() {
