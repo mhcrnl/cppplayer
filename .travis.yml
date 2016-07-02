@@ -29,3 +29,8 @@ script:
   - mkdir build
   - cd build
   - cmake -DCMAKE_CXX_COMPILER=$COMPILER .. && make VERBOSE=1
+
+notifications:
+  irc: "mumei.space#entry-point"
+  on_success: always
+  on_failure: always
