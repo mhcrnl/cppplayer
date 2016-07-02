@@ -93,10 +93,8 @@ void Manager::ExecuteCommand(Command c, T& proto) {
 		case Command::PAUSE:
 			if(music.GetStatus() != Status::Playing) {
 				music.SetStatus(Status::Playing);
-				music.WaitStatus(Status::Playing);
 			} else {
 				music.SetStatus(Status::Paused);
-				music.WaitStatus(Status::Paused);
 			}
 			break;
 		case Command::STOP:
