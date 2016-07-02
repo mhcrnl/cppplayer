@@ -80,13 +80,13 @@ private:
 		//XXX: Workaround
 		if(fdaemon.peek() == -1) fdaemon.ignore();
 
-		//if(!fdaemon.good() || !fdaemon.is_open()) {
+		if(!fdaemon.good() || fdaemon.is_open()) 
 			fdaemon.close();
-            fdaemon.open(conf.GetDaemonPipe());
-			if(!fdaemon.is_open()) {
-				throw std::runtime_error("Daemon pipe could not be opened");
-			}
-		//}
+
+        fdaemon.open(conf.GetDaemonPipe());
+		if(!fdaemon.is_open()) {
+			throw std::runtime_error("Daemon pipe could not be opened");
+		}
 	}
 
 	Config& conf;
