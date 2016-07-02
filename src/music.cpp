@@ -88,12 +88,6 @@ MusicList& Music::GetList() {
 	return list;
 }
 
-void Music::WaitStatus(Status s) {
-	std::mutex cv_m;
-	std::unique_lock<std::mutex> lk{cv_m};
-	cv.wait(lk, [this, s]{return IsNotStatus(s);});
-}
-
 Song& Music::GetCurrent() {
 	return song;
 }
