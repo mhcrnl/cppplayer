@@ -76,6 +76,13 @@ int Music::GetRemainingMilliseconds() {
 			+ (mp3music.getDuration().asMilliseconds() - mp3music.getPlayingOffset().asMilliseconds());
 }
 
+void Music::SetPlayingOffset(int ms) {
+	// ms: Millisecond in the song to move the current offset
+	std::cout << ms << std::endl;
+	music.setPlayingOffset(sf::milliseconds(ms));
+	mp3music.setPlayingOffset(sf::milliseconds(ms));
+}
+
 bool Music::IsStatus(Status s) {
 	bool tmp = GetStatus()==s;
 	if(tmp) {
