@@ -45,11 +45,15 @@ Status Music::GetStatus() const {
 }
 
 void Music::SetStatus(Status s) {
-	//Wait the previous status to be processed
-	mymutex.wait();
-	
+	//Wait previous status to be processed
+	std::mutex cv_m;
+	std::unique_lock<std::mutex> lk{cv_m};
+	status_cv.wait(lk, [this]{return status_processed.load();});
+
 	//Fix bug: when setting two times the same status it stops reading
 	if(status == s) return;
+
+	status_processed = false;
 
 	status = s;
 
@@ -74,13 +78,19 @@ int Music::GetRemainingMilliseconds() {
 
 bool Music::IsStatus(Status s) {
 	bool tmp = GetStatus()==s;
-	if(tmp) mymutex.notify();
+	if(tmp) {
+		status_processed = true;
+		status_cv.notify_one();
+	}
 	return tmp;
 }
 
 bool Music::IsNotStatus(Status s) {
 	bool tmp = GetStatus()!=s;
-	if(tmp) mymutex.notify();
+	if(tmp) {
+		status_processed = true;
+		status_cv.notify_one();
+	}
 	return tmp;
 }
 

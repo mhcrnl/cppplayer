@@ -60,17 +60,7 @@ public:
 
 	template <typename T>
 	std::ostream& operator<<(const T& obj) {
-		if(!fclient.is_open()) {
-			fclient.open(conf.GetClientPipe());
-			if(!fclient.is_open()) {
-				throw std::runtime_error("Client pipe could not be opened");
-			}
-		}
-		
-		if(!fclient.good()) {
-			throw std::runtime_error("Client is bad state");
-		}
-
+		CheckClient();
 		fclient << obj << std::endl;
 		return fclient;
 	}
@@ -83,16 +73,24 @@ public:
 	}
 private:
 
+	void CheckClient() {
+		fclient.close();
+		fclient.open(conf.GetClientPipe());
+		if(!fclient.is_open()) {
+			throw std::runtime_error("Client pipe could not be opened");
+		}
+	}
+
 	void CheckDaemon() {
 		//XXX: Workaround
 		if(fdaemon.peek() == -1) fdaemon.ignore();
 
-		if(!fdaemon.good() || fdaemon.is_open()) 
+		if(!fdaemon.good() || !fdaemon.is_open()) {
 			fdaemon.close();
-
-        fdaemon.open(conf.GetDaemonPipe());
-		if(!fdaemon.is_open()) {
-			throw std::runtime_error("Daemon pipe could not be opened");
+            fdaemon.open(conf.GetDaemonPipe());
+			if(!fdaemon.is_open()) {
+				throw std::runtime_error("Daemon pipe could not be opened");
+			}
 		}
 	}
 
@@ -100,7 +98,6 @@ private:
 	std::ofstream fclient;
 	std::ifstream fdaemon;
 };
-
 #elif _TCP_SOCKET
 
 //TODO: Accept multiple connections simultaneously

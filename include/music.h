@@ -26,30 +26,6 @@ enum class Status {
 };
 
 
-class MyMutex {
-public:
-    inline void notify()
-    {
-        std::unique_lock<std::mutex> lock(mtx);
-        count = 1;
-        cv.notify_one();
-    }
-
-    inline void wait()
-    {
-        std::unique_lock<std::mutex> lock(mtx);
-
-        cv.wait(lock, [this]{return count>0;});
-
-        count--;
-    }
-
-private:
-    std::mutex mtx;
-    std::condition_variable cv;
-    int count {1};
-};
-
 class Music {
 public:
 	void PlayList();
@@ -84,7 +60,8 @@ private:
 	sf::Music music;
 	sfe::mp3 mp3music;
 
-	MyMutex mymutex;
+	std::atomic<bool> status_processed {true};
 	std::condition_variable cv;
+	std::condition_variable status_cv;
 
 };
