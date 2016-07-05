@@ -84,11 +84,12 @@ void Music::SetPlayingOffset(int ms) {
 	if(ms > duration)
 		ms = duration;
 
-	SetStatus(Status::Paused);
+	
 	
 	music.setPlayingOffset(sf::milliseconds(ms));
 	mp3music.setPlayingOffset(sf::milliseconds(ms));
 
+	SetStatus(Status::Paused);
 	SetStatus(Status::Playing);
 }
 

@@ -13,8 +13,8 @@ public :
 
     sf::Time getDuration() const;
     
-    void setPlayingOffset(sf::Time timeOffset);
-    sf::Time getPlayingOffset();
+    //void setPlayingOffset(sf::Time timeOffset);
+    //sf::Time getPlayingOffset();
 
     bool openFromFile(const std::string& filename);
 
