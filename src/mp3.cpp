@@ -43,6 +43,18 @@ sf::Time mp3::getDuration() const{
     return myDuration;
 }
 
+sf::Time mp3::getPlayingOffset()
+{
+    return sf::seconds(mpg123_tellframe(myHandle) * mpg123_tpf(myHandle));
+}
+
+void mp3::setPlayingOffset(sf::Time timeOffset)
+{
+
+    onSeek(timeOffset);
+    //m_samplesProcessed = static_cast<sf::Uint64>(timeOffset.asSeconds() * getSampleRate() * getChannelCount());
+}
+
 bool mp3::openFromFile(const std::string& filename)
 {
     stop();
@@ -119,7 +131,7 @@ void mp3::onSeek(sf::Time timeOffset)
     sf::Lock lock(myMutex);
 
     if (myHandle)
-        mpg123_seek(myHandle, timeOffset.asSeconds(), 0);
+        mpg123_seek_frame(myHandle, mpg123_timeframe(myHandle, timeOffset.asSeconds()), SEEK_SET);
 }
 
 } // namespace sfe
