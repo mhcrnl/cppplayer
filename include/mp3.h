@@ -12,9 +12,6 @@ public :
     ~mp3();
 
     sf::Time getDuration() const;
-    
-    //void setPlayingOffset(sf::Time timeOffset);
-    //sf::Time getPlayingOffset();
 
     bool openFromFile(const std::string& filename);
 
