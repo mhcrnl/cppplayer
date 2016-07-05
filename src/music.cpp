@@ -72,7 +72,7 @@ float Music::GetVolume() {
 }
 
 int Music::GetRemainingMilliseconds() {
-	return (music.getDuration().asMilliseconds() - music.getPlayingOffset().asMilliseconds()) 
+	return (music.getDuration().asMilliseconds() - music.getPlayingOffset().asMilliseconds())
 			+ (mp3music.getDuration().asMilliseconds() - mp3music.getPlayingOffset().asMilliseconds());
 }
 
@@ -84,11 +84,10 @@ void Music::SetPlayingOffset(int ms) {
 	if(ms > duration)
 		ms = duration;
 
-	
-	
 	music.setPlayingOffset(sf::milliseconds(ms));
 	mp3music.setPlayingOffset(sf::milliseconds(ms));
 
+	// This is to update the sleep_time
 	SetStatus(Status::Paused);
 	SetStatus(Status::Playing);
 }
@@ -149,7 +148,7 @@ void Music::Reproduce(T& music, const char* song) {
 		loop = false;
 
 		//Calculate how many milliseconds we have to sleep for finish the song
-		auto offset = mp3music.getPlayingOffset().asMilliseconds();
+		auto offset = music.getPlayingOffset().asMilliseconds();
 		auto sleep_time = duration - offset;
 
 		if(sleep_time < 0) {
@@ -171,7 +170,6 @@ void Music::Reproduce(T& music, const char* song) {
 			loop = true;
 		} else if(IsStatus(Status::Restart)) {
 			music.setPlayingOffset(sf::seconds(0));
-			mp3music.setPlayingOffset(sf::seconds(0));
 			status = Status::Playing;
 		}
 	}
