@@ -43,18 +43,6 @@ sf::Time mp3::getDuration() const{
     return myDuration;
 }
 
-/*sf::Time mp3::getPlayingOffset()
-{
-    return sf::seconds(mpg123_tellframe(myHandle) * mpg123_tpf(myHandle));
-}
-
-void mp3::setPlayingOffset(sf::Time timeOffset)
-{
-
-    onSeek(timeOffset);
-    //m_samplesProcessed = static_cast<sf::Uint64>(timeOffset.asSeconds() * getSampleRate() * getChannelCount());
-}*/
-
 bool mp3::openFromFile(const std::string& filename)
 {
     stop();
