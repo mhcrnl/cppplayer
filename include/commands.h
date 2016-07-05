@@ -61,6 +61,8 @@ typedef enum {
 
 	// Placed here for keeping consistency in existing clients. Future replacement for proper code reading...
 	LOAD_PLAYLIST,
+
+	SET_OFFSET,
 #ifdef __cplusplus
 };
 #else 

@@ -42,6 +42,8 @@ public:
 
 	int GetRemainingMilliseconds();
 
+	void SetPlayingOffset(int ms);
+
 	MusicList& GetList();
 	Song& GetCurrent();
 private:
