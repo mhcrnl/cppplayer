@@ -22,9 +22,11 @@ Manager::Manager() {
 		//Check if that pid is a real process
 		std::ifstream f("/proc/"+pid+"/comm");
 		if(f.is_open()) {
-			//TODO: ensure that this process is our daemon and not other type of processs
-			f.close();
-			throw std::runtime_error("Server is already running");
+			std::string comm;
+			f >> comm;
+			if(comm == "dplayer++")
+				//TODO: We should use argv[0] instead
+				throw std::runtime_error("Server is already running");
 		}
 	}
 	ipid_file.close();
