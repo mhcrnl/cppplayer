@@ -26,11 +26,8 @@ public:
 	NamedPipe(Config& c) 			
 				: conf(c)
 	{
-		//Delete pipes, if exist (the program exit abnormaly)
-		if(unlink(conf.GetDaemonPipe().c_str()) == -1) 
-			throw std::runtime_error(strerror(errno));
-		if(unlink(conf.GetClientPipe().c_str()) == -1)
-			throw std::runtime_error(strerror(errno));
+		unlink(conf.GetDaemonPipe().c_str());
+		unlink(conf.GetClientPipe().c_str());
 
 		if(mkfifo(conf.GetDaemonPipe().c_str(), 0666) == -1)
 			throw std::runtime_error(strerror(errno));
