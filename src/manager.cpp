@@ -159,6 +159,10 @@ void Manager::ExecuteCommand(Command c, T& proto) {
 			break;
 		case Command::TIME_GET_REMAINING:
 			proto << music.GetRemainingMilliseconds();
+			break;
+		case Command::SET_OFFSET:
+			music.SetPlayingOffset(std::stoi(proto.GetLine()));
+			break;
 
 		//case Command::SAVE_FILE:
 		//	break;

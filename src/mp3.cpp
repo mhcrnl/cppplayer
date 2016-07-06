@@ -119,7 +119,7 @@ void mp3::onSeek(sf::Time timeOffset)
     sf::Lock lock(myMutex);
 
     if (myHandle)
-        mpg123_seek(myHandle, timeOffset.asSeconds(), 0);
+        mpg123_seek_frame(myHandle, mpg123_timeframe(myHandle, timeOffset.asSeconds()), SEEK_SET);
 }
 
 } // namespace sfe
