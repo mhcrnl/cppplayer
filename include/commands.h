@@ -51,6 +51,11 @@ typedef enum {
 	LOAD_PLAYLIST,
 
 	SET_OFFSET,
+
+	//Get the data of current song or write 
+	//Format is <size of file><file content>
+	FILE_GET,
+	FILE_PUT,
 #ifdef __cplusplus
 };
 #else 
