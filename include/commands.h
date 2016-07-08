@@ -1,23 +1,11 @@
 #if 0
 #This way i can source this file and debug with bash
-export CPPPLAYER_QUIT="\x00"
-export CPPPLAYER_PLAY="\x01"
-export CPPPLAYER_NEXT="\x02"
-export CPPPLAYER_BACK="\x03"
-export CPPPLAYER_PAUSE="\x04"
-export CPPPLAYER_STOP="\x05"
-export CPPPLAYER_SORT_RANDOM="\x06"
-export CPPPLAYER_GET_ARTIST="\x07"
-export CPPPLAYER_GET_TITLE="\x08"
-export CPPPLAYER_GET_FILE="\x09"
-export CPPPLAYER_FILTER_ARTIST="\x0a"
-export CPPPLAYER_ADD_FOLDER="\x0b"
-export CPPPLAYER_ADD_FILE="\x0c"
-export CPPPLAYER_SAVE_FILE="\x0d"
-export CPPPLAYER_SAVE_PLAYLIST="\x0e"
-export CPPPLAYER_VOLUME_SET="\x0f"
-export CPPPLAYER_VOLUME_GET="\x10"
-export CPPPLAYER_TIME_GET_REMAINING="\x10"
+N=0; 
+for i in $(cat /usr/include/cppplayer/commands.h | grep "," | tr -d '\t' | tr -d ',' | tail -n +2)
+do 
+	N=$(expr $N + 1)
+	export CPPPLAYER_$i=$(printf %cx%x \\ $N)
+done 
 return
 #endif
 
