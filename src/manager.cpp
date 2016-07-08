@@ -6,6 +6,14 @@
 #include <iostream>
 #include <fstream>
 
+//Helper functions
+
+std::ifstream::pos_type filesize(std::string filename)
+{
+    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
+    return in.tellg(); 
+}
+
 //Public functions
 
 Manager::Manager() {
@@ -162,6 +170,23 @@ void Manager::ExecuteCommand(Command c, T& proto) {
 			break;
 		case Command::SET_OFFSET:
 			music.SetPlayingOffset(std::stoi(proto.GetLine()));
+			break;
+		case Command::FILE_GET:
+			{
+				std::ifstream file(music.GetCurrent().GetFile());
+				if(!file.is_open())
+					throw std::runtime_error("Can not open music file");
+
+				std::size_t size = filesize(music.GetCurrent().GetFile());
+				proto <<  size;
+				while(size != 0) {
+					proto.Put(file.get());
+					--size;
+				}
+
+				//Flush file
+				proto << "";
+			}
 			break;
 
 		//case Command::SAVE_FILE:

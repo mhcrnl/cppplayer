@@ -55,6 +55,10 @@ public:
 		return s;
 	}
 
+	void Put(char c) {
+		fclient.put(c);
+	}
+
 	template <typename T>
 	std::ostream& operator<<(const T& obj) {
 		CheckClient();
@@ -132,6 +136,12 @@ public:
 		std::string line;
 		std::getline(is, line);
 		return line;
+	}
+
+	void Put(char c) {
+		os.put(c);
+		auto bytes = write(*socket, buffer);
+		buffer.consume(bytes);
 	}
 
 	template <typename T>
