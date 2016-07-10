@@ -28,7 +28,7 @@ void Config::Load() {
     opt.dir = default_music.c_str();
 
 
-	std::ifstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
+    std::ifstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
   if(!config.is_open()) {
     std::cerr << "Config file could not be open, using default values" << std::endl;
     //Write a dumb config file

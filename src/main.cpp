@@ -55,14 +55,14 @@ void daemonize() {
 int main(int argc, char* argv[]) {
 
     if(argc == 2 && argv[1] == std::string("-d")) {
-    	daemonize();
+        daemonize();
     } else {
         std::cout << "If you want to run it as a daemon restart it with \"-d\" flag" << std::endl;
     }
 
     try {
-	   Manager manager;
-	   manager.StartServer();
+       Manager manager;
+       manager.StartServer();
     } catch(std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
