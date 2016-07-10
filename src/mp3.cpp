@@ -1,12 +1,13 @@
 #include "mp3.h"
 #include <iostream>
 
-namespace sfe
-{
-mp3::mp3() :
-myHandle    (NULL),
+
+//Mp3
+
+Mp3::Mp3() :
+myHandle    (nullptr), 
 myBufferSize(0),
-myBuffer    (NULL)
+myBuffer    (nullptr)
 {
     int  err = MPG123_OK;
     if ((err = mpg123_init()) != MPG123_OK)
@@ -21,10 +22,11 @@ myBuffer    (NULL)
         std::cerr << "Unable to create mpg123 handle: " << mpg123_plain_strerror(err) << std::endl;
         return;
     }
-
 }
 
-mp3::~mp3()
+
+
+Mp3::~Mp3()
 {
     stop();
 
@@ -39,12 +41,13 @@ mp3::~mp3()
     mpg123_exit();
 }
 
-sf::Time mp3::getDuration() const{
+sf::Time Mp3::getDuration() const{
     return myDuration;
 }
 
-bool mp3::openFromFile(const std::string& filename)
+bool Mp3::openFromFile(const std::string& filename)
 {
+
     stop();
 
     if (myBuffer)
@@ -91,13 +94,14 @@ bool mp3::openFromFile(const std::string& filename)
         return false;
     }
 
-    initialize(channels, rate);
+    sf::SoundStream::initialize(channels, rate);
 
     return true;
 }
 
-bool mp3::onGetData(Chunk& data)
+bool Mp3::onGetData(Chunk& data)
 {
+    
     sf::Lock lock(myMutex);
 
     if (myHandle)
@@ -114,7 +118,7 @@ bool mp3::onGetData(Chunk& data)
         return false;
 }
 
-void mp3::onSeek(sf::Time timeOffset)
+void Mp3::onSeek(sf::Time timeOffset)
 {
     sf::Lock lock(myMutex);
 
@@ -122,4 +126,46 @@ void mp3::onSeek(sf::Time timeOffset)
         mpg123_seek_frame(myHandle, mpg123_timeframe(myHandle, timeOffset.asSeconds()), SEEK_SET);
 }
 
-} // namespace sfe
+//End Mp3
+
+
+
+//Sound 
+
+bool Sound::openFromFile(const std::string& filename, Format f) {
+    format = f;
+
+    if(format != Format::MP3)
+        return sf::Music::openFromFile(filename);
+    else 
+        return Mp3::openFromFile(filename);
+}
+
+
+bool Sound::onGetData(Chunk& data) {
+    if(format != Format::MP3)
+        return sf::Music::onGetData(data);
+    else
+        return Mp3::onGetData(data);
+}
+
+void Sound::onSeek(sf::Time timeOffset) {
+    if(format != Format::MP3)
+        return sf::Music::onSeek(timeOffset);
+    else
+        return Mp3::onSeek(timeOffset);
+}
+
+sf::Time Sound::getDuration() const{
+   if(format != Format::MP3)
+        return sf::Music::getDuration();
+    else 
+        return Mp3::getDuration();
+}
+
+
+    
+
+
+
+  

@@ -22,7 +22,7 @@ void Music::PlayList() {
 
 			if(IsStatus(Status::Playing)) {
 				song = **s;
-				Play();
+				Reproduce();
 			}	
 			
 			if(IsStatus(Status::Backing)) {
@@ -33,11 +33,6 @@ void Music::PlayList() {
 			}
 		}
 	}
-}
-
-void Music::Play() {
-	if(song.GetExtension() == ".mp3") Reproduce(mp3music, song.GetFile().c_str());
-	else Reproduce(music, song.GetFile().c_str());
 }
 
 Status Music::GetStatus() const {
@@ -62,30 +57,25 @@ void Music::SetStatus(Status s) {
 
 void Music::SetVolume(float v) {
 	music.setVolume(v);
-	mp3music.setVolume(v);
 }
 
 float Music::GetVolume() {
-	//XXX: mp3music and music have the same value, doesn't
-	//matter if we return mp3music.getVolume() or music.getVolume()
 	return music.getVolume();
 }
 
 int Music::GetRemainingMilliseconds() {
-	return (music.getDuration().asMilliseconds() - music.getPlayingOffset().asMilliseconds())
-			+ (mp3music.getDuration().asMilliseconds() - mp3music.getPlayingOffset().asMilliseconds());
+	return music.getDuration().asMilliseconds() - music.getPlayingOffset().asMilliseconds();
 }
 
 void Music::SetPlayingOffset(int ms) {
 	// ms: Millisecond in the song to move the current offset
 
-	auto duration = music.getDuration().asMilliseconds() + mp3music.getDuration().asMilliseconds();
+	auto duration = music.getDuration().asMilliseconds();
 
 	if(ms > duration)
 		ms = duration;
 
 	music.setPlayingOffset(sf::milliseconds(ms));
-	mp3music.setPlayingOffset(sf::milliseconds(ms));
 
 	// This is to update the sleep_time
 	SetStatus(Status::Paused);
@@ -123,16 +113,22 @@ Song& Music::GetCurrent() {
 
 //TODO: SFML is not appropiate for a music player
 //in a future we should use another library like ffmpeg or OpenAL
-template <typename T>
-void Music::Reproduce(T& music, const char* song) {
-	if(!music.openFromFile(song)) {
-		std::cerr << "Can not open file " << song << std::endl;
-		return;
+void Music::Reproduce() {
+	if(song.GetExtension() == ".mp3") {
+		if(!music.openFromFile(song.GetFile(), Format::MP3)) {
+			std::cerr << "Can not open file " << song.GetFile() << std::endl;
+			return;
+		}
+	} else {
+		if(!music.openFromFile(song.GetFile(), Format::OTHER)) {
+			std::cerr << "Can not open file " << song.GetFile() << std::endl;
+			return;
+		}
 	}
 	
 	
 	#ifdef DEBUG
-	std::cout << "Playing: " << song << std::endl;
+	std::cout << "Playing: " << song.GetFile() << std::endl;
 	#endif
 	
 	auto duration = music.getDuration().asMilliseconds();
