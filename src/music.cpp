@@ -26,8 +26,10 @@ void Music::PlayList() {
 			}	
 			
 			if(IsStatus(Status::Backing)) {
-				if(s-1 > musicList.begin()) {
+				if(s-1 >= musicList.begin()) {
 					s -= 2;
+				} else {
+					s -= 1;
 				}
 				SetStatus(Status::Playing);
 			}
