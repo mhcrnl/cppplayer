@@ -64,13 +64,20 @@ void Manager::StartServer() {
 		music.SetStatus(Status::Playing);
 	}
 
+	#ifdef _NAMED_PIPE
+		NamedPipe pipe(conf);
+	#elif _TCP_SOCKET
+		Tcp tcp(conf);
+	#else
+	#error At least we need one protocol to use
+	#endif
+
+
 	while(music.GetStatus() != Status::Exit) {
 		//TODO: Allow to use more than one protocol simultaneously
 		#ifdef _NAMED_PIPE
-			static NamedPipe pipe(conf);
 			ProcessCommand(pipe);	
 		#elif _TCP_SOCKET
-			static Tcp tcp(conf);
 			ProcessCommand(tcp);
 		#else
 		#error At least we need one protocol to use
