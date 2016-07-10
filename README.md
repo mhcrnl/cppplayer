@@ -33,4 +33,4 @@ Reproductor de música sencillo que busca la simplicidad y facilidad de configur
 
 #### Colaboradores
 Lista de gente que ha colaborado de alguna forma con el proyecto
-[@masapastosa](https://github.com/masapastosa) [@javorcd](https://github.com/javorcd) [@kid_goth](https://github.com/bssanchez)
+[@masapastosa](https://github.com/masapastosa) [@javorcd](https://github.com/javorcd) [@kid_goth](https://github.com/bssanchez) [@tryger](https://github.com/tryger)
