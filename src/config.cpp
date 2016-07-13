@@ -13,7 +13,50 @@ Config::Config() {
   if(!exists(dir) && !create_directory(dir))
     throw std::runtime_error("Could not create config directory");
 
+  Load();
 }
+
+#ifdef _NAMED_PIPE
+
+  std::string Config::GetDaemonPipe() const {
+    return opt.daemonpipe;
+  }
+
+  std::string Config::GetClientPipe() const {
+    return opt.clientpipe;
+  }
+
+#elif _TCP_SOCKET
+  
+  unsigned Config::GetPortNumber() const {
+    return opt.portnumber;
+  }
+  
+  std::string Config::GetBindAddress() const {
+    return opt.bindaddress;
+  }
+
+#else 
+#error At least we need one protocol to use
+#endif
+
+std::string Config::GetPidFile() const {
+  return opt.pidfile;
+}
+
+std::string Config::GetDbFile() const {
+  return opt.dbfile;
+}
+
+path Config::GetDir() const {
+  return opt.dir;
+}
+
+bool Config::GetAutostart() const {
+  return opt.autostart;
+}
+
+//Private functions
 
 void Config::Load() {
   #ifdef DEBUG
@@ -81,48 +124,6 @@ void Config::Load() {
     opt.autostart  = tree.get("auto_start", opt.autostart);
   }
 }
-
-#ifdef _NAMED_PIPE
-
-  std::string Config::GetDaemonPipe() const {
-    return opt.daemonpipe;
-  }
-
-  std::string Config::GetClientPipe() const {
-    return opt.clientpipe;
-  }
-
-#elif _TCP_SOCKET
-  
-  unsigned Config::GetPortNumber() const {
-    return opt.portnumber;
-  }
-  
-  std::string Config::GetBindAddress() const {
-    return opt.bindaddress;
-  }
-
-#else 
-#error At least we need one protocol to use
-#endif
-
-std::string Config::GetPidFile() const {
-  return opt.pidfile;
-}
-
-std::string Config::GetDbFile() const {
-  return opt.dbfile;
-}
-
-path Config::GetDir() const {
-  return opt.dir;
-}
-
-bool Config::GetAutostart() const {
-  return opt.autostart;
-}
-
-//Private functions
 
 std::string Config::Expand(std::string file) {
   auto pos = file.find('~');

@@ -13,7 +13,6 @@ const std::string CONFIG_FOLDER = "~/.config/player++/";
 class Config {
 public:
 	Config();
-	void Load();
 
 	#ifdef _NAMED_PIPE
 	std::string GetDaemonPipe() const;
@@ -29,6 +28,8 @@ public:
 	path GetDir() const;
 	bool GetAutostart() const;
 private:
+	void Load();
+	
 	std::string Expand(const std::string file);
 	std::string GetHome();
 	struct Options {

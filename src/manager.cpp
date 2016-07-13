@@ -14,11 +14,64 @@ std::ifstream::pos_type filesize(std::string filename)
     return in.tellg(); 
 }
 
+//Copied from the net.
+void daemonize() {
+    pid_t pid, sid;
+
+    /* already a daemon */
+    if ( getppid() == 1 ) return;
+
+    /* Fork off the parent process */
+    pid = fork();
+    if (pid < 0) {
+        exit(EXIT_FAILURE);
+    }
+    /* If we got a good PID, then we can exit the parent process. */
+    if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
+
+    /* At this point we are executing as the child process */
+
+    /* Change the file mode mask */
+    umask(0);
+
+    /* Create a new SID for the child process */
+    sid = setsid();
+    if (sid < 0) {
+        exit(EXIT_FAILURE);
+    }
+
+    /* Change the current working directory.  This prevents the current
+       directory from being locked; hence not being able to remove it. */
+    /*if ((chdir("/")) < 0) {
+        exit(EXIT_FAILURE);
+    }*/
+
+    /* Redirect standard files to /dev/null */
+    FILE* f = freopen( "/dev/null", "r", stdin);
+    if(!f)
+        exit(EXIT_FAILURE);
+    f = freopen( "/dev/null", "w", stdout);
+    if(!f)
+        exit(EXIT_FAILURE);
+    f = freopen( "/dev/null", "w", stderr);
+    if(!f)
+        exit(EXIT_FAILURE);
+}
+
+
 //Public functions
 
-Manager::Manager() {
+Manager::Manager(int argc, char* argv[]) {
     //Load configuration
-    conf.Load();
+    //conf.Load();
+
+    if(argc == 2 && argv[1] == std::string("-d")) {
+        daemonize();
+    } else {
+        std::cout << "If you want to run it as a daemon restart it with \"-d\" flag" << std::endl;
+    }
 
     //Check if we have some pid number
     std::ifstream ipid_file(conf.GetPidFile());
@@ -57,28 +110,21 @@ void Manager::StartServer() {
     //if(!db.Connect(conf.GetDbFile().c_str()))
     //  throw std::runtime_error("Database could not be opened");
     
+    Music music;
+
     music.GetList().LoadDir(conf.GetDir());
-    std::thread mplayer( [this] { music.PlayList(); } );
+    std::thread mplayer( [&music] { music.PlayList(); } );
 
     if(conf.GetAutostart()) {
         music.SetStatus(Status::Playing);
     }
 
-    #ifdef _NAMED_PIPE
-        NamedPipe pipe(conf);
-    #elif _TCP_SOCKET
-        Tcp tcp(conf);
-    #else
-    #error At least we need one protocol to use
-    #endif
-
-
     while(music.GetStatus() != Status::Exit) {
         //TODO: Allow to use more than one protocol simultaneously
         #ifdef _NAMED_PIPE
-            ProcessCommand(pipe);   
+            ProcessCommand(pipe, music);   
         #elif _TCP_SOCKET
-            ProcessCommand(tcp);
+            ProcessCommand(tcp, music);
         #else
         #error At least we need one protocol to use
         #endif
@@ -90,12 +136,12 @@ void Manager::StartServer() {
 //Private Functions 
 
 template <typename T>
-void Manager::ProcessCommand(T& proto) {
-    ExecuteCommand(proto.ReadCommand(), proto);
+void Manager::ProcessCommand(T& proto, Music& music) {
+    ExecuteCommand(proto.ReadCommand(), proto, music);
 }
 
 template <typename T>
-void Manager::ExecuteCommand(Command c, T& proto) {
+void Manager::ExecuteCommand(Command c, T& proto, Music& music) {
     #ifdef DEBUG
     std::cout << "Command:" <<(int)c << std::endl;
     #endif
