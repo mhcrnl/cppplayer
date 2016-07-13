@@ -116,16 +116,15 @@ Song& Music::GetCurrent() {
 //TODO: SFML is not appropiate for a music player
 //in a future we should use another library like ffmpeg or OpenAL
 void Music::Reproduce() {
-    if(song.GetExtension() == ".mp3") {
-        if(!music.openFromFile(song.GetFile(), Format::MP3)) {
-            std::cerr << "Can not open file " << song.GetFile() << std::endl;
-            return;
-        }
-    } else {
-        if(!music.openFromFile(song.GetFile(), Format::OTHER)) {
-            std::cerr << "Can not open file " << song.GetFile() << std::endl;
-            return;
-        }
+    Format f = Format::OTHER;
+
+    if(song.GetExtension() == ".mp3")
+        f = Format::MP3;
+
+    if(!music.openFromFile(song.GetFile(), f)) {
+        std::cerr << "Can not open file " << song.GetFile() << std::endl;
+        std::rename( song.GetFile().c_str(), (song.GetFile()+".not_reproducible").c_str() );
+        return;
     }
     
     
