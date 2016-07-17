@@ -28,7 +28,7 @@ public:
 
 	void FilterArtist(const std::string artist);
 
-	const std::vector<std::shared_ptr<Song>>& GetSongList() const;
+	std::vector<std::shared_ptr<Song>>& GetSongList();
 private:
 	bool IsSupported(path p);
 

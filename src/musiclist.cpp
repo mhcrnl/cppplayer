@@ -65,7 +65,7 @@ void MusicList::FilterArtist(const std::string artist) {
     }
 }
 
-const std::vector<std::shared_ptr<Song>>& MusicList::GetSongList() const {
+std::vector<std::shared_ptr<Song>>& MusicList::GetSongList() {
     return song_list;
 }
 

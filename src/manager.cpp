@@ -241,6 +241,10 @@ void Manager::ExecuteCommand(Command c, T& proto, Music& music) {
                 proto << "";
             }
             break;
+        case Command::CLEAR_PLAYLIST:
+            music.SetStatus(Status::Stoped);
+            music.GetList().GetSongList().clear();
+            break;
 
         //case Command::SAVE_FILE:
         //  break;

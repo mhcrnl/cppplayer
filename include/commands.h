@@ -32,23 +32,27 @@ typedef enum {
 	//Create a playlist with songs that match an artist.
 	FILTER_ARTIST,
 
+	//Operates with playlists
 	//Add songs to the current playlist and the full list of songs.
+	//TODO: Avoid duplicates
 	ADD_FOLDER,
 	ADD_FILE,
 
-	//Operates with playlists
-	//Saves the current songs3	 to a playlist
+	//Delete all songs from the current list
+	CLEAR_PLAYLIST,
+
+	//Saves the current song to a playlist
 	SAVE_FILE,
 	//Saves the current list to a playlist
 	SAVE_PLAYLIST,
+	//Import songs to the current list from a file
+	LOAD_PLAYLIST,
 
 	VOLUME_SET,
 	VOLUME_GET,
 
 	TIME_GET_REMAINING,
 
-	// Placed here for keeping consistency in existing clients. Future replacement for proper code reading...
-	LOAD_PLAYLIST,
 
 	SET_OFFSET,
 
