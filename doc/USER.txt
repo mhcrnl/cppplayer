@@ -4,9 +4,11 @@ For be able to download and compile the code we need *git* and *cmake* tools plu
 In a debian/ubuntu distro we can install it executing the next two commands
 
   sudo apt install git cmake
-  sudo apt install libmpg123-dev libsfml-dev libboost-filesystem-dev libsqlite3-dev libtag1-dev
+  sudo apt install libmpg123-dev libsfml-dev libboost-filesystem-dev libsqlite3-dev libtag1-dev libspdlog-dev
 
 Important note: In stable debian (jessie) the provided cmake version is not compatible, for be able to compile the project we can use debian testing or compile the version ourselves. The minimum version is 3.1.0
+
+Note: libspdlog-dev is only on testing, if we want we can compile it from source: https://github.com/gabime/spdlog
 
 
 === Compiling & Installing ===
