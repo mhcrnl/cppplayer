@@ -1,6 +1,8 @@
 #include "manager.h"
 #include "musiclist.h"
 
+#include <spdlog/spdlog.h>
+
 #include <cstdio>
 #include <thread>
 #include <iostream>
@@ -66,12 +68,17 @@ void daemonize() {
 Manager::Manager(int argc, char* argv[]) {
     //Load configuration
     //conf.Load();
-
     if(argc == 2 && argv[1] == std::string("-d")) {
         daemonize();
+
+        spdlog::drop("global");
+        auto logging = spdlog::basic_logger_mt("global", conf.GetConfigFolder()+"log.txt", true);
+        logging->set_level(spdlog::level::debug);
+        logging->info("Daemonazing server");
     } else {
         std::cout << "If you want to run it as a daemon restart it with \"-d\" flag" << std::endl;
     }
+
 
     //Check if we have some pid number
     std::ifstream ipid_file(conf.GetPidFile());
@@ -85,9 +92,9 @@ Manager::Manager(int argc, char* argv[]) {
         if(f.is_open()) {
             std::string comm;
             f >> comm;
-            if(comm == "dplayer++")
-                //TODO: We should use argv[0] instead
+            if(comm == argv[0]) {
                 throw std::runtime_error("Server is already running");
+            }
         }
     }
     ipid_file.close();
@@ -143,8 +150,9 @@ void Manager::ProcessCommand(T& proto, Music& music) {
 template <typename T>
 void Manager::ExecuteCommand(Command c, T& proto, Music& music) {
     #ifdef DEBUG
-    std::cout << "Command:" <<(int)c << std::endl;
+    spdlog::get("global")->debug("Command:{}", (int)c);
     #endif
+
     switch (c) {
         case Command::QUIT:
             music.SetStatus(Status::Exit);

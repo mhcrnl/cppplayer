@@ -1,5 +1,7 @@
 #include "musiclist.h"
 
+#include <spdlog/spdlog.h>
+
 #include <array>
 #include <boost/range/iterator_range.hpp>
 #include <iostream>
@@ -21,7 +23,7 @@ void MusicList::LoadDir(path p) {
 void MusicList::LoadFile(const path pathSong) {
     if(!is_directory(pathSong) && IsSupported(pathSong)) {
         #ifdef DEBUG
-        std::cerr << "Loaded " << pathSong << std::endl;
+        spdlog::get("global")->info("Loaded {}", pathSong.c_str());
         #endif
         auto song = std::make_shared<Song>(pathSong);
         full_list.emplace_back(song);
@@ -55,7 +57,7 @@ void MusicList::FilterArtist(const std::string artist) {
         song_list.clear();
         for(auto s : full_list ) {
             #ifdef DEBUG
-                std::cout << "Analyzing " << s->GetFile() << std::endl;
+                spdlog::get("global")->info("Analyzing {}", s->GetFile());
             #endif
             if(s->GetArtist() == artist)
                 song_list.emplace_back(s);

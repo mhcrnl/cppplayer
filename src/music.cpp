@@ -3,6 +3,8 @@
 #include <chrono>
 #include <mutex>
 
+#include <spdlog/spdlog.h>
+
 #include "music.h"
 
 
@@ -129,7 +131,7 @@ void Music::Reproduce() {
     
     
     #ifdef DEBUG
-    std::cout << "Playing: " << song.GetFile() << std::endl;
+    spdlog::get("global")->info("Playing: {}", song.GetFile());
     #endif
     
     auto duration = music.getDuration().asMilliseconds();
@@ -154,7 +156,7 @@ void Music::Reproduce() {
         }
 
         #ifdef DEBUG
-        std::cout << "Sleeping " << sleep_time << " milliseconds" << std::endl;
+        spdlog::get("global")->debug("Sleeping {} milliseconds", sleep_time);
         #endif
 
         //Wait until we have something to do or until the song finish

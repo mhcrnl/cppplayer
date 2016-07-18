@@ -40,6 +40,10 @@ Config::Config() {
 #error At least we need one protocol to use
 #endif
 
+std::string Config::GetConfigFolder() {
+    return Expand(CONFIG_FOLDER);
+}
+
 std::string Config::GetPidFile() const {
   return opt.pidfile;
 }

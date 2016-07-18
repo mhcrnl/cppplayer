@@ -23,15 +23,19 @@ public:
 	#else 
 	#error At least we need one protocol to use
 	#endif
+	
+	std::string GetConfigFolder();
 	std::string GetPidFile()	const;
 	std::string GetDbFile()		const;
 	path GetDir() const;
 	bool GetAutostart() const;
+
 private:
 	void Load();
 	
 	std::string Expand(const std::string file);
 	std::string GetHome();
+
 	struct Options {
 		#ifdef _NAMED_PIPE
 		//Pipe used by the daemon to write to client
