@@ -27,6 +27,7 @@ before_install:
   - git clone https://github.com/gabime/spdlog; cd spdlog; mkdir build; cd build;
   - cmake ..
   - sudo make install
+  - cd ../..
 
 script:
   - mkdir build
