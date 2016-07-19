@@ -1,8 +1,3 @@
-//spdlog tweaks, it should be before including spdlog.h
-#define SPDLOG_NO_DATETIME
-#define SPDLOG_NO_THREAD_ID
-#define SPDLOG_NO_NAME
-
 #include <spdlog/spdlog.h>
 
 

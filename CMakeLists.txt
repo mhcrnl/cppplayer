@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 project (cppplayer)
 
+#spdlog defines
+ADD_DEFINITIONS(-DSPDLOG_NO_DATETIME -DSPDLOG_NO_THREAD_ID -DSPDLOG_NO_NAME)
+
 #Compiler define
 option(_NAMED_PIPE "Use named pipes as a comunnication protocol" ON)
 IF (_NAMED_PIPE)
@@ -10,6 +13,11 @@ ENDIF()
 option(_TCP_SOCKET "Use  a tcp socket for the comunnication" ON)
 IF (_TCP_SOCKET)
     ADD_DEFINITIONS(-D_TCP_SOCKET)
+ENDIF()
+
+option(_REMOTE_MODE "Run the daemon as a server" OFF)
+IF (_REMOTE_MODE)
+    ADD_DEFINITIONS(-D_REMOTE_MODE)
 ENDIF()
 
 include_directories(include) 
