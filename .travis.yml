@@ -1,6 +1,6 @@
 language: cpp
 sudo: required
-dist: xenial
+dist: trusty
 
 matrix:
   include:
@@ -23,7 +23,10 @@ matrix:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y libmpg123-dev libsfml-dev libboost-filesystem-dev libboost-program-options-dev libtag1-dev libspdlog-dev
+  - sudo apt-get install -y libmpg123-dev libsfml-dev libboost-filesystem-dev libboost-program-options-dev libtag1-dev
+  - git clone https://github.com/gabime/spdlog; cd spdlog; mkdir build; cd build;
+  - cmake ..
+  - sudo make install
 
 script:
   - mkdir build
