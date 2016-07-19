@@ -72,7 +72,7 @@ Manager::Manager(int argc, char* argv[]) {
         daemonize();
 
         spdlog::drop("global");
-        auto logging = spdlog::basic_logger_mt("global", conf.GetConfigFolder()+"log.txt", true);
+        auto logging = spdlog::basic_logger_mt("global", conf.GetLogFile(), true);
         logging->set_level(spdlog::level::debug);
         logging->info("Daemonazing server");
     } else {
@@ -104,6 +104,7 @@ Manager::Manager(int argc, char* argv[]) {
     if(!opid_file.is_open()) {
         throw std::runtime_error("Pid file could not be opened");
     }
+
     opid_file << getpid();
     opid_file.close();
 }

@@ -5,6 +5,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
+#include <spdlog/spdlog.h>
+
 
 namespace pt = boost::property_tree;
 
@@ -40,16 +42,16 @@ Config::Config() {
 #error At least we need one protocol to use
 #endif
 
-std::string Config::GetConfigFolder() {
-    return Expand(CONFIG_FOLDER);
-}
-
 std::string Config::GetPidFile() const {
   return opt.pidfile;
 }
 
 std::string Config::GetDbFile() const {
   return opt.dbfile;
+}
+
+std::string Config::GetLogFile() const {
+    return opt.logfile;
 }
 
 path Config::GetDir() const {
@@ -64,7 +66,7 @@ bool Config::GetAutostart() const {
 
 void Config::Load() {
   #ifdef DEBUG
-    std::cout << "Using config file " << Expand(CONFIG_FOLDER+"daemon.conf") << std::endl;
+    spdlog::get("global")->info("Using config file {}", Expand(CONFIG_FOLDER+"daemon.conf"));
   #endif
 
   //Try to autodetect music dir
@@ -77,13 +79,14 @@ void Config::Load() {
 
     std::ifstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
   if(!config.is_open()) {
-    std::cerr << "Config file could not be open, using default values" << std::endl;
+    spdlog::get("global")->warn("Config file could not be open, using default values");
     //Write a dumb config file
     std::ofstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
     pt::ptree tree;
 
     tree.put("pid_file", opt.pidfile);
     tree.put("db_file", opt.dbfile);
+    tree.put("log_file", opt.logfile);
     tree.put("music_folder", opt.dir);
     tree.put("auto_start", opt.autostart);
 
@@ -106,6 +109,7 @@ void Config::Load() {
     #endif
     opt.pidfile     =Expand(opt.pidfile);
     opt.dbfile      =Expand(opt.dbfile);
+    opt.logfile     =Expand(opt.logfile);
     opt.dir         =Expand(opt.dir.c_str());
 
   } else {
@@ -124,6 +128,7 @@ void Config::Load() {
     #endif
     opt.pidfile    = Expand(tree.get("pid_file", opt.pidfile));
     opt.dbfile     = Expand(tree.get("db_file", opt.dbfile));
+    opt.logfile    = Expand(tree.get("log_file", opt.logfile));
     opt.dir        = Expand(tree.get("music_folder", opt.dir).c_str());
     opt.autostart  = tree.get("auto_start", opt.autostart);
   }

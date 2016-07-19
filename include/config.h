@@ -15,18 +15,18 @@ public:
 	Config();
 
 	#ifdef _NAMED_PIPE
-	std::string GetDaemonPipe() const;
-	std::string GetClientPipe() const;
+		std::string GetDaemonPipe() const;
+		std::string GetClientPipe() const;
 	#elif _TCP_SOCKET
-	unsigned GetPortNumber() const;
-	std::string GetBindAddress() const;
+		unsigned GetPortNumber() const;
+		std::string GetBindAddress() const;
 	#else 
 	#error At least we need one protocol to use
 	#endif
 	
-	std::string GetConfigFolder();
 	std::string GetPidFile()	const;
 	std::string GetDbFile()		const;
+	std::string GetLogFile()	const;
 	path GetDir() const;
 	bool GetAutostart() const;
 
@@ -38,15 +38,15 @@ private:
 
 	struct Options {
 		#ifdef _NAMED_PIPE
-		//Pipe used by the daemon to write to client
-		std::string daemonpipe 	= CONFIG_FOLDER+"dplayer++";
+			//Pipe used by the daemon to write to client
+			std::string daemonpipe 	= CONFIG_FOLDER+"dplayer++";
 
-		//Pipe used by the client to write to daemon
-		std::string clientpipe 	= CONFIG_FOLDER+"cplayer++";
+			//Pipe used by the client to write to daemon
+			std::string clientpipe 	= CONFIG_FOLDER+"cplayer++";
 		#elif _TCP_SOCKET
-		//TODO: ipv6
-		unsigned portnumber		= 6600;
-		std::string bindaddress	= "0.0.0.0";
+			//TODO: ipv6
+			unsigned portnumber		= 6600;
+			std::string bindaddress	= "0.0.0.0";
 		#else
 		#error At least we need one protocol to use
 		#endif
@@ -59,6 +59,9 @@ private:
 
 		//Playlist folder
 		std::string playlistfolder = CONFIG_FOLDER+"playlist/";
+
+		//Log file
+		std::string logfile		= CONFIG_FOLDER+"log.txt";
 
 		//Location of the songs
 		path dir = ".";
