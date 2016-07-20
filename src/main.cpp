@@ -3,15 +3,13 @@
 
 #include "manager.h"
 
-#include <sys/stat.h>
-
 #include <iostream>
 #include <exception>
 #include <string>
 
 int main(int argc, char* argv[]) try {
     auto logging = spdlog::stdout_logger_mt("global", true);
-    logging->set_level(spdlog::level::debug);
+    logging->set_level(spdlog::level::trace);
     logging->info("Starting server");
 
     Manager manager(argc, argv);

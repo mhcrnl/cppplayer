@@ -1,7 +1,7 @@
 #pragma once
 
 #include "musiclist.h"
-#include "mp3.h"
+#include "sound.h"
 #include "song.h"
 
 #include <boost/filesystem.hpp>

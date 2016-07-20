@@ -5,6 +5,7 @@
 #include "database.h"
 #include "commands.h"
 #include "protocol.h"
+#include "cmdutils.h"
 
 
 //The main work is done in this class
@@ -21,23 +22,12 @@ public:
     void StartServer();
 private:
     template <typename T>
-    void ProcessCommand(T& proto, Music& music);
+    void ProcessCommand(T& proto, CommandControler& cmd);
 
-    template <typename T>
-    void ExecuteCommand(Command c, T& proto, Music& music);
-    
     //FIXME: It can not be a data member because when
     //daemonizing OpenAL library crashes.
     //Music music;
 
     Database db;
     Config conf;
-
-    #ifdef _NAMED_PIPE
-        NamedPipe pipe{conf};
-    #elif _TCP_SOCKET
-        Tcp tcp{conf};
-    #else
-    #error At least we need one protocol to use
-    #endif
 };
