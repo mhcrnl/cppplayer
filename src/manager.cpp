@@ -73,27 +73,25 @@ void Manager::StartServer() {
         music.SetStatus(Status::Playing);
     }
 
+    CommandControler cmd(music);
+
+
     #ifdef _NAMED_PIPE
-        NamedPipe pipe{conf};
+        std::thread([&, this](){
+            NamedPipe pipe{conf};
+            while(music.GetStatus() != Status::Exit)
+                ProcessCommand(pipe, cmd);
+        }).detach();
     #endif 
 
     #ifdef _TCP_SOCKET
-        Tcp tcp{conf};
+        std::thread([&, this](){
+            Tcp tcp{conf};
+            while(music.GetStatus() != Status::Exit)
+                ProcessCommand(tcp, cmd);
+        }).detach();
     #endif
 
-
-    CommandControler cmd(music);
-
-    while(music.GetStatus() != Status::Exit) {
-        //TODO: Allow to use more than one protocol simultaneously
-        #ifdef _NAMED_PIPE
-            ProcessCommand(pipe, cmd);   
-        #endif 
-
-        #ifdef _TCP_SOCKET
-            ProcessCommand(tcp, cmd);
-        #endif
-    }
     mplayer.join();
 }
 
