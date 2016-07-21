@@ -3,8 +3,8 @@
 N=0; 
 for i in $(cat /usr/include/cppplayer/commands.h | grep "," | tr -d '\t' | tr -d ',' | tail -n +2)
 do 
-	N=$(expr $N + 1)
 	export CPPPLAYER_$i=$(printf %cx%x \\ $N)
+	N=$(expr $N + 1)
 done 
 return
 #endif
