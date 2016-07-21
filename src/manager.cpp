@@ -76,6 +76,7 @@ void Manager::StartServer() {
     CommandControler cmd(music);
 
 
+    //FIXME: This should not detach
     #ifdef _NAMED_PIPE
         std::thread([&, this](){
             NamedPipe pipe{conf};

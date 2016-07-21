@@ -8,6 +8,8 @@
 #include "music.h"
 
 
+static std::mutex status_mutex;
+
 //Public functions
 
 void Music::PlayList() {
@@ -40,6 +42,7 @@ void Music::PlayList() {
 }
 
 Status Music::GetStatus() const {
+    std::lock_guard<std::mutex> lock(status_mutex);
     return status;
 }
 

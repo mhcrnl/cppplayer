@@ -1,6 +1,7 @@
 #include "config.h"
 #include <fstream>
 #include <iostream>
+#include <mutex>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
@@ -9,6 +10,8 @@
 
 
 namespace pt = boost::property_tree;
+
+static std::mutex config_mutex;
 
 Config::Config() {
   path dir(Expand(CONFIG_FOLDER));
@@ -21,10 +24,12 @@ Config::Config() {
 #ifdef _NAMED_PIPE
 
   std::string Config::GetDaemonPipe() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
     return opt.daemonpipe;
   }
 
   std::string Config::GetClientPipe() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
     return opt.clientpipe;
   }
 #endif
@@ -32,31 +37,38 @@ Config::Config() {
 #ifdef _TCP_SOCKET
   
   unsigned Config::GetPortNumber() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
     return opt.portnumber;
   }
   
   std::string Config::GetBindAddress() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
     return opt.bindaddress;
   }
 #endif
 
 std::string Config::GetPidFile() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
   return opt.pidfile;
 }
 
 std::string Config::GetDbFile() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
   return opt.dbfile;
 }
 
 std::string Config::GetLogFile() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
     return opt.logfile;
 }
 
 path Config::GetDir() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
   return opt.dir;
 }
 
 bool Config::GetAutostart() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
   return opt.autostart;
 }
 
