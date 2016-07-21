@@ -75,11 +75,12 @@ void Manager::StartServer() {
 
     #ifdef _NAMED_PIPE
         NamedPipe pipe{conf};
-    #elif _TCP_SOCKET
+    #endif 
+
+    #ifdef _TCP_SOCKET
         Tcp tcp{conf};
-    #else
-    #error At least we need one protocol to use
     #endif
+
 
     CommandControler cmd(music);
 
@@ -87,10 +88,10 @@ void Manager::StartServer() {
         //TODO: Allow to use more than one protocol simultaneously
         #ifdef _NAMED_PIPE
             ProcessCommand(pipe, cmd);   
-        #elif _TCP_SOCKET
+        #endif 
+
+        #ifdef _TCP_SOCKET
             ProcessCommand(tcp, cmd);
-        #else
-        #error At least we need one protocol to use
         #endif
     }
     mplayer.join();

@@ -23,7 +23,8 @@ void MusicList::LoadDir(path p) {
 void MusicList::LoadFile(const path pathSong) {
     if(!is_directory(pathSong) && IsSupported(pathSong)) {
         #ifdef DEBUG
-        spdlog::get("global")->info("Loaded {}", pathSong.c_str());
+        auto tmp = pathSong.c_str();
+        spdlog::get("global")->info("Loaded {}", tmp);
         #endif
         auto song = std::make_shared<Song>(pathSong);
         full_list.emplace_back(song);

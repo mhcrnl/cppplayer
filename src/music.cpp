@@ -131,7 +131,8 @@ void Music::Reproduce() {
     
     
     #ifdef DEBUG
-    spdlog::get("global")->info("Playing: {}", song.GetFile());
+    auto tmp = song.GetFile();
+    spdlog::get("global")->info("Playing: {}", tmp);
     #endif
     
     auto duration = music.getDuration().asMilliseconds();

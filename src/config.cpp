@@ -27,8 +27,9 @@ Config::Config() {
   std::string Config::GetClientPipe() const {
     return opt.clientpipe;
   }
+#endif
 
-#elif _TCP_SOCKET
+#ifdef _TCP_SOCKET
   
   unsigned Config::GetPortNumber() const {
     return opt.portnumber;
@@ -37,9 +38,6 @@ Config::Config() {
   std::string Config::GetBindAddress() const {
     return opt.bindaddress;
   }
-
-#else 
-#error At least we need one protocol to use
 #endif
 
 std::string Config::GetPidFile() const {
@@ -93,12 +91,12 @@ void Config::Load() {
     #ifdef _NAMED_PIPE
       tree.put("fifo.daemon_pipe", opt.daemonpipe);
       tree.put("fifo.client_pipe", opt.clientpipe);
-    #elif _TCP_SOCKET
+    #endif
+
+    #ifdef _TCP_SOCKET
       //TODO: ipv6
       tree.put("tcp.port_number", opt.portnumber);
       tree.put("tcp.bind_address", opt.bindaddress);
-    #else
-    #error At least we need one protocol to use
     #endif
 
     pt::write_ini(config, tree);
@@ -120,12 +118,12 @@ void Config::Load() {
     #ifdef _NAMED_PIPE
     opt.daemonpipe = Expand(tree.get("fifo.daemon_pipe", opt.daemonpipe));
     opt.clientpipe = Expand(tree.get("fifo.client_pipe", opt.clientpipe));
-    #elif _TCP_SOCKET
+    #endif
+    #ifdef _TCP_SOCKET
     opt.portnumber = tree.get("tcp.port_number", opt.portnumber);
     opt.bindaddress = tree.get("tcp.bind_address", opt.bindaddress);
-    #else
-    #error At least we need one protocol to use
     #endif
+
     opt.pidfile    = Expand(tree.get("pid_file", opt.pidfile));
     opt.dbfile     = Expand(tree.get("db_file", opt.dbfile));
     opt.logfile    = Expand(tree.get("log_file", opt.logfile));

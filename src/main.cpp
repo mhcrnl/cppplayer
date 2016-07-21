@@ -7,6 +7,10 @@
 #include <exception>
 #include <string>
 
+#if !defined(_NAMED_PIPE) && !defined(_TCP_SOCKET)
+#error At least we need one protocol to use
+#endif
+
 int main(int argc, char* argv[]) try {
     auto logging = spdlog::stdout_logger_mt("global", true);
     logging->set_level(spdlog::level::trace);

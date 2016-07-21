@@ -12,10 +12,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
-#elif _TCP_SOCKET
+#endif
+
+#ifdef _TCP_SOCKET
 #include <boost/asio.hpp>
-#else
-#error At least we need one protocol to use
 #endif
 
 #ifdef _NAMED_PIPE
@@ -99,10 +99,13 @@ private:
 	std::ofstream fclient;
 	std::ifstream fdaemon;
 };
-#elif _TCP_SOCKET
+#endif
+//endif _NAMED_PIPE
+
+#ifdef _TCP_SOCKET
 
 //TODO: Accept multiple connections simultaneously
-
+//TODO: Close the connection after send the data 
 using boost::asio::ip::tcp;
 using namespace boost::asio;
 
@@ -120,7 +123,8 @@ public:
 	}
 
 	Command ReadCommand() {
-		delete socket;
+		if(socket != nullptr)
+			delete socket;
 
 		socket = new tcp::socket(io_service);
 		acceptor->accept(*socket);
@@ -163,13 +167,11 @@ private:
 	Config& conf;
 	boost::asio::io_service io_service;
 	tcp::acceptor* acceptor;
-	tcp::socket* socket;
+	tcp::socket* socket {nullptr};
 
 	streambuf buffer;
 	std::istream is{&buffer};
 	std::ostream os{&buffer};
 };
-
-#else
-#error At least we need one protocol to use
 #endif
+//endif _TCP_SOCKET
