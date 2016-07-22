@@ -16,11 +16,12 @@ Manager::Manager(int argc, char* argv[]) {
     //conf.Load();
     if(argc == 2 && argv[1] == std::string("-d")) {
         daemonize();
-
+        
         spdlog::drop("global");
         auto logging = spdlog::basic_logger_mt("global", conf.GetLogFile(), true);
         logging->set_level(spdlog::level::debug);
         logging->info("Daemonazing server");
+
     } else {
         std::cout << "If you want to run it as a daemon restart it with \"-d\" flag" << std::endl;
     }
@@ -79,7 +80,6 @@ void Manager::StartServer() {
     //FIXME: This should not detach
     #ifdef _NAMED_PIPE
         std::thread([&, this](){
-            NamedPipe pipe{conf};
             while(music.GetStatus() != Status::Exit)
                 ProcessCommand(pipe, cmd);
         }).detach();
@@ -87,7 +87,6 @@ void Manager::StartServer() {
 
     #ifdef _TCP_SOCKET
         std::thread([&, this](){
-            Tcp tcp{conf};
             while(music.GetStatus() != Status::Exit)
                 ProcessCommand(tcp, cmd);
         }).detach();

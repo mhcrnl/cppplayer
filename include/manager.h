@@ -24,10 +24,18 @@ private:
     template <typename T>
     void ProcessCommand(T& proto, CommandControler& cmd);
 
+    
+    Database db;
+    Config conf;
+
     //FIXME: It can not be a data member because when
     //daemonizing OpenAL library crashes.
     //Music music;
+    #ifdef _NAMED_PIPE
+    NamedPipe pipe{conf};
+    #endif
 
-    Database db;
-    Config conf;
+    #ifdef _TCP_SOCKET
+    Tcp tcp{conf};
+    #endif
 };

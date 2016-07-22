@@ -47,8 +47,6 @@ For installing we can execute
 
 It will copy the commands.h header to /usr/include/cppplayer/commands.h and the executable to /usr/local/bin/dplayer++
 
-NOTES / LIMITATIONS: Currently only of the two protocols can be used (this will change soon).
-
 
 === Configuration ===
 
