@@ -132,11 +132,7 @@ void Music::Reproduce() {
         return;
     }
     
-    
-    #ifdef DEBUG
-    auto tmp = song.GetFile();
-    spdlog::get("global")->info("Playing: {}", tmp);
-    #endif
+   spdlog::get("global")->info("Playing: {}", song.GetFile());
     
     auto duration = music.getDuration().asMilliseconds();
 
@@ -159,9 +155,7 @@ void Music::Reproduce() {
             throw std::logic_error("Playing offset is greater than total length");
         }
 
-        #ifdef DEBUG
         spdlog::get("global")->debug("Sleeping {} milliseconds", sleep_time);
-        #endif
 
         //Wait until we have something to do or until the song finish
         cv.wait_for(lk, std::chrono::milliseconds(sleep_time), [this]{return IsNotStatus(Status::Playing);});

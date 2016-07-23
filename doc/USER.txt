@@ -64,6 +64,10 @@ music_folder: Is the directory where the music is searched. Default is . or ~/Mu
 
 auto_start: A boolean that says if the status of the daemon should change from Stop to Playing automatically. Default is false
 
+log_file: The location of the log.txt file. Default is ~/.config/player++/log.txt
+
+log_level: An int that indicate the verbosity level. 0=trace, 1=debug, 2=info, 3=notice, 4=warn, 5=err, 6=critical, 7=alert, 8=emerg, 9=off.
+
 Inside section [tcp].
 
 port_number: Port number used for receiving orders and sending information to clients. Default is 6600

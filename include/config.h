@@ -5,6 +5,8 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
+#include <spdlog/spdlog.h>
+
 using namespace boost::program_options;
 using namespace boost::filesystem;
 
@@ -29,6 +31,7 @@ public:
 	std::string GetLogFile()	const;
 	path GetDir() const;
 	bool GetAutostart() const;
+	spdlog::level::level_enum GetLogLevel() const;
 
 private:
 	void Load();
@@ -68,5 +71,7 @@ private:
 
 		//If true, change automatically Status::Stoped to Status::Playing
 		bool autostart = false;
+
+		short loglevel = 0;
 	}opt;
 };

@@ -22,10 +22,9 @@ void MusicList::LoadDir(path p) {
 
 void MusicList::LoadFile(const path pathSong) {
     if(!is_directory(pathSong) && IsSupported(pathSong)) {
-        #ifdef DEBUG
-        auto tmp = pathSong.c_str();
-        spdlog::get("global")->info("Loaded {}", tmp);
-        #endif
+
+        spdlog::get("global")->trace("Loaded {}", pathSong.c_str());
+
         auto song = std::make_shared<Song>(pathSong);
         full_list.emplace_back(song);
         song_list.emplace_back(song);
@@ -57,9 +56,7 @@ void MusicList::FilterArtist(const std::string artist) {
     if(artist != "") {
         song_list.clear();
         for(auto s : full_list ) {
-            #ifdef DEBUG
-                spdlog::get("global")->info("Analyzing {}", s->GetFile());
-            #endif
+            spdlog::get("global")->trace("Analyzing {}", s->GetFile());
             if(s->GetArtist() == artist)
                 song_list.emplace_back(s);
         }

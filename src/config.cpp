@@ -72,12 +72,15 @@ bool Config::GetAutostart() const {
   return opt.autostart;
 }
 
+spdlog::level::level_enum Config::GetLogLevel() const {
+    std::lock_guard<std::mutex> lock(config_mutex);
+    return static_cast<spdlog::level::level_enum>(opt.loglevel);
+}
+
 //Private functions
 
 void Config::Load() {
-  #ifdef DEBUG
     spdlog::get("global")->info("Using config file {}", Expand(CONFIG_FOLDER+"daemon.conf"));
-  #endif
 
   //Try to autodetect music dir
   //TODO: We should use libxdg to parse ~/.config/user-dirs.dirs (if exists)
@@ -99,6 +102,7 @@ void Config::Load() {
     tree.put("log_file", opt.logfile);
     tree.put("music_folder", opt.dir);
     tree.put("auto_start", opt.autostart);
+    tree.put("log_level", opt.loglevel);
 
     #ifdef _NAMED_PIPE
       tree.put("fifo.daemon_pipe", opt.daemonpipe);
@@ -141,6 +145,7 @@ void Config::Load() {
     opt.logfile    = Expand(tree.get("log_file", opt.logfile));
     opt.dir        = Expand(tree.get("music_folder", opt.dir).c_str());
     opt.autostart  = tree.get("auto_start", opt.autostart);
+    opt.loglevel   = tree.get("log_level", opt.loglevel);
   }
 }
 

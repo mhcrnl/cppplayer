@@ -19,12 +19,12 @@ Manager::Manager(int argc, char* argv[]) {
         
         spdlog::drop("global");
         auto logging = spdlog::basic_logger_mt("global", conf.GetLogFile(), true);
-        logging->set_level(spdlog::level::debug);
         logging->info("Daemonazing server");
 
     } else {
         std::cout << "If you want to run it as a daemon restart it with \"-d\" flag" << std::endl;
     }
+    spdlog::get("global")->set_level(conf.GetLogLevel());
 
 
     //Check if we have some pid number

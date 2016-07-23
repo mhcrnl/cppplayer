@@ -137,9 +137,7 @@ public:
 
     template <typename T>
     void Execute(Command c, T& proto) {
-        #ifdef DEBUG
         spdlog::get("global")->debug("Command:{}", (int)c);
-        #endif
 
         static CommandExecuter<T> cmd(proto, music);
 
