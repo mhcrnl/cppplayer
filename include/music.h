@@ -25,13 +25,45 @@ enum class Status {
 	Restart,
 };
 
+//This class implements the basic music class, that is, without playing anything
+class BaseMusic {
+	public:
+	virtual void PlayList();
 
-class Music {
+	virtual Status GetStatus() const;
+	virtual void SetStatus(Status s);
+
+	virtual MusicList& GetList();
+	virtual Song& GetCurrent();
+
+
+	//XXX
+	virtual void SetVolume(float v){}
+	virtual float GetVolume(){}
+
+	virtual int GetRemainingMilliseconds(){}
+
+	virtual void SetPlayingOffset(int ms){}
+
+protected:
+	virtual void Reproduce();
+
+	virtual bool IsStatus(Status s);
+	virtual bool IsNotStatus(Status s);
+
+	Song song;
+
+	std::atomic<Status> status{Status::Stoped};
+	MusicList list;
+
+	std::atomic<bool> status_processed {true};
+	std::condition_variable cv;
+	std::condition_variable status_cv;
+};
+
+
+class Music : public BaseMusic {
 public:
-	void PlayList();
-
-	Status GetStatus() const;
-	void SetStatus(Status s);
 
 	void SetVolume(float v);
 	float GetVolume();
@@ -39,23 +71,8 @@ public:
 	int GetRemainingMilliseconds();
 
 	void SetPlayingOffset(int ms);
-
-	MusicList& GetList();
-	Song& GetCurrent();
 private:
 	void Reproduce();
 
-	bool IsStatus(Status s);
-	bool IsNotStatus(Status s);
-
-	std::atomic<Status> status{Status::Stoped};
-	MusicList list;
-	Song song;
-
 	Sound music;
-
-	std::atomic<bool> status_processed {true};
-	std::condition_variable cv;
-	std::condition_variable status_cv;
-
 };

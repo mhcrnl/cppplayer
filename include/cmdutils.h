@@ -10,7 +10,7 @@
 template <class Protocol>
 class CommandExecuter {
 public:
-    CommandExecuter(Protocol& p, Music& m) : proto(p), music(m) {}
+    CommandExecuter(Protocol& p, BaseMusic& m) : proto(p), music(m) {}
     virtual ~CommandExecuter() =default;
 
     virtual void Quit() {
@@ -145,14 +145,14 @@ public:
 
 private:
     Protocol& proto;
-    Music& music;
+    BaseMusic& music;
 };
 
 
 
 class CommandControler {
 public:
-    CommandControler(Music& c) : music(c) {}
+    CommandControler(BaseMusic& c) : music(c) {}
 
     template <typename T>
     void Execute(Command c, T& proto) {
@@ -184,10 +184,8 @@ public:
             case Command::CLEAR_PLAYLIST:       return cmd.ClearPlaylist();
             case Command::SAVE_FILE:            return cmd.SaveFile();
             case Command::SAVE_PLAYLIST:        return cmd.SavePlaylist();
-            //case Command::SAVE_FILE:
-            //  break;
         }
     }
 private:
-    Music& music;
+    BaseMusic& music;
 };
