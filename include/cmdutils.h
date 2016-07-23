@@ -85,9 +85,7 @@ public:
     virtual void VolumeSet() {
         std::string volum;
         proto >> volum;
-        #ifdef DEBUG
         spdlog::get("global")->debug("Vol: {}", volum);
-        #endif
         music.SetVolume(std::atof(volum.c_str()));        
     }
 
@@ -119,9 +117,30 @@ public:
         proto << "";
     }
 
+    virtual void FilePut() {
+        //TODO: Implement this
+    }
+
     virtual void ClearPlaylist() {
         music.SetStatus(Status::Stoped);
         music.GetList().GetSongList().clear();
+    }
+
+    virtual void SaveFile() {
+        std::ofstream f(proto.GetLine());
+        if(!f.is_open())
+            throw std::runtime_error("Can not open playlist");
+
+        f << music.GetCurrent().GetFile() << std::endl;
+    }
+
+    virtual void SavePlaylist() {
+        std::ofstream f(proto.GetLine());
+        if(!f.is_open())
+            throw std::runtime_error("Can not open playlist");
+
+        for(auto& s : music.GetList().GetSongList())
+            f << s->GetFile() << std::endl;
     }
 
 private:
@@ -161,8 +180,10 @@ public:
             case Command::TIME_GET_REMAINING:   return cmd.TimeGetRemaining();
             case Command::SET_OFFSET:           return cmd.SetOffset();
             case Command::FILE_GET:             return cmd.FileGet();
+            case Command::FILE_PUT:             return cmd.FilePut();
             case Command::CLEAR_PLAYLIST:       return cmd.ClearPlaylist();
-
+            case Command::SAVE_FILE:            return cmd.SaveFile();
+            case Command::SAVE_PLAYLIST:        return cmd.SavePlaylist();
             //case Command::SAVE_FILE:
             //  break;
         }
