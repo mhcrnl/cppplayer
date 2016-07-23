@@ -115,7 +115,7 @@ public:
 			: conf(c)
 	{
 		auto ip = ip::address_v4().from_string(conf.GetBindAddress());
-		acceptor = new tcp::acceptor(io_service, tcp::endpoint(ip, 6600));
+		acceptor = new tcp::acceptor(io_service, tcp::endpoint(ip, conf.GetPortNumber()));
 	}
 
 	~Tcp() {
