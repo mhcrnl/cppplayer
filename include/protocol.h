@@ -113,29 +113,20 @@ class Tcp {
 public:
 	Tcp(Config& c)
 			: conf(c)
-	{
-		auto ip = ip::address_v4().from_string(conf.GetBindAddress());
-		acceptor = new tcp::acceptor(io_service, tcp::endpoint(ip, conf.GetPortNumber()));
-	}
-
-	~Tcp() {
-		delete acceptor;
-	}
+	{}
 
 	Command ReadCommand() {
-		if(socket != nullptr)
-			delete socket;
 
-		socket = new tcp::socket(io_service);
-		acceptor->accept(*socket);
+		socket.close();
+		acceptor.accept(socket);
 
 		char buffer[1];
-        read(*socket, boost::asio::buffer(buffer, 1));
+        read(socket, boost::asio::buffer(buffer, 1));
         return static_cast<Command>(buffer[0]);
 	}
 
 	std::string GetLine() {
-		auto bytes = read_until(*socket, buffer, '\n');
+		auto bytes = read_until(socket, buffer, '\n');
 		buffer.commit(bytes);
 		std::string line;
 		std::getline(is, line);
@@ -144,21 +135,21 @@ public:
 
 	void Put(char c) {
 		os.put(c);
-		auto bytes = write(*socket, buffer);
+		auto bytes = write(socket, buffer);
 		buffer.consume(bytes);
 	}
 
 	template <typename T>
 	std::ostream& operator<<(const T& obj) {
 		os << obj << std::endl;
-		auto bytes = write(*socket, buffer);
+		auto bytes = write(socket, buffer);
 		buffer.consume(bytes);
 		return os;
 	}
 
 	template <typename T>
 	std::istream& operator>>(T& obj) {
-		auto bytes = boost::asio::read_until(*socket, buffer, '\n');
+		auto bytes = boost::asio::read_until(socket, buffer, '\n');
 		buffer.commit(bytes);
 		is >> obj;
 		return is;
@@ -166,8 +157,12 @@ public:
 private:
 	Config& conf;
 	boost::asio::io_service io_service;
-	tcp::acceptor* acceptor;
-	tcp::socket* socket {nullptr};
+
+	tcp::acceptor acceptor{io_service, 
+						tcp::endpoint(ip::address_v4().from_string(conf.GetBindAddress()), 
+						conf.GetPortNumber())};
+
+	tcp::socket socket {io_service};
 
 	streambuf buffer;
 	std::istream is{&buffer};
