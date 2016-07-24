@@ -49,6 +49,23 @@ std::string Song::GetArtist() {
     return artist;
 }
 
+std::string Song::GetAlbum() {
+    std::lock_guard<std::mutex> song_guard(song_mutex);
+    if(album == "") {
+        TagLib::FileRef f(file.c_str());
+        if(f.isNull()) {
+            artist = title = album = "Unknown";
+        } else {
+            auto tmp = f.tag()->album();
+            if( tmp == TagLib::String::null) {
+                tmp = TagLib::String("Unknown");
+            }
+            album = tmp.to8Bit();
+        }
+    }
+    return artist;
+}
+
 std::string Song::GetFile() {
     std::lock_guard<std::mutex> song_guard(song_mutex);
     return file;
