@@ -5,16 +5,36 @@
 
 using namespace boost::filesystem;
 
+/// @brief Class to retrieve the metadata
 class Song {
 public:
+	/// @brief Creates a Song of an absolute path
 	Song(path p);
+
+	/// @brief Creates a temporary empty Song.
 	Song() =default;
 
+	/// @brief Retrieve the title of this Song.
+	/// @return The title if there are no errors or "Unknown" otherwise
 	std::string GetTitle();
+
+	/// @brief Retrieve the artist name of this Song.
+	/// @return The title if there are no errors or "Unknown" otherwise
 	std::string GetArtist();
-	std::string GetFile();
-	std::string GetExtension();
+
+	/// @brief Retrieve the album name of this Song.
+	/// @return The title if there are no errors or "Unknown" otherwise
 	std::string GetAlbum();
+
+	/// @brief Retrieve the extension of the file, for example ".mp3"
+	/// @return The extension
+	std::string GetExtension();
+
+	/// @brief Retrieve the absolute path to the file.
+	/// @return The absoulte path
+	std::string GetFile();
+
+
 private:
 	std::string album;
 	std::string extension;
