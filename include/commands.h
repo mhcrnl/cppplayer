@@ -1,3 +1,10 @@
+/// @file commands.h
+/// @brief Header file to supply the list of available commands
+///
+/// The purpose of this header is to provide a lightweight and compatible way of communicate 
+/// with the daemon without need to parse a file. This header is compatible with C++, C and bash, 
+/// that should allow other languages like Go, Python, etc to easily communicate with the daemon.
+
 #if 0
 #This way i can source this file and debug with bash
 N=0; 
@@ -12,53 +19,46 @@ return
 #pragma once
 
 #ifdef __cplusplus
+/// @enum Command 
 enum class Command : char {
 #else
 typedef enum {
 #endif
-	QUIT,
-	PLAY,
-	NEXT,
-	BACK,
-	PAUSE,
-	STOP,
-	SORT_RANDOM,
+	QUIT, 	///< Close the daemon
+	PLAY, 	///< Reproduce the current playlist
+	NEXT,	///< Reproduce the next song in the playlist
+	BACK,	///< Reproduce the previous song in the playlist
+	PAUSE,	///< Stop the reproduction, or restart it if it was previously paused
+	STOP,	///< Stop the reproduction and forgets the current playlist position
 
-	//Return the requested metadata
-	GET_ARTIST,
-	GET_TITLE,
-	GET_FILE,
+	SORT_RANDOM,	///< Sort the list 
 
-	//Create a playlist with songs that match an artist.
-	FILTER_ARTIST,
+	// Returns the requested metadata
+	GET_ARTIST, ///< Returns the artist of the current song
+	GET_TITLE,	///< Returns the title of the current song
+	GET_FILE,	///< Returns the absolute path to the file of the current song
+
+	FILTER_ARTIST, 	///< Create a playlist with songs that match an artist
 
 	//Operates with playlists
-	//Add songs to the current playlist and the full list of songs.
 	//TODO: Avoid duplicates
-	ADD_FOLDER,
-	ADD_FILE,
+	ADD_FOLDER,	///< Add songs of a folder to the current playlist and the full list of songs.
+	ADD_FILE,	///< Add a single song to the current playlist and the full list of songs
 
-	//Delete all songs from the current list
-	CLEAR_PLAYLIST,
+	CLEAR_PLAYLIST, ///< Delete all songs from the current list
 
-	//Saves the current song to a playlist
-	SAVE_FILE,
-	//Saves the current list to a playlist
-	SAVE_PLAYLIST,
-	//Import songs to the current list from a file
-	LOAD_PLAYLIST,
+	SAVE_FILE,		///< Export the current song to a file (playlist)
+	SAVE_PLAYLIST, 	///< Export the song list to a file (playlist)
+	LOAD_PLAYLIST,	///< Import songs to the current list from a file (playlist)
 
-	VOLUME_SET,
-	VOLUME_GET,
+	VOLUME_SET,		///< Set the volume (values [0,100])
+	VOLUME_GET,		///< Return the current volume
 
-	TIME_GET_REMAINING,
+	TIME_GET_REMAINING,	///< Returns the remaining time (in milliseconds) to finish the current song
 
+	SET_OFFSET,	///< Set an offset (in seconds)
 
-	SET_OFFSET,
-
-	//Get the data of current song or write 
-	//Format is <size of file><file content>
-	FILE_GET,
+	FILE_GET, ///< Get the data of the current song. Format is {size of file}{file content}
 	FILE_PUT,
 #ifdef __cplusplus
 };

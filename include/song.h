@@ -1,11 +1,15 @@
 #pragma once
 
+/// @file song.h
+/// @brief Declaration of Song class
+
 #include <string>
 #include <boost/filesystem.hpp>
 
 using namespace boost::filesystem;
 
-/// @brief Class to retrieve the metadata
+/// @class Song
+/// @brief Class to retrieve metadata
 class Song {
 public:
 	/// @brief Creates a Song of an absolute path
@@ -33,7 +37,6 @@ public:
 	/// @brief Retrieve the absolute path to the file.
 	/// @return The absoulte path
 	std::string GetFile();
-
 
 private:
 	std::string album;
