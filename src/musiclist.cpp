@@ -10,22 +10,39 @@
 
 //Public functions
 
-void MusicList::LoadDir(path p) {
+void MusicList::LoadDir(path p, path metadata) {
     if(!is_directory(p)) {
         throw std::runtime_error("Error con el directorio");
     }
 
-    for(recursive_directory_iterator dir(p), end; dir != end; ++dir) {
-        LoadFile(dir->path());
+    for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
+        const auto pathSong = entry.path();
+        if(is_directory(pathSong))  {
+
+            if(metadata.empty()) {
+                std::string meta = pathSong.c_str() + std::string("/.METADATA");
+                if(exists(meta)) {
+                    spdlog::get("global")->info("Found {}", meta);
+                    LoadDir(pathSong, meta);
+                } else {
+                    LoadDir(pathSong);
+                }
+            } else {
+                LoadDir(pathSong, metadata);
+            }
+
+        }  else {
+            LoadFile(pathSong, metadata);
+        }
     }
 }
 
-void MusicList::LoadFile(const path pathSong) {
-    if(!is_directory(pathSong) && IsSupported(pathSong)) {
+void MusicList::LoadFile(const path pathSong, path metadata) {
+    if(IsSupported(pathSong) && !is_directory(pathSong)) {
 
         spdlog::get("global")->trace("Loaded {}", pathSong.c_str());
 
-        auto song = std::make_shared<Song>(pathSong);
+        auto song = std::make_shared<Song>(pathSong, metadata);
         full_list.emplace_back(song);
         song_list.emplace_back(song);
     }

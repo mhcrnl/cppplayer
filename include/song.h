@@ -12,6 +12,9 @@ using namespace boost::filesystem;
 /// @brief Class to retrieve metadata
 class Song {
 public:
+	/// @brief Creates a Song of an absolute path with an associated metadata file
+	Song(path p, path metadata);
+
 	/// @brief Creates a Song of an absolute path
 	Song(path p);
 
@@ -44,4 +47,6 @@ private:
 	std::string artist;
 	std::string title;
 	std::string file;
+
+	std::string metadata;
 };

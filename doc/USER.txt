@@ -112,3 +112,9 @@ Supposing we are using named pipes, and the pipes are in the default location. W
 	echo -n $CPPPLAYER_VOLUME_SET"50" > ./dplayer++
 
 etc, to see all supported commands you can read the /usr/include/cppplayer/commands.h  header file
+
+
+=== Optimizations ===
+
+Filter a lot of songs is very slow. If we have all the songs of the same artist under the same folder we can optimize it creating a folder called ".METADATA", this folder will have all the global metadata of this folder. 
+Inside this folder we can create a file called "ARTIST" and write the name of the artist of all songs on this folder (recursively). This way when we filter we only have to read this .METADATA/ARTIST file and not every single song file. 
