@@ -1,20 +1,20 @@
-/// @file commands.h
-/// @brief Header file to supply the list of available commands
-///
-/// The purpose of this header is to provide a lightweight and compatible way of communicate 
-/// with the daemon without need to parse a file. This header is compatible with C++, C and bash, 
-/// that should allow other languages like Go, Python, etc to easily communicate with the daemon.
-
 #if 0
 #This way i can source this file and debug with bash
 N=0; 
-for i in $(cat /usr/include/cppplayer/commands.h | grep "," | tr -d '\t' | tr -d ',' | tail -n +2)
+for i in $(cat /usr/include/cppplayer/commands.h | grep "," | tr -d '\t' | cut -d ',' -f1 | grep -v /)
 do 
 	export CPPPLAYER_$i=$(printf %cx%x \\ $N)
 	N=$(expr $N + 1)
 done 
 return
 #endif
+
+/// @file commands.h
+/// @brief Header file to supply the list of available commands
+///
+/// The purpose of this header is to provide a lightweight and compatible way of communicate 
+/// with the daemon without need to parse a file. This header is compatible with C++, C and bash, 
+/// that should allow other languages like Go, Python, etc to easily communicate with the daemon.
 
 #pragma once
 

@@ -49,7 +49,6 @@ std::string Song::GetArtist() {
     std::ifstream artist_file(metadata + "/ARTIST");
     if(artist_file.is_open()) { 
         std::getline(artist_file, artist);
-        spdlog::get("global")->info("Artist: {}", artist);
         return artist;
     }
 

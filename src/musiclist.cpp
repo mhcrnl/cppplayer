@@ -22,7 +22,6 @@ void MusicList::LoadDir(path p, path metadata) {
             if(metadata.empty()) {
                 std::string meta = pathSong.c_str() + std::string("/.METADATA");
                 if(exists(meta)) {
-                    spdlog::get("global")->info("Found {}", meta);
                     LoadDir(pathSong, meta);
                 } else {
                     LoadDir(pathSong);
