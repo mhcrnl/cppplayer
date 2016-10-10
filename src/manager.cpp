@@ -26,26 +26,6 @@ Manager::Manager(int argc, char* argv[]) {
     }
     spdlog::get("global")->set_level(conf.GetLogLevel());
 
-
-    //Check if we have some pid number
-    std::ifstream ipid_file(conf.GetPidFile());
-    if(ipid_file.is_open()) {
-
-        std::string pid;
-        ipid_file >> pid;
-
-        //Check if that pid is a real process
-        std::ifstream f("/proc/"+pid+"/comm");
-        if(f.is_open()) {
-            std::string comm;
-            f >> comm;
-            if(comm == "dplayer++") {
-                throw std::runtime_error("Server is already running");
-            }
-        }
-    }
-    ipid_file.close();
-
     //Write the pid number
     std::ofstream opid_file(conf.GetPidFile(), std::ios::trunc | std::ios::out);
     if(!opid_file.is_open()) {
