@@ -86,7 +86,17 @@ public:
         std::string volum;
         proto >> volum;
         spdlog::get("global")->debug("Vol: {}", volum);
-        music.SetVolume(std::atof(volum.c_str()));        
+
+        float new_volum;
+        if(volum[0] == '+')
+            new_volum = music.GetVolume() + std::atof(&volum[1]);
+        else if(volum[0] == '-')
+            new_volum = music.GetVolume() - std::atof(&volum[1]);
+        else
+            new_volum = std::atof(volum.c_str());
+        if(new_volum > 100.0)  new_volum = 100;
+        if(new_volum < 0) new_volum = 0;
+        music.SetVolume(new_volum);        
     }
 
     virtual void VolumeGet() {
