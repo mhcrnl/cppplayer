@@ -13,7 +13,7 @@
 #endif
 
 int main(int argc, char* argv[]) try {
-    auto logging = spdlog::stdout_logger_mt("global", true);
+    auto logging = spdlog::stdout_color_mt("global");
     logging->set_level(spdlog::level::trace);
 
     //Check if we have some pid number
