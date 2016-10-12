@@ -52,7 +52,7 @@ target_link_libraries(dplayer++ ${CMAKE_THREAD_LIBS_INIT})
 
 target_link_libraries(dplayer++ sfml-system sfml-audio mpg123 tag sqlite3)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror ")
 
 #RELEASE
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -flto")

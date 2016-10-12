@@ -38,12 +38,12 @@ class BaseMusic {
 
 
 	//XXX
-	virtual void SetVolume(float v){}
-	virtual float GetVolume(){}
+	virtual void SetVolume(float v) =0;
+	virtual float GetVolume() =0;
 
-	virtual int GetRemainingMilliseconds(){}
+	virtual int GetRemainingMilliseconds() =0;
 
-	virtual void SetPlayingOffset(int ms){}
+	virtual void SetPlayingOffset(int ms) =0;
 
 protected:
 	virtual void Reproduce();
