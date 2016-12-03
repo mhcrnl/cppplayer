@@ -31,12 +31,6 @@ install(FILES include/commands.h DESTINATION /usr/include/cppplayer)
 target_compile_features(dplayer++ PUBLIC cxx_range_for cxx_auto_type cxx_lambdas)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-#Check if boost exists
-find_package(Boost COMPONENTS filesystem) 
-
-if(NOT Boost_FOUND)
-    message( FATAL_ERROR "Boost libraries not found." )
-endif()
 
 include_directories(${Boost_INCLUDE_DIRS}) 
 target_link_libraries(dplayer++ ${Boost_LIBRARIES})
@@ -50,7 +44,7 @@ endif()
 
 target_link_libraries(dplayer++ ${CMAKE_THREAD_LIBS_INIT})
 
-target_link_libraries(dplayer++ sfml-system sfml-audio mpg123 tag sqlite3)
+target_link_libraries(dplayer++ sfml-system sfml-audio mpg123 tag sqlite3 boost_system boost_filesystem)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror ")
 
