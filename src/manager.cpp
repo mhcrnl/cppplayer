@@ -41,14 +41,8 @@ Manager::~Manager() {
     std::remove(conf.GetPidFile().c_str());
 }
 
-void Manager::StartServer() {
-    db.Connect(conf.GetDbFile().c_str());
-    
-    #ifndef _REMOTE_MODE
+void Manager::StartServer() {    
     Music music;
-    #else
-    BaseMusic music;
-    #endif
 
     music.GetList().LoadDir(conf.GetDir());
     std::thread mplayer( [&music] { music.PlayList(); } );

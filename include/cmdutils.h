@@ -10,7 +10,7 @@
 template <class Protocol>
 class CommandExecuter {
 public:
-    CommandExecuter(Protocol& p, BaseMusic& m) : proto(p), music(m) {}
+    CommandExecuter(Protocol& p, Music& m) : proto(p), music(m) {}
     virtual ~CommandExecuter() =default;
 
     virtual void Quit() {
@@ -155,14 +155,14 @@ public:
 
 private:
     Protocol& proto;
-    BaseMusic& music;
+    Music& music;
 };
 
 
 
 class CommandControler {
 public:
-    CommandControler(BaseMusic& c) : music(c) {}
+    CommandControler(Music& c) : music(c) {}
 
     template <typename T>
     void Execute(Command c, T& proto) {
@@ -197,5 +197,5 @@ public:
         }
     }
 private:
-    BaseMusic& music;
+    Music& music;
 };

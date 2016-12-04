@@ -12,7 +12,7 @@ static std::mutex status_mutex;
 
 //Public functions
 
-void BaseMusic::PlayList() {
+void Music::PlayList() {
     while(GetStatus() != Status::Exit) {
         //Wait here until state is not Stoped
         std::mutex cv_m;
@@ -41,12 +41,12 @@ void BaseMusic::PlayList() {
     }
 }
 
-Status BaseMusic::GetStatus() const {
+Status Music::GetStatus() const {
     std::lock_guard<std::mutex> lock(status_mutex);
     return status;
 }
 
-void BaseMusic::SetStatus(Status s) {
+void Music::SetStatus(Status s) {
     //Wait previous status to be processed
     std::mutex cv_m;
     std::unique_lock<std::mutex> lk{cv_m};
@@ -89,7 +89,7 @@ void Music::SetPlayingOffset(int ms) {
     SetStatus(Status::Playing);
 }
 
-bool BaseMusic::IsStatus(Status s) {
+bool Music::IsStatus(Status s) {
     bool tmp = GetStatus()==s;
     if(tmp) {
         status_processed = true;
@@ -98,7 +98,7 @@ bool BaseMusic::IsStatus(Status s) {
     return tmp;
 }
 
-bool BaseMusic::IsNotStatus(Status s) {
+bool Music::IsNotStatus(Status s) {
     bool tmp = GetStatus()!=s;
     if(tmp) {
         status_processed = true;
@@ -107,39 +107,15 @@ bool BaseMusic::IsNotStatus(Status s) {
     return tmp;
 }
 
-MusicList& BaseMusic::GetList() {
+MusicList& Music::GetList() {
     return list;
 }
 
-Song& BaseMusic::GetCurrent() {
+Song& Music::GetCurrent() {
     return song;
 }
 
 //Private functions
-
-
-void BaseMusic::Reproduce() {
-    spdlog::get("global")->info("Playing: {}", song.GetFile());
-    
-    std::mutex cv_m;
-    std::unique_lock<std::mutex> lk{cv_m};
-
-    bool loop = true; 
-    //loop only if the command is Pause
-    while(loop) {
-        loop = false;
-
-        //Wait until we have something to do or until the song finish
-        cv.wait(lk, [this]{return IsNotStatus(Status::Playing);});
-
-        if(IsStatus(Status::Paused)) {
-            cv.wait(lk, [this]{return IsNotStatus(Status::Paused);});
-            loop = true;
-        } else if(IsStatus(Status::Restart)) {
-            status = Status::Playing;
-        }
-    }
-}
 
 
 //TODO: SFML is not appropiate for a music player

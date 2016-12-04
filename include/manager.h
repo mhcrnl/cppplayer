@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include "music.h"
-#include "database.h"
 #include "commands.h"
 #include "protocol.h"
 #include "cmdutils.h"
@@ -24,8 +23,6 @@ private:
     template <typename T>
     void ProcessCommand(T& proto, CommandControler& cmd);
 
-    
-    Database db;
     Config conf;
 
     //FIXME: It can not be a data member because when

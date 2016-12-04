@@ -15,64 +15,45 @@ using namespace boost::filesystem;
 
 //Possible states
 enum class Status {
-	Playing,
-	Paused,
-	Stoped,
-	Exit,
+    Playing,
+    Paused,
+    Stoped,
+    Exit,
 
-	Forwarding, 
-	Backing,
-	Restart,
+    Forwarding,
+    Backing,
+    Restart,
 };
 
 //This class implements the basic music class, that is, without playing anything
-class BaseMusic {
-	public:
-	virtual void PlayList();
-
-	virtual Status GetStatus() const;
-	virtual void SetStatus(Status s);
-
-	virtual MusicList& GetList();
-	virtual Song& GetCurrent();
-
-
-	//XXX
-	virtual void SetVolume(float v) =0;
-	virtual float GetVolume() =0;
-
-	virtual int GetRemainingMilliseconds() =0;
-
-	virtual void SetPlayingOffset(int ms) =0;
-
-protected:
-	virtual void Reproduce();
-
-	virtual bool IsStatus(Status s);
-	virtual bool IsNotStatus(Status s);
-
-	Song song;
-
-	std::atomic<Status> status{Status::Stoped};
-	MusicList list;
-
-	std::atomic<bool> status_processed {true};
-	std::condition_variable cv;
-	std::condition_variable status_cv;
-};
-
-
-class Music : public BaseMusic {
+class Music {
 public:
+    void SetVolume(float v);
+    float GetVolume();
 
-	void SetVolume(float v);
-	float GetVolume();
+    int GetRemainingMilliseconds();
 
-	int GetRemainingMilliseconds();
+    void SetPlayingOffset(int ms);
+    void PlayList();
 
-	void SetPlayingOffset(int ms);
+    Status GetStatus() const;
+    void SetStatus(Status s);
+
+    MusicList& GetList();
+    Song& GetCurrent();
+
 private:
-	void Reproduce();
+    void Reproduce();
+    bool IsStatus(Status s);
+    bool IsNotStatus(Status s);
 
-	Sound music;
+    Sound music;
+    Song song;
+
+    std::atomic<Status> status {Status::Stoped};
+    MusicList list;
+
+    std::atomic<bool> status_processed {true};
+    std::condition_variable cv;
+    std::condition_variable status_cv;
 };
