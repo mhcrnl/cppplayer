@@ -5,11 +5,10 @@
 class Database {
 public:
 	~Database();
-	bool Connect(const char*);
+    void Connect(const char*);
 	bool Exec(char*);
 	bool GetTitleFromDB(const std::string, std::string&);
 private:
 	sqlite3_stmt* stmt;
 	sqlite3* db;
-	bool isConnected {false};
 };

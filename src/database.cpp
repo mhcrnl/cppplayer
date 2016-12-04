@@ -1,4 +1,6 @@
 #include <iostream>
+#include <stdexcept>
+
 #include "database.h"
 
 //SQLite C++ resources: 
@@ -6,30 +8,22 @@
 //  https://www.sqlite.org/c3ref/intro.html
 
 Database::~Database() {
-    if (isConnected) {
-        sqlite3_close(db);
-    }
+    sqlite3_close(db);
 }
 
 /**
  * Connects to the database and save the sqlite3 var
  *
  * @param path Path where the database file is
- * @return True if success, false if there're any errors
  */
-bool Database::Connect(const char* path){
+void Database::Connect(const char* path){
     //Connects to the database,
     //Returns true if the connection was successful, and false if not
 
-    int rc;
-    rc = sqlite3_open(path, &db);
+    int rc = sqlite3_open(path, &db);
 
     if (rc) {
-        isConnected = false;
-        return false;
-    } else {
-        isConnected = true;
-        return true;
+        throw std::runtime_error("Database could not be opened");
     }
 }
 

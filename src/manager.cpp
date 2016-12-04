@@ -42,8 +42,7 @@ Manager::~Manager() {
 }
 
 void Manager::StartServer() {
-    //if(!db.Connect(conf.GetDbFile().c_str()))
-    //  throw std::runtime_error("Database could not be opened");
+    db.Connect(conf.GetDbFile().c_str());
     
     #ifndef _REMOTE_MODE
     Music music;
