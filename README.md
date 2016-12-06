@@ -19,11 +19,9 @@ Reproductor de música sencillo que busca la simplicidad y facilidad de configur
 
 - usar libxdg para buscar el directorio por defecto donde buscar cancioens (parsear ~/.config/user-dirs.dirs si existe)
 - Playlists
-- Base de datos SQL
 - Soporte para plugins
 - Ecualizador
-- Cache de canciones recientes (para agilizar la búsqueda)
-- Soporte para carácteres raros/extranjeros.
+- Soporte para carácteres raros/extranjeros. 
 
 #### Clientes 
 
