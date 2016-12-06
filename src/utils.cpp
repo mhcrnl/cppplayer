@@ -1,7 +1,9 @@
+#include "utils.h"
+
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include "utils.h"
+#include <stdexcept>
 
 //Copied from the net.
 void daemonize() {
