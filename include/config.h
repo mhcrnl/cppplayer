@@ -12,7 +12,7 @@
 using namespace boost::program_options;
 using namespace boost::filesystem;
 
-static std::string CONFIG_FOLDER = [](){return Expand("~/.config/player++/");}();
+static const std::string CONFIG_FOLDER = Expand("~/.config/player++/");
 
 class Config {
 public:
