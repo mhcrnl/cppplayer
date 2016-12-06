@@ -14,7 +14,7 @@ namespace pt = boost::property_tree;
 static std::mutex config_mutex;
 
 Config::Config() {
-  path dir(Expand(CONFIG_FOLDER));
+  path dir(CONFIG_FOLDER);
   if(!exists(dir) && !create_directory(dir))
     throw std::runtime_error("Could not create config directory");
 
@@ -50,11 +50,6 @@ Config::Config() {
 std::string Config::GetPidFile() const {
     std::lock_guard<std::mutex> lock(config_mutex);
   return opt.pidfile;
-}
-
-std::string Config::GetDbFile() const {
-    std::lock_guard<std::mutex> lock(config_mutex);
-  return opt.dbfile;
 }
 
 std::string Config::GetLogFile() const {
@@ -98,7 +93,6 @@ void Config::Load() {
     pt::ptree tree;
 
     tree.put("pid_file", opt.pidfile);
-    tree.put("db_file", opt.dbfile);
     tree.put("log_file", opt.logfile);
     tree.put("music_folder", opt.dir);
     tree.put("auto_start", opt.autostart);
@@ -122,7 +116,6 @@ void Config::Load() {
     opt.clientpipe  =Expand(opt.clientpipe);
     #endif
     opt.pidfile     =Expand(opt.pidfile);
-    opt.dbfile      =Expand(opt.dbfile);
     opt.logfile     =Expand(opt.logfile);
     opt.dir         =Expand(opt.dir.c_str());
 
@@ -141,28 +134,9 @@ void Config::Load() {
     #endif
 
     opt.pidfile    = Expand(tree.get("pid_file", opt.pidfile));
-    opt.dbfile     = Expand(tree.get("db_file", opt.dbfile));
     opt.logfile    = Expand(tree.get("log_file", opt.logfile));
     opt.dir        = Expand(tree.get("music_folder", opt.dir).c_str());
     opt.autostart  = tree.get("auto_start", opt.autostart);
     opt.loglevel   = tree.get("log_level", opt.loglevel);
   }
-}
-
-std::string Config::Expand(std::string file) {
-  auto pos = file.find('~');
-  if(pos != std::string::npos) {
-    file.erase(pos,1);
-    file.insert(pos, GetHome());
-  }
-  
-  return file;
-}
-
-std::string Config::GetHome() {
-  static std::string home = getenv("HOME");
-  if(home.empty()) {
-    throw std::runtime_error("HOME env variable not found, exiting");
-  }
-  return home;
 }

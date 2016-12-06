@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils.h"
+
 #include <string>
 
 #include <boost/program_options.hpp>
@@ -10,7 +12,7 @@
 using namespace boost::program_options;
 using namespace boost::filesystem;
 
-const std::string CONFIG_FOLDER = "~/.config/player++/";
+static std::string CONFIG_FOLDER = [](){return Expand("~/.config/player++/");}();
 
 class Config {
 public:
@@ -36,9 +38,6 @@ public:
 private:
 	void Load();
 	
-	std::string Expand(const std::string file);
-	std::string GetHome();
-
 	struct Options {
 		#ifdef _NAMED_PIPE
 			//Pipe used by the daemon to write to client
@@ -56,9 +55,6 @@ private:
 
 		//File to store the pid number so we can check if the daemon is really running
 		std::string pidfile 	= CONFIG_FOLDER+"player++.pid";
-
-		//Database file
-		std::string dbfile		= CONFIG_FOLDER+"db.sql";
 
 		//Playlist folder
 		std::string playlistfolder = CONFIG_FOLDER+"playlist/";

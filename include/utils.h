@@ -17,3 +17,6 @@ void daemonize();
 /// @return Size of the file in bytes
 /// @see Original: http://stackoverflow.com/a/5840160
 std::ifstream::pos_type filesize(std::string filename);
+
+std::string Expand(const std::string file);
+std::string GetHome();

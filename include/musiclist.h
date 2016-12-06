@@ -17,9 +17,9 @@ enum class Order {
 class MusicList {
 public:
 	//Search music recursively in the "dir" path and add it to the db
-	void LoadDir(path dir, path metadata = "");
+	void LoadDir(path dir);
 
-	void LoadFile(const path pathSong, path metadata = "");
+	void LoadFile(const path pathSong);
 
 	void LoadPlaylist(std::string pathPl);
 

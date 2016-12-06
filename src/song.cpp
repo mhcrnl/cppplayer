@@ -1,4 +1,5 @@
 #include "song.h"
+#include "config.h"
 
 #include <taglib/taglib.h>
 #include <taglib/tag.h>
@@ -6,16 +7,14 @@
 
 #include <spdlog/spdlog.h>
 
+#include <boost/filesystem.hpp>
+
 #include <mutex>
 #include <fstream>
 
-static std::mutex song_mutex;
+using namespace boost::filesystem;
 
-Song::Song(path p, path meta) {
-    extension = p.extension().c_str();
-    file = p.c_str();
-    metadata = meta.c_str();
-}
+static std::mutex song_mutex;
 
 Song::Song(path p) {
     extension = p.extension().c_str();
@@ -27,15 +26,21 @@ std::string Song::GetTitle() {
 
     if(title != "") return title;
 
-    TagLib::FileRef f(file.c_str());
-    if(f.isNull()) {
-        artist = title = "Unknown";
+    path dbdir(CONFIG_FOLDER + "/.db/" + file);
+
+    if(!exists(dbdir) && !create_directories(dbdir)) {
+        spdlog::get("global")->warn("Could not create {} directory ", dbdir.c_str());
+        GetTitleFromFile();
     } else {
-        auto tmp = f.tag()->title();
-        if( tmp == TagLib::String::null) {
-            tmp = TagLib::String("Unknown");
+        auto title_path = dbdir.c_str() + std::string("/TITLE");
+        std::ifstream title_file(title_path);
+        if(title_file.is_open()) {
+            std::getline(title_file, title);
+        } else {
+            GetTitleFromFile();
+            std::ofstream title_file(title_path);
+            title_file << title << "\n";
         }
-        title = tmp.to8Bit();
     }
 
     return title;
@@ -46,24 +51,24 @@ std::string Song::GetArtist() {
 
     if(artist != "") return artist;
 
-    std::ifstream artist_file(metadata + "/ARTIST");
-    if(artist_file.is_open()) { 
-        std::getline(artist_file, artist);
-        return artist;
-    }
+    path dbdir(CONFIG_FOLDER + "/.db/" + file);
 
-    TagLib::FileRef f(file.c_str());
-    if(f.isNull()) {
-         artist = title = "Unknown";
+    if(!exists(dbdir) && !create_directories(dbdir)) {
+        spdlog::get("global")->warn("Could not create {} directory ", dbdir.c_str());
+        GetArtistFromFile();
     } else {
-        auto tmp = f.tag()->artist();
-        if( tmp == TagLib::String::null) {
-            tmp = TagLib::String("Unknown");
+        auto artist_path = dbdir.c_str() + std::string("/ARTIST");
+        std::ifstream artist_file(artist_path);
+        if(artist_file.is_open()) {
+            std::getline(artist_file, artist);
+        } else {
+            GetArtistFromFile();
+            std::ofstream artist_file(artist_path);
+            artist_file << artist << "\n";
         }
-        artist = tmp.to8Bit();
-        //artist = tmp.toWString();
     }
 
+    
     return artist;
 }
 
@@ -92,4 +97,31 @@ std::string Song::GetFile() {
 std::string Song::GetExtension() {
     std::lock_guard<std::mutex> song_guard(song_mutex);
     return extension;
+}
+
+void Song::GetTitleFromFile() {
+    TagLib::FileRef f(file.c_str());
+    if(f.isNull()) {
+        artist = title = "Unknown";
+    } else {
+        auto tmp = f.tag()->title();
+        if( tmp == TagLib::String::null) {
+            tmp = TagLib::String("Unknown");
+        }
+        title = tmp.to8Bit();
+    }
+}
+
+void Song::GetArtistFromFile() {
+    TagLib::FileRef f(file.c_str());
+    if(f.isNull()) {
+         artist = title = "Unknown";
+    } else {
+        auto tmp = f.tag()->artist();
+        if( tmp == TagLib::String::null) {
+            tmp = TagLib::String("Unknown");
+        }
+        artist = tmp.to8Bit();
+        //artist = tmp.toWString();
+    }
 }

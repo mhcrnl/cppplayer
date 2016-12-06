@@ -54,3 +54,21 @@ std::ifstream::pos_type filesize(std::string filename) {
     std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
     return in.tellg(); 
 }
+
+std::string Expand(std::string file) {
+  auto pos = file.find('~');
+  if(pos != std::string::npos) {
+    file.erase(pos,1);
+    file.insert(pos, GetHome());
+  }
+  
+  return file;
+}
+
+std::string GetHome() {
+  static std::string home = getenv("HOME");
+  if(home.empty()) {
+    throw std::runtime_error("HOME env variable not found, exiting");
+  }
+  return home;
+}
