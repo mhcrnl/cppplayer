@@ -65,9 +65,6 @@ private:
 		//Location of the songs
 		path dir = ".";
 
-		//If true, change automatically Status::Stoped to Status::Playing
-		bool autostart = false;
-
 		short loglevel = 0;
 	}opt;
 };

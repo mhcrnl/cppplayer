@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 
 #include <cstdio>
+#include <cstdlib>
 #include <thread>
 #include <iostream>
 #include <fstream>
@@ -47,12 +48,7 @@ void Manager::StartServer() {
     music.GetList().LoadDir(conf.GetDir());
     std::thread mplayer( [&music] { music.PlayList(); } );
 
-    if(conf.GetAutostart()) {
-        music.SetStatus(Status::Playing);
-    }
-
     CommandControler cmd(music);
-
 
     //FIXME: This should not detach
     #ifdef _NAMED_PIPE
@@ -68,6 +64,8 @@ void Manager::StartServer() {
                 ProcessCommand(tcp, cmd);
         }).detach();
     #endif
+
+    system( (CONFIG_FOLDER + "init_script.sh").c_str() );
 
     mplayer.join();
 }

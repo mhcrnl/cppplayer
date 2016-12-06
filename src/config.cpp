@@ -62,11 +62,6 @@ path Config::GetDir() const {
   return opt.dir;
 }
 
-bool Config::GetAutostart() const {
-    std::lock_guard<std::mutex> lock(config_mutex);
-  return opt.autostart;
-}
-
 spdlog::level::level_enum Config::GetLogLevel() const {
     std::lock_guard<std::mutex> lock(config_mutex);
     return static_cast<spdlog::level::level_enum>(opt.loglevel);
@@ -75,7 +70,7 @@ spdlog::level::level_enum Config::GetLogLevel() const {
 //Private functions
 
 void Config::Load() {
-    spdlog::get("global")->info("Using config file {}", Expand(CONFIG_FOLDER+"daemon.conf"));
+    spdlog::get("global")->info("Using config file {}", CONFIG_FOLDER+"daemon.conf");
 
   //Try to autodetect music dir
   //TODO: We should use libxdg to parse ~/.config/user-dirs.dirs (if exists)
@@ -85,17 +80,16 @@ void Config::Load() {
     opt.dir = default_music.c_str();
 
 
-    std::ifstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
+    std::ifstream config(CONFIG_FOLDER+"daemon.conf");
   if(!config.is_open()) {
     spdlog::get("global")->warn("Config file could not be open, using default values");
     //Write a dumb config file
-    std::ofstream config(Expand(CONFIG_FOLDER+"daemon.conf"));
+    std::ofstream config(CONFIG_FOLDER+"daemon.conf");
     pt::ptree tree;
 
     tree.put("pid_file", opt.pidfile);
     tree.put("log_file", opt.logfile);
     tree.put("music_folder", opt.dir);
-    tree.put("auto_start", opt.autostart);
     tree.put("log_level", opt.loglevel);
 
     #ifdef _NAMED_PIPE
@@ -136,7 +130,6 @@ void Config::Load() {
     opt.pidfile    = Expand(tree.get("pid_file", opt.pidfile));
     opt.logfile    = Expand(tree.get("log_file", opt.logfile));
     opt.dir        = Expand(tree.get("music_folder", opt.dir).c_str());
-    opt.autostart  = tree.get("auto_start", opt.autostart);
     opt.loglevel   = tree.get("log_level", opt.loglevel);
   }
 }
