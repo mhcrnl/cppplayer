@@ -168,6 +168,9 @@ void Music::Reproduce() {
         } else if(IsStatus(Status::Restart)) {
             music.setPlayingOffset(sf::seconds(0));
             status = Status::Playing;
+        } else {
+            // Only increment if we have listened the full song ¿?
+            song.SetReproductions(song.GetReproductions() + 1);
         }
     }
     music.stop();

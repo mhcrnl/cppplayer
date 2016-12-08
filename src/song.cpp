@@ -99,6 +99,39 @@ std::string Song::GetExtension() {
     return extension;
 }
 
+unsigned Song::GetReproductions() {
+    path dbdir(CONFIG_FOLDER + "/.db/" + file);
+
+    if(!exists(dbdir) && !create_directories(dbdir)) {
+        spdlog::get("global")->warn("Could not create {} directory ", dbdir.c_str());
+        reproductions = 0;
+    } else {
+        auto counter_path = dbdir.c_str() + std::string("/COUNTER");
+        std::ifstream counter_file(counter_path);
+        if(counter_file.is_open()) {
+            counter_file >> reproductions;
+        } else {
+            reproductions = 0;
+            std::ofstream counter_file(counter_path);
+            counter_file << reproductions << "\n";
+        }
+    }
+
+    return reproductions;
+}
+
+void Song::SetReproductions(unsigned rep) {
+    path dbdir(CONFIG_FOLDER + "/.db/" + file);
+
+    if(!exists(dbdir) && !create_directories(dbdir)) {
+        spdlog::get("global")->warn("Could not create {} directory ", dbdir.c_str());
+    } else {
+        auto counter_path = dbdir.c_str() + std::string("/COUNTER");
+        std::ofstream counter_file(counter_path);
+        counter_file << rep << "\n";
+    }
+}
+
 void Song::GetTitleFromFile() {
     TagLib::FileRef f(file.c_str());
     if(f.isNull()) {

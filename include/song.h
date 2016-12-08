@@ -38,6 +38,10 @@ public:
 	/// @return The absoulte path
 	std::string GetFile();
 
+	unsigned GetReproductions();
+
+	void SetReproductions(unsigned i);
+
 private:
     void GetTitleFromFile();
     void GetArtistFromFile();
@@ -47,4 +51,5 @@ private:
 	std::string artist;
 	std::string title;
 	std::string file;
+	unsigned reproductions {0};
 };

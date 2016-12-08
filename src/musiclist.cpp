@@ -50,8 +50,10 @@ void MusicList::LoadPlaylist(std::string pathPl) {
 void MusicList::Sort(Order s) {
     switch(s) {
         case Order::RANDOM:
-            std::random_device rd;
-            std::shuffle(song_list.begin(), song_list.end(), std::mt19937(rd()));
+            SortRandom();
+            break;
+        case Order::LLF:
+            SortLLF();
             break;
     }
 }
@@ -82,4 +84,18 @@ bool MusicList::IsSupported(path p) {
             return true;
 
     return false;
+}
+
+void MusicList::SortRandom() {
+    std::random_device rd;
+    std::shuffle(song_list.begin(), song_list.end(), std::mt19937(rd()));
+}
+
+
+void MusicList::SortLLF() {
+    auto cmp = [](std::shared_ptr<Song> a, std::shared_ptr<Song> b) {
+        return a->GetReproductions() > b->GetReproductions();
+    };
+
+    std::sort(song_list.begin(), song_list.end(), cmp);
 }

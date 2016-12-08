@@ -45,6 +45,10 @@ public:
         music.GetList().Sort(Order::RANDOM);
     }
 
+    virtual void SortLLF() {
+        music.GetList().Sort(Order::LLF);
+    }
+
     virtual void GetArtist() {
         proto << music.GetCurrent().GetArtist();
     }
@@ -178,6 +182,7 @@ public:
             case Command::NEXT:                 return cmd.Next();
             case Command::BACK:                 return cmd.Back();
             case Command::SORT_RANDOM:          return cmd.SortRandom();
+            case Command::SORT_LLF:             return cmd.SortLLF();
             case Command::GET_ARTIST:           return cmd.GetArtist();
             case Command::GET_TITLE:            return cmd.GetTitle();
             case Command::GET_FILE:             return cmd.GetFile();                

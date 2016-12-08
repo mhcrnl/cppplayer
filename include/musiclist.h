@@ -12,6 +12,7 @@ using namespace boost::filesystem;
 
 enum class Order {
 	RANDOM,
+	LLF,
 };
 
 class MusicList {
@@ -31,6 +32,9 @@ public:
 	std::vector<std::shared_ptr<Song>>& GetSongList();
 private:
 	bool IsSupported(path p);
+
+	void SortRandom();
+	void SortLLF();
 
 	//List of songs that will be reproduced
 	std::vector<std::shared_ptr<Song>> song_list;

@@ -32,6 +32,7 @@ typedef enum {
 	STOP,	///< Stop the reproduction and forgets the current playlist position
 
 	SORT_RANDOM,	///< Sort the list 
+	SORT_LLF,		///< Sort with Last Listened First
 
 	// Returns the requested metadata
 	GET_ARTIST, ///< Returns the artist of the current song
