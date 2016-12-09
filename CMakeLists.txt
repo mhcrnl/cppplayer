@@ -30,8 +30,6 @@ install(FILES include/commands.h DESTINATION /usr/include/cppplayer)
 
 target_compile_features(dplayer++ PUBLIC cxx_range_for cxx_auto_type cxx_lambdas)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-
 include_directories(${Boost_INCLUDE_DIRS}) 
 target_link_libraries(dplayer++ ${Boost_LIBRARIES})
 
