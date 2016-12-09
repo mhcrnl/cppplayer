@@ -94,7 +94,7 @@ void MusicList::SortRandom() {
 
 void MusicList::SortLLF() {
     auto cmp = [](std::shared_ptr<Song> a, std::shared_ptr<Song> b) {
-        return a->GetReproductions() > b->GetReproductions();
+        return a->GetReproductions() < b->GetReproductions();
     };
 
     std::sort(song_list.begin(), song_list.end(), cmp);

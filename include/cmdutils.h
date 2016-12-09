@@ -11,17 +11,16 @@ template <class Protocol>
 class CommandExecuter {
 public:
     CommandExecuter(Protocol& p, Music& m) : proto(p), music(m) {}
-    virtual ~CommandExecuter() =default;
 
-    virtual void Quit() {
+     void Quit() {
         music.SetStatus(Status::Exit);
     }
 
-    virtual void Play() {
+     void Play() {
         music.SetStatus(Status::Playing);
     }
 
-    virtual void Pause() {
+     void Pause() {
         if(music.GetStatus() != Status::Playing) {
             music.SetStatus(Status::Playing);
         } else {
@@ -29,39 +28,39 @@ public:
         }
     }
 
-    virtual void Stop() {
+     void Stop() {
         music.SetStatus(Status::Stoped);
     }
 
-    virtual void Next() {
+     void Next() {
         music.SetStatus(Status::Forwarding);
     }
 
-    virtual void Back() {
+     void Back() {
         music.SetStatus(Status::Backing);
     }   
 
-    virtual void SortRandom() {
+     void SortRandom() {
         music.GetList().Sort(Order::RANDOM);
     }
 
-    virtual void SortLLF() {
+     void SortLLF() {
         music.GetList().Sort(Order::LLF);
     }
 
-    virtual void GetArtist() {
+     void GetArtist() {
         proto << music.GetCurrent().GetArtist();
     }
 
-    virtual void GetTitle() {
+     void GetTitle() {
         proto << music.GetCurrent().GetTitle();
     }
 
-    virtual void GetFile() {
+     void GetFile() {
         proto << music.GetCurrent().GetFile();
     }
 
-    virtual void FilterArtist() {
+     void FilterArtist() {
         //Stop reproduction while we are filtering the list
         auto tmp = music.GetStatus();
         music.SetStatus(Status::Stoped);
@@ -69,15 +68,15 @@ public:
         music.SetStatus(tmp);
     }
 
-    virtual void AddFolder() {
+     void AddFolder() {
         music.GetList().LoadDir(proto.GetLine());
     }
 
-    virtual void AddFile() {
+     void AddFile() {
         music.GetList().LoadFile(proto.GetLine());
     }
 
-    virtual void LoadPlaylist() {
+     void LoadPlaylist() {
         auto tmp = music.GetStatus();
         music.SetStatus(Status::Stoped);
 
@@ -86,7 +85,7 @@ public:
         music.SetStatus(tmp);
     }
 
-    virtual void VolumeSet() {
+     void VolumeSet() {
         std::string volum;
         proto >> volum;
         spdlog::get("global")->debug("Vol: {}", volum);
@@ -103,19 +102,19 @@ public:
         music.SetVolume(new_volum);        
     }
 
-    virtual void VolumeGet() {
+     void VolumeGet() {
         proto << std::to_string(music.GetVolume());
     }
 
-    virtual void TimeGetRemaining() {
+     void TimeGetRemaining() {
         proto << music.GetRemainingMilliseconds();
     }
 
-    virtual void SetOffset() {
+     void SetOffset() {
         music.SetPlayingOffset(std::stoi(proto.GetLine()));
     }
 
-    virtual void FileGet() {
+     void FileGet() {
         std::ifstream file(music.GetCurrent().GetFile());
         if(!file.is_open())
             throw std::runtime_error("Can not open music file");
@@ -131,16 +130,16 @@ public:
         proto << "";
     }
 
-    virtual void FilePut() {
+     void FilePut() {
         //TODO: Implement this
     }
 
-    virtual void ClearPlaylist() {
+    void ClearPlaylist() {
         music.SetStatus(Status::Stoped);
         music.GetList().GetSongList().clear();
     }
 
-    virtual void SaveFile() {
+    void SaveFile() {
         std::ofstream f(proto.GetLine());
         if(!f.is_open())
             throw std::runtime_error("Can not open playlist");
@@ -148,7 +147,7 @@ public:
         f << music.GetCurrent().GetFile() << std::endl;
     }
 
-    virtual void SavePlaylist() {
+    void SavePlaylist() {
         std::ofstream f(proto.GetLine());
         if(!f.is_open())
             throw std::runtime_error("Can not open playlist");
