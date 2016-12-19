@@ -3,12 +3,15 @@
 #include "utils.h"
 
 #include <spdlog/spdlog.h>
+#include <boost/filesystem.hpp>
 
 #include <cstdio>
 #include <cstdlib>
 #include <thread>
 #include <iostream>
 #include <fstream>
+
+using namespace boost::filesystem;
 
 //Public functions
 
@@ -65,7 +68,9 @@ void Manager::StartServer() {
         }).detach();
     #endif
 
-    system( (CONFIG_FOLDER + "init_script.sh").c_str() );
+    auto script = CONFIG_FOLDER + "init_script.sh";
+    if(exists(script))
+        system(script.c_str());
 
     mplayer.join();
 }
