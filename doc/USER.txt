@@ -1,10 +1,10 @@
 === Dependencies ===
 
-For be able to download and compile the code we need *git* and *cmake* tools plus the next libraries: mpg123, sfml, TagLib, boost-filesystem and sqlite. 
+For be able to download and compile the code we need *git* and *cmake* tools plus the next libraries: mpg123, sfml, TagLib, boost-filesystem. 
 In a debian/ubuntu distro we can install it executing the next two commands
 
   sudo apt install git cmake
-  sudo apt install libmpg123-dev libsfml-dev libboost-filesystem-dev libsqlite3-dev libtag1-dev libspdlog-dev
+  sudo apt install libmpg123-dev libsfml-dev libboost-filesystem-dev libtag1-dev libspdlog-dev
 
 Important note: In stable debian (jessie) the provided cmake version is not compatible, for be able to compile the project we can use debian testing or compile the version ourselves. The minimum version is 3.1.0
 
@@ -58,8 +58,6 @@ We can write these configuration for our own, or if our music folder is located 
 Currently the configuration file have the next options.
 pid_file: Is the location of the pid file used for detecting daemons already running. Default is ~/.config/player++/player++.pid
 
-db_file:Is the location of the sql database, currently unused
-
 music_folder: Is the directory where the music is searched. Default is . or ~/Music if exists
 
 log_file: The location of the log.txt file. Default is ~/.config/player++/log.txt
@@ -111,4 +109,15 @@ Supposing we are using named pipes, and the pipes are in the default location. W
 
 etc, to see all supported commands you can read the /usr/include/cppplayer/commands.h  header file
 
-If we want to run something at tart, we can use the ~/.config/player++/init_script.sh file (don't forget to enable execution permissions)
+If we want to run something at tart, we can use the ~/.config/player++/init_script.sh file (don't forget to enable execution permissions), for example, I use the next script for sort my songs randomly and then, put the less listened one first  (and in the end autostart playing the songs).
+
+	#!/bin/zsh
+
+	# Sort random
+	player++ sr
+
+	# Sort with less listened first
+	player++ sl
+
+	# Auto start
+	player++ p

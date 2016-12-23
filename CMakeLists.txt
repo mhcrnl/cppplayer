@@ -42,7 +42,7 @@ endif()
 
 target_link_libraries(dplayer++ ${CMAKE_THREAD_LIBS_INIT})
 
-target_link_libraries(dplayer++ sfml-system sfml-audio mpg123 tag sqlite3 boost_system boost_filesystem)
+target_link_libraries(dplayer++ sfml-system sfml-audio mpg123 tag boost_system boost_filesystem)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror ")
 
