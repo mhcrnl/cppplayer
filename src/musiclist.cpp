@@ -47,6 +47,15 @@ void MusicList::LoadPlaylist(std::string pathPl) {
     pl.close();
 }
 
+void MusicList::SavePlaylist(std::string pathPl) {
+    std::ofstream f(pathPl);
+    if(!f.is_open())
+        throw std::runtime_error("Can not open playlist");
+
+    for(auto& s : GetSongList())
+        f << s->GetFile() << std::endl;
+}
+
 void MusicList::Sort(Order s) {
     switch(s) {
         case Order::RANDOM:

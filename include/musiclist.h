@@ -24,6 +24,8 @@ public:
 
 	void LoadPlaylist(std::string pathPl);
 
+	void SavePlaylist(std::string pathPl);
+
 
 	void Sort(Order s);
 

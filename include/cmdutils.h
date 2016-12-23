@@ -148,12 +148,7 @@ public:
     }
 
     void SavePlaylist() {
-        std::ofstream f(proto.GetLine());
-        if(!f.is_open())
-            throw std::runtime_error("Can not open playlist");
-
-        for(auto& s : music.GetList().GetSongList())
-            f << s->GetFile() << std::endl;
+        music.GetList().SavePlaylist(proto.GetLine());
     }
 
 private:
