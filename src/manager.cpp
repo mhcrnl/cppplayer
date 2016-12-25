@@ -15,9 +15,7 @@ using namespace boost::filesystem;
 
 //Public functions
 
-Manager::Manager(int argc, char* argv[]) {
-    //Load configuration
-    //conf.Load();
+Manager::Manager(int argc, char* argv[]) {;
     if(argc == 2 && argv[1] == std::string("-d")) {
         daemonize();
         
@@ -70,7 +68,8 @@ void Manager::StartServer() {
 
     auto script = CONFIG_FOLDER + "init_script.sh";
     if(exists(script))
-        system(script.c_str());
+        if(system(script.c_str()) == -1)
+			spdlog::get("global")->info("Error executing {}", script);
 
     mplayer.join();
 }
