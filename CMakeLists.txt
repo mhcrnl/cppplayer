@@ -15,11 +15,6 @@ IF (_TCP_SOCKET)
     ADD_DEFINITIONS(-D_TCP_SOCKET)
 ENDIF()
 
-option(_REMOTE_MODE "Run the daemon as a server" OFF)
-IF (_REMOTE_MODE)
-    ADD_DEFINITIONS(-D_REMOTE_MODE)
-ENDIF()
-
 include_directories(include) 
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
  
