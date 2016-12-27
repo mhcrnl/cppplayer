@@ -30,14 +30,21 @@ target_link_libraries(dplayer++ ${Boost_LIBRARIES})
 
 #Find thread library
 find_package(Threads) 
-
 if(NOT Threads_FOUND)
     message(FATAL_ERROR "This system doesn't support threads.")
 endif()
 
 target_link_libraries(dplayer++ ${CMAKE_THREAD_LIBS_INIT})
 
-target_link_libraries(dplayer++ sfml-system sfml-audio mpg123 tag boost_system boost_filesystem)
+find_package(SFML 2 REQUIRED system audio)
+if(NOT SFML_FOUND) 
+	message(FATAL_ERROR "SFML could not be found")
+endif()
+
+include_directories(${SFML_INCLUDE_DIR})
+target_link_libraries(dplayer++ ${SFML_LIBRARIES})
+
+target_link_libraries(dplayer++ mpg123 tag boost_system boost_filesystem)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror ")
 
