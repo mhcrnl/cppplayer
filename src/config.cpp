@@ -80,7 +80,7 @@ void Config::Load() {
     opt.dir = default_music.c_str();
 
 
-    std::ifstream config(CONFIG_FOLDER+"daemon.conf");
+  std::ifstream config(CONFIG_FOLDER+"daemon.conf");
   if(!config.is_open()) {
     spdlog::get("global")->warn("Config file could not be open, using default values");
     //Write a dumb config file

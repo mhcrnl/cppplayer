@@ -38,9 +38,9 @@ public:
 	~NamedPipe() {
 		//Delete pipes
 		if(unlink(conf.GetDaemonPipe().c_str()) == -1) 
-			throw std::runtime_error(strerror(errno));
+			spdlog::get("global")->error(strerror(errno));
 		if(unlink(conf.GetClientPipe().c_str()) == -1)
-			throw std::runtime_error(strerror(errno));
+			spdlog::get("global")->error(strerror(errno));
 	}
 
 	Command ReadCommand() {
