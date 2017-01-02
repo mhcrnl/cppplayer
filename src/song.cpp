@@ -83,7 +83,7 @@ std::string Song::GetAlbum() {
             if( tmp == TagLib::String::null) {
                 tmp = TagLib::String("Unknown");
             }
-            album = tmp.to8Bit();
+            album = tmp.to8Bit(true);
         }
     }
     return artist;
@@ -141,7 +141,7 @@ void Song::GetTitleFromFile() {
         if( tmp == TagLib::String::null) {
             tmp = TagLib::String("Unknown");
         }
-        title = tmp.to8Bit();
+        title = tmp.to8Bit(true);
     }
 }
 
@@ -154,7 +154,7 @@ void Song::GetArtistFromFile() {
         if( tmp == TagLib::String::null) {
             tmp = TagLib::String("Unknown");
         }
-        artist = tmp.to8Bit();
+        artist = tmp.to8Bit(true);
         //artist = tmp.toWString();
     }
 }
