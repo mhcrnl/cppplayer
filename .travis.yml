@@ -28,13 +28,9 @@ before_install:
   - cmake ..
   - sudo make install
   - cd ../..
+  - wget "https://raw.githubusercontent.com/SFML/SFML/master/cmake/Modules/FindSFML.cmake" -O /usr/share/cmake/Modules/FindSFML.cmake
 
 script:
-  - mkdir cmake
-  - cd cmake
-  - wget "https://raw.githubusercontent.com/SFML/SFML/master/cmake/Modules/FindSFML.cmake"
-  - cd ..
-  - echo 'list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")' >> CMakeLists.txt
   - mkdir build
   - cd build
   - cmake -DCMAKE_CXX_COMPILER=$COMPILER .. && make VERBOSE=1
