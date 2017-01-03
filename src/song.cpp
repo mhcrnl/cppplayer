@@ -26,13 +26,13 @@ std::string Song::GetTitle() {
 
     if(title != "") return title;
 
-    path dbdir(CONFIG_FOLDER + "/.db/" + file);
+    std::string dbdir(CONFIG_FOLDER + "/.db/" + file);
 
     if(!exists(dbdir) && !create_directories(dbdir)) {
-        spdlog::get("global")->warn("Could not create {} directory ", dbdir.c_str());
+        spdlog::get("global")->warn("Could not create {} directory ", dbdir);
         GetTitleFromFile();
     } else {
-        auto title_path = dbdir.c_str() + std::string("/TITLE");
+        auto title_path = dbdir + "/TITLE";
         std::ifstream title_file(title_path);
         if(title_file.is_open()) {
             std::getline(title_file, title);
@@ -51,13 +51,13 @@ std::string Song::GetArtist() {
 
     if(artist != "") return artist;
 
-    path dbdir(CONFIG_FOLDER + "/.db/" + file);
+    std::string dbdir(CONFIG_FOLDER + "/.db/" + file);
 
     if(!exists(dbdir) && !create_directories(dbdir)) {
-        spdlog::get("global")->warn("Could not create {} directory ", dbdir.c_str());
+        spdlog::get("global")->warn("Could not create {} directory ", dbdir);
         GetArtistFromFile();
     } else {
-        auto artist_path = dbdir.c_str() + std::string("/ARTIST");
+        auto artist_path = dbdir + "/ARTIST";
         std::ifstream artist_file(artist_path);
         if(artist_file.is_open()) {
             std::getline(artist_file, artist);
@@ -100,13 +100,13 @@ std::string Song::GetExtension() {
 }
 
 unsigned Song::GetReproductions() {
-    path dbdir(CONFIG_FOLDER + "/.db/" + file);
+    std::string dbdir(CONFIG_FOLDER + "/.db/" + file);
 
     if(!exists(dbdir) && !create_directories(dbdir)) {
-        spdlog::get("global")->warn("Could not create {} directory ", dbdir.c_str());
+        spdlog::get("global")->warn("Could not create {} directory ", dbdir);
         reproductions = 0;
     } else {
-        auto counter_path = dbdir.c_str() + std::string("/COUNTER");
+        auto counter_path = dbdir + "/COUNTER";
         std::ifstream counter_file(counter_path);
         if(counter_file.is_open()) {
             counter_file >> reproductions;
@@ -121,12 +121,12 @@ unsigned Song::GetReproductions() {
 }
 
 void Song::SetReproductions(unsigned rep) {
-    path dbdir(CONFIG_FOLDER + "/.db/" + file);
+    std::string dbdir(CONFIG_FOLDER + "/.db/" + file);
 
     if(!exists(dbdir) && !create_directories(dbdir)) {
-        spdlog::get("global")->warn("Could not create {} directory ", dbdir.c_str());
+        spdlog::get("global")->warn("Could not create {} directory ", dbdir);
     } else {
-        auto counter_path = dbdir.c_str() + std::string("/COUNTER");
+        auto counter_path = dbdir + "/COUNTER";
         std::ofstream counter_file(counter_path);
         counter_file << rep << "\n";
     }
