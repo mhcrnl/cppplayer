@@ -155,6 +155,5 @@ void Song::GetArtistFromFile() {
             tmp = TagLib::String("Unknown");
         }
         artist = tmp.to8Bit(true);
-        //artist = tmp.toWString();
     }
 }

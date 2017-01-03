@@ -33,6 +33,7 @@ typedef enum {
 
 	SORT_RANDOM,	///< Sort the list 
 	SORT_LLF,		///< Sort with Less Listened First
+	SORT_MLF,		///< Sort with Mort Listened First
 
 	// Returns the requested metadata
 	GET_ARTIST, ///< Returns the artist of the current song

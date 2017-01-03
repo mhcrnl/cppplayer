@@ -64,6 +64,9 @@ void MusicList::Sort(Order s) {
         case Order::LLF:
             SortLLF();
             break;
+        case Order::MLF:
+            SortMLF();
+            break;
     }
 }
 
@@ -104,6 +107,14 @@ void MusicList::SortRandom() {
 void MusicList::SortLLF() {
     auto cmp = [](std::shared_ptr<Song> a, std::shared_ptr<Song> b) {
         return a->GetReproductions() < b->GetReproductions();
+    };
+
+    std::sort(song_list.begin(), song_list.end(), cmp);
+}
+
+void MusicList::SortMLF() {
+    auto cmp = [](std::shared_ptr<Song> a, std::shared_ptr<Song> b) {
+        return a->GetReproductions() > b->GetReproductions();
     };
 
     std::sort(song_list.begin(), song_list.end(), cmp);
