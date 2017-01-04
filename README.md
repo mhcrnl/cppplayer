@@ -1,6 +1,6 @@
 # cppplayer
 
-[![Build Status](https://travis-ci.org/stkw00/cppplayer.svg?branch=master)](https://travis-ci.org/stk0/cppplayer)
+[![Build Status](https://travis-ci.org/stkw0/cppplayer.svg?branch=master)](https://travis-ci.org/stkw0/cppplayer)
 
 Music player that wants to be simple and easy to configure (I use it as an alternative to mpd)
 
